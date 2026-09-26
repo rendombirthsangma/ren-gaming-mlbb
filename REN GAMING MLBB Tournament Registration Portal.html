@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>REN GAMING • MLBB Tournament</title>
+<style>
+:root{--bg:#07111f;--panel:#0d1b2d;--panel2:#10243b;--text:#f5f8ff;--muted:#9eb0c8;--accent:#39e7b0;--accent2:#7c6cff;--danger:#ff5c7a;--gold:#ffd166;--line:#20344e}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(circle at 80% 0,#172b56 0,#07111f 40%);color:var(--text);font-family:Inter,Segoe UI,Arial,sans-serif}
+a{color:inherit;text-decoration:none}.nav{position:sticky;top:0;z-index:10;background:rgba(7,17,31,.88);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.navin{max-width:1180px;margin:auto;padding:14px 20px;display:flex;align-items:center;justify-content:space-between}.brand{font-weight:900;letter-spacing:.8px}.brand span{color:var(--accent)}
+.navlinks{display:flex;gap:14px;flex-wrap:wrap}.navlinks a{font-size:13px;color:var(--muted);padding:8px}.navlinks a:hover{color:#fff}
+.hero{max-width:1180px;margin:auto;padding:72px 20px 48px;display:grid;grid-template-columns:1.35fr .65fr;gap:28px;align-items:center}
+.badge{display:inline-block;padding:7px 11px;border:1px solid #285276;border-radius:999px;color:var(--accent);background:#0b2033;font-size:12px;font-weight:800}
+h1{font-size:clamp(40px,7vw,78px);line-height:.95;margin:18px 0}.hero p{color:var(--muted);font-size:17px;max-width:650px}
+.cta{display:flex;gap:12px;margin-top:25px;flex-wrap:wrap}.btn{border:0;border-radius:12px;padding:12px 17px;font-weight:800;cursor:pointer;background:var(--accent);color:#06131e}.btn.alt{background:var(--panel2);color:#fff;border:1px solid var(--line)}
+.prize{background:linear-gradient(145deg,#172a4b,#0b1728);border:1px solid #294667;border-radius:24px;padding:28px;text-align:center;box-shadow:0 20px 60px #0004}.prize .amount{font-size:54px;font-weight:950;color:var(--gold)}.prize small{color:var(--muted)}
+.container{max-width:1180px;margin:auto;padding:30px 20px}.section{margin:28px 0 64px}.section h2{font-size:30px;margin-bottom:8px}.sub{color:var(--muted);margin-top:0}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.card{background:rgba(13,27,45,.9);border:1px solid var(--line);border-radius:18px;padding:20px}.card h3{margin-top:0}.stat{font-size:30px;font-weight:900;color:var(--accent)}
+form{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.field{display:flex;flex-direction:column;gap:7px}.field.full{grid-column:1/-1}label{font-size:13px;color:var(--muted)}input,select,textarea{width:100%;background:#091525;border:1px solid #263c57;color:#fff;border-radius:10px;padding:12px;outline:none}textarea{min-height:90px;resize:vertical}
+table{width:100%;border-collapse:collapse;background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden}th,td{padding:13px;text-align:left;border-bottom:1px solid var(--line);font-size:14px}th{color:var(--muted);font-weight:700}tr:last-child td{border-bottom:0}.pill{display:inline-block;padding:5px 8px;border-radius:999px;background:#17344a;color:var(--accent);font-size:11px;font-weight:800}
+.awards{grid-template-columns:repeat(2,1fr)}.award{border:1px solid #4a3d18;background:linear-gradient(135deg,#1b1a14,#0d1725)}.award strong{color:var(--gold)}
+.admin{border-color:#5c3d74;background:linear-gradient(145deg,#171027,#0d1725)}.hidden{display:none}.notice{padding:12px 14px;border-radius:10px;background:#102d2b;color:#a9ffe6;margin-top:12px}.danger{background:#321a23;color:#ffb2c1}
+footer{border-top:1px solid var(--line);padding:35px 20px;color:var(--muted);text-align:center}
+@media(max-width:800px){.hero{grid-template-columns:1fr}.grid,.awards{grid-template-columns:1fr}form{grid-template-columns:1fr}.field.full{grid-column:auto}.navlinks{display:none}}
+</style>
+
+<script>
+/*
+ * GOOGLE SHEETS CONFIGURATION
+ * 1) Deploy the supplied Code.gs as a Web App.
+ * 2) Copy the Web App URL and paste it below.
+ */
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwbJW-y04A5HC7oJIjQXUb7-UKDUtTsXn4rqXPw2rhxqajuxlV32a8oEWoCy6-lrVev/exec";
+</script>
+</head>
+<body>
+<nav class="nav"><div class="navin"><div class="brand">REN <span>GAMING</span> • MLBB</div><div class="navlinks">
+<a href="#home">Home</a><a href="#register">Register</a><a href="#teams">Teams</a><a href="#rules">Rules</a><a href="#schedule">Schedule</a><a href="#results">Results</a><a href="#admin">Admin</a>
+</div></div></nav>
+
+<header class="hero" id="home">
+<div><span class="badge">MOBILE LEGENDS: BANG BANG • COMMUNITY TOURNAMENT</span>
+<h1>REN GAMING<br><span style="color:var(--accent)">MLBB CUP</span></h1>
+<p>Compete, climb the standings, and play for the ₹1,000 first prize. Rejoin is available for ₹50 where permitted by the tournament rules.</p>
+<div class="cta"><a class="btn" href="#register">Register Your Team</a><a class="btn alt" href="REN_GAMING_MLBB_Tournament_Rules.pdf" target="_blank">View Rules PDF</a></div></div>
+<div class="prize"><small>1ST PRIZE</small><div class="amount">₹1,000</div><div>🏆 Champion Team</div><hr style="border-color:var(--line);border-width:1px 0 0"><small>Special awards</small><div style="margin-top:10px">⭐ Best Assist &nbsp; • &nbsp; 🔥 Best Killer</div></div>
+</header>
+
+<main class="container">
+<section class="section"><div class="grid">
+<div class="card"><div class="stat">₹1,000</div><div>First Prize</div></div>
+<div class="card"><div class="stat">₹50</div><div>Rejoin Fee</div></div>
+<div class="card"><div class="stat">2</div><div>Special Awards</div></div>
+</div></section>
+
+<section class="section" id="register"><h2>📝 Team Registration</h2><p class="sub">Submit your squad details. This demo stores registrations in your browser.</p>
+<form id="regForm">
+<div class="field"><label>Team Name *</label><input name="team" required placeholder="e.g. REN Warriors"></div>
+<div class="field"><label>Team Logo * (PNG/JPG/JPEG)</label><input name="logo" type="file" accept=".png,.jpg,.jpeg,image/png,image/jpeg" required></div>
+<div class="field"><label>Captain / Manager Name *</label><input name="captain" required></div>
+<div class="field"><label>Contact Number *</label><input name="phone" required></div>
+<div class="field full"><label>Region / City</label><input name="region" placeholder="e.g. Meghalaya"></div>
+<div class="field full"><label>Player 1 Name *</label><input name="p1_name" placeholder="e.g. ABCD" required></div>
+<div class="field"><label>Player 1 User ID *</label><input name="p1_uid" placeholder="e.g. 123456789" required></div><div class="field"><label>Player 1 Server ID *</label><input name="p1_sid" placeholder="e.g. (12345)" required></div>
+<div class="field full"><label>Player 2 Name *</label><input name="p2_name" placeholder="e.g. ABCD" required></div>
+<div class="field"><label>Player 2 User ID *</label><input name="p2_uid" placeholder="e.g. 123456789" required></div><div class="field"><label>Player 2 Server ID *</label><input name="p2_sid" placeholder="e.g. (12345)" required></div>
+<div class="field full"><label>Player 3 Name *</label><input name="p3_name" placeholder="e.g. ABCD" required></div>
+<div class="field"><label>Player 3 User ID *</label><input name="p3_uid" placeholder="e.g. 123456789" required></div><div class="field"><label>Player 3 Server ID *</label><input name="p3_sid" placeholder="e.g. (12345)" required></div>
+<div class="field full"><label>Player 4 Name *</label><input name="p4_name" placeholder="e.g. ABCD" required></div>
+<div class="field"><label>Player 4 User ID *</label><input name="p4_uid" placeholder="e.g. 123456789" required></div><div class="field"><label>Player 4 Server ID *</label><input name="p4_sid" placeholder="e.g. (12345)" required></div>
+<div class="field full"><label>Player 5 Name *</label><input name="p5_name" placeholder="e.g. ABCD" required></div>
+<div class="field"><label>Player 5 User ID *</label><input name="p5_uid" placeholder="e.g. 123456789" required></div><div class="field"><label>Player 5 Server ID *</label><input name="p5_sid" placeholder="e.g. (12345)" required></div>
+<div class="field full"><label>Substitute Player 1 Name</label><input name="sub1_name" placeholder="e.g. ABCD"></div>
+<div class="field"><label>Substitute 1 User ID</label><input name="sub1_uid" placeholder="e.g. 123456789"></div><div class="field"><label>Substitute 1 Server ID</label><input name="sub1_sid" placeholder="e.g. (12345)"></div>
+<div class="field full"><label>Substitute Player 2 Name</label><input name="sub2_name" placeholder="e.g. ABCD"></div>
+<div class="field"><label>Substitute 2 User ID</label><input name="sub2_uid" placeholder="e.g. 123456789"></div><div class="field"><label>Substitute 2 Server ID</label><input name="sub2_sid" placeholder="e.g. (12345)"></div>
+<div class="field full"><label>Notes</label><textarea name="notes" placeholder="Anything the organizer should know"></textarea></div>
+<div class="field full"><button class="btn" type="submit">Submit Registration</button><div id="regMsg"></div></div>
+</form></section>
+
+<section class="section" id="teams"><h2>👥 Teams & Players</h2><p class="sub">Registered teams appear here on this browser.</p><div id="teamsTable"></div></section>
+
+<section class="section" id="rules"><h2>🎮 Tournament Rules & Regulations</h2>
+<p class="sub">Official rules supplied by REN GAMING • North-east India Esports WGH ML.08.</p>
+<div class="grid">
+<div class="card"><h3>📅 Important Dates</h3><p><b>Registration:</b> 26 September 2026</p><p><b>Last Date:</b> 26 October 2026</p><p><b>Match Start:</b> 28 October 2026</p><p><b>Match Time:</b> 6:00 PM – 10:00 PM</p></div>
+<div class="card"><h3>🏆 Tournament</h3><p>Online MLBB 5v5 tournament.</p><p><b>Entry:</b> FREE</p><p><b>1st Prize:</b> ₹1,000</p><p><b>Qualification:</b> 2 wins in the first round.</p></div>
+<div class="card"><h3>🔄 Rejoin</h3><p><b>Fee:</b> ₹50 per team.</p><p>Available only until the First Round is completely finished. Teams must contact REN GAMING and complete payment before acceptance.</p></div>
+<div class="card"><h3>👥 Roster</h3><p>Each team registers 5 main players. Substitute players may be included according to organizer instructions.</p><p>Only registered players may participate; one player cannot represent multiple teams.</p></div>
+<div class="card"><h3>🎮 Match Rules</h3><p>Matches use an MLBB Custom Room. Room ID and password are provided before matches. Teams should be ready at least 15 minutes before their scheduled match.</p></div>
+<div class="card"><h3>⭐ Special Awards</h3><p><b>Best Assist:</b> highest assists in a single match.</p><p><b>Best Killer:</b> highest kills in a single match.</p><p>Both receive a Weekly Diamond Pass and are confirmed after the tournament.</p></div>
+</div>
+<div class="card" style="margin-top:16px"><h3>📜 Fair Play & Disputes</h3>
+<p>Hacking, cheating, scripting, map hacks, unauthorized third-party applications, toxic/abusive behavior, harassment, match-fixing, collusion, intentional feeding and result manipulation are prohibited.</p>
+<p>Disputes should be reported to the REN GAMING administrator promptly with genuine screenshots, recordings, match results or other evidence. Final dispute decisions are made by the REN GAMING tournament administration.</p>
+</div>
+<p style="margin-top:16px"><a class="btn alt" href="REN_GAMING_MLBB_Tournament_Rules.pdf" target="_blank">📄 Open Official Rules PDF</a></p></section>
+
+<section class="section" id="contact"><h2>📞 Contact REN GAMING</h2><div class="grid">
+<div class="card"><h3>📧 Gmail</h3><p>rendombirthsangma@gmail.com</p></div>
+<div class="card"><h3>📱 Contact</h3><p>9864228608<br>6009280905</p></div>
+<div class="card"><h3>💬 WhatsApp</h3><p>8638129770</p></div>
+<div class="card"><h3>📸 Instagram</h3><p>ren_chisik03</p></div>
+</div><div class="card" style="margin-top:16px"><h3>REN GAMING</h3><p>North-east India Esports WGH ML.08</p><p><b>PLAY FAIR • PLAY TO WIN • RESPECT EVERY TEAM</b></p></div></section>
+
+<section class="section" id="admin"><h2>📊 Admin</h2><p class="sub">Demo organizer dashboard. This local version is intentionally front-end only; connect it to a database/authentication before public deployment.</p>
+<div class="card admin"><form id="adminForm"><div class="field"><label>Admin PIN</label><input id="pin" type="password" placeholder="123456"></div><div class="field"><label>Google Sheets Admin Read Token</label><input id="adminToken" type="password" placeholder="Token from Code.gs"></div><div class="field" style="align-self:end"><button class="btn" type="submit">Unlock</button></div></form>
+<div id="adminPanel" class="hidden"><hr style="border-color:var(--line);margin:20px 0">
+<div class="grid"><div class="card"><div class="stat" id="countTeams">0</div>Registered Teams</div><div class="card"><div class="stat" id="countRejoins">0</div>Rejoin Requests</div><div class="card"><div class="stat">₹1,000</div>First Prize</div></div>
+<div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap"><button class="btn" onclick="loadLiveAdmin()">🔄 Refresh Live Data</button><button class="btn alt" onclick="exportLiveData()">Export Live JSON</button><button class="btn alt" onclick="clearData()">Clear Local Data</button></div>
+<div id="adminMsg"></div>
+<div id="liveTeams" style="margin-top:18px"></div>
+<div id="liveRejoins" style="margin-top:18px"></div>
+</div></div></section>
+</main>
+<footer>© 2026 REN GAMING • MLBB Tournament Portal • Replace demo contact details and connect a backend before public launch.</footer>
+
+<script>
+const get=(k,d=[])=>JSON.parse(localStorage.getItem(k)||JSON.stringify(d));
+const set=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
+function esc(x){return String(x??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+
+function render(){
+ const teams=get('renTeams');
+ document.getElementById('teamsTable').innerHTML=teams.length?`<table><thead><tr><th>Logo</th><th>Team</th><th>Captain</th><th>Region</th><th>Players</th></tr></thead><tbody>${teams.map(t=>`<tr><td>${t.logoUrl?`<img src="${esc(t.logoUrl)}" style="width:45px;height:45px;object-fit:cover;border-radius:8px">`:'-'}</td><td><b>${esc(t.team)}</b></td><td>${esc(t.captain)}</td><td>${esc(t.region||'-')}</td><td>${[1,2,3,4,5].map(i=>esc(t['p'+i+'_name']||'')).filter(Boolean).join(', ')}</td></tr>`).join('')}</tbody></table>`:'<div class="card">No teams registered yet.</div>';
+ document.getElementById('standings').innerHTML=teams.map((t,i)=>`<tr><td>${i+1}</td><td>${esc(t.team)}</td><td>0</td><td>0</td><td>0</td><td><span class="pill">Registered</span></td></tr>`).join('')||'<tr><td colspan="6">No standings yet.</td></tr>';
+}
+
+async function fileToBase64(file){
+ if(!file) return null;
+ if(!['image/png','image/jpeg'].includes(file.type)) throw new Error('Logo must be PNG or JPG/JPEG.');
+ if(file.size>5*1024*1024) throw new Error('Logo must be 5 MB or smaller.');
+ return await new Promise((resolve,reject)=>{
+   const r=new FileReader();
+   r.onload=()=>resolve({name:file.name,mimeType:file.type,base64:r.result.split(',')[1]});
+   r.onerror=reject;r.readAsDataURL(file);
+ });
+}
+
+async function postToGoogle(payload){
+ if(!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL.includes('PASTE_YOUR')){
+   return {ok:false,offline:true};
+ }
+ const res=await fetch(GOOGLE_SCRIPT_URL,{
+   method:'POST',
+   headers:{'Content-Type':'text/plain;charset=utf-8'},
+   body:JSON.stringify(payload)
+ });
+ const text=await res.text();
+ try{return JSON.parse(text)}catch{return {ok:false,error:'Unexpected Apps Script response.'}}
+}
+
+document.getElementById('regForm').addEventListener('submit',async e=>{
+ e.preventDefault();
+ const form=e.target, msg=document.getElementById('regMsg'), btn=form.querySelector('button[type=submit]');
+ btn.disabled=true; msg.innerHTML='<div class="notice">Submitting registration...</div>';
+ try{
+   const fd=new FormData(form), o=Object.fromEntries(fd);
+   const logoFile=fd.get('logo'); const logo=await fileToBase64(logoFile);
+   delete o.logo;
+   const payload={action:'register', ...o, logo};
+   const result=await postToGoogle(payload);
+   if(!result.offline && !result.ok) throw new Error(result.error||'Registration failed.');
+   const local={...o,logoUrl:result.logoUrl||'',id:Date.now()};
+   let a=get('renTeams'); a.push(local); set('renTeams',a);
+   form.reset();
+   msg.innerHTML=result.offline
+     ? '<div class="notice">Saved on this device. Add your Apps Script Web App URL to also send registrations to Google Sheets.</div>'
+     : '<div class="notice">Registration received successfully. Your team has been added to Google Sheets.</div>';
+   render();
+ }catch(err){msg.innerHTML='<div class="notice danger">'+esc(err.message)+'</div>'}
+ finally{btn.disabled=false}
+});
+
+document.getElementById('rejoinForm').addEventListener('submit',async e=>{
+ e.preventDefault();
+ const form=e.target,msg=document.getElementById('rejoinMsg'),btn=form.querySelector('button[type=submit]');
+ btn.disabled=true;msg.innerHTML='<div class="notice">Submitting rejoin request...</div>';
+ try{
+   const o=Object.fromEntries(new FormData(form));
+   const result=await postToGoogle({action:'rejoin',...o,fee:50});
+   if(!result.offline && !result.ok) throw new Error(result.error||'Rejoin request failed.');
+   let a=get('renRejoins');a.push({...o,id:Date.now(),fee:50,status:'Pending'});set('renRejoins',a);
+   form.reset();msg.innerHTML=result.offline?'<div class="notice">Saved locally. Configure Apps Script to send it to Google Sheets.</div>':'<div class="notice">Rejoin request received.</div>';
+ }catch(err){msg.innerHTML='<div class="notice danger">'+esc(err.message)+'</div>'}
+ finally{btn.disabled=false}
+});
+
+let LIVE_ADMIN_DATA=null;
+document.getElementById('adminForm').addEventListener('submit',async e=>{
+ e.preventDefault();
+ if(document.getElementById('pin').value==='246822'){
+   document.getElementById('adminPanel').classList.remove('hidden');
+   await loadLiveAdmin();
+ }else alert('Incorrect admin PIN')
+});
+
+function adminUrl(){
+ const token=document.getElementById('adminToken').value.trim();
+ return GOOGLE_SCRIPT_URL + '?action=adminData&token='+encodeURIComponent(token);
+}
+async function loadLiveAdmin(){
+ const msg=document.getElementById('adminMsg');
+ if(!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL.includes('PASTE_YOUR')){
+   msg.innerHTML='<div class="notice danger">Google Apps Script Web App URL is not configured.</div>'; return;
+ }
+ const token=document.getElementById('adminToken').value.trim();
+ if(!token){msg.innerHTML='<div class="notice danger">Enter the Admin Read Token configured in Code.gs.</div>';return;}
+ msg.innerHTML='<div class="notice">Loading live Google Sheets data...</div>';
+ try{
+   const res=await fetch(adminUrl(),{method:'GET'});
+   const data=await res.json();
+   if(!data.ok) throw new Error(data.error||'Unable to load admin data.');
+   LIVE_ADMIN_DATA=data;
+   document.getElementById('countTeams').textContent=data.counts.teams;
+   document.getElementById('countRejoins').textContent=data.counts.rejoins;
+   renderLiveTeams(data.registrations);
+   renderLiveRejoins(data.rejoins);
+   msg.innerHTML='<div class="notice">Live data loaded from Google Sheets.</div>';
+ }catch(err){msg.innerHTML='<div class="notice danger">'+esc(err.message)+'</div>'}
+}
+function renderLiveTeams(rows){
+ const box=document.getElementById('liveTeams');
+ if(!rows.length){box.innerHTML='<div class="card">No registrations found in Google Sheets.</div>';return;}
+ box.innerHTML='<h3>Live Registered Teams</h3><div style="overflow:auto"><table><thead><tr><th>Logo</th><th>Team</th><th>Captain</th><th>Contact</th><th>Region</th><th>Players</th><th>Substitutes</th><th>Registered</th></tr></thead><tbody>'+
+ rows.map(r=>{
+   const players=[1,2,3,4,5].map(i=>`${esc(r['Player '+i+' Name'])} <small>(${esc(r['Player '+i+' User ID'])}/${esc(r['Player '+i+' Server ID'])})</small>`).join('<br>');
+   const subs=[1,2].map(i=>r['Substitute '+i+' Name']?`${esc(r['Substitute '+i+' Name'])} <small>(${esc(r['Substitute '+i+' User ID'])}/${esc(r['Substitute '+i+' Server ID'])})</small>`:'').filter(Boolean).join('<br>')||'-';
+   return `<tr><td>${r['Logo URL']?`<a href="${esc(r['Logo URL'])}" target="_blank"><img src="${esc(r['Logo URL'])}" style="width:48px;height:48px;object-fit:cover;border-radius:8px"></a>`:'-'}</td><td><b>${esc(r['Team Name'])}</b></td><td>${esc(r['Captain / Manager'])}</td><td>${esc(r['Contact Number'])}</td><td>${esc(r['Region / City']||'-')}</td><td>${players}</td><td>${subs}</td><td>${esc(r['Timestamp'])}</td></tr>`;
+ }).join('')+'</tbody></table></div>';
+}
+function renderLiveRejoins(rows){
+ const box=document.getElementById('liveRejoins');
+ if(!rows.length){box.innerHTML='<h3>Live Rejoin Requests</h3><div class="card">No rejoin requests found.</div>';return;}
+ box.innerHTML='<h3>Live Rejoin Requests</h3><div style="overflow:auto"><table><thead><tr><th>Time</th><th>Team</th><th>Contact</th><th>Fee</th><th>Status</th></tr></thead><tbody>'+
+ rows.map(r=>`<tr><td>${esc(r.Timestamp)}</td><td>${esc(r['Team Name'])}</td><td>${esc(r['Captain Contact'])}</td><td>₹${esc(r.Fee)}</td><td><span class="pill">${esc(r.Status)}</span></td></tr>`).join('')+
+ '</tbody></table></div>';
+}
+function exportLiveData(){
+ if(!LIVE_ADMIN_DATA){alert('Load live data first.');return}
+ let blob=new Blob([JSON.stringify(LIVE_ADMIN_DATA,null,2)],{type:'application/json'});let a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='ren-gaming-live-admin-data.json';a.click()
+}
+function clearData(){if(confirm('Clear all local registrations and rejoin requests? This does NOT delete Google Sheets data.')){localStorage.removeItem('renTeams');localStorage.removeItem('renRejoins');render();}}
+render();
+</script>
+</body></html>
