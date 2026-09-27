@@ -124,9 +124,7 @@ function esc(x){return String(x??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&l
 function render(){
  const teams=get('renTeams');
  document.getElementById('teamsTable').innerHTML=teams.length?`<table><thead><tr><th>Logo</th><th>Team</th><th>Captain</th><th>Region</th><th>Players</th></tr></thead><tbody>${teams.map(t=>`<tr><td>${t.logoUrl?`<img src="${esc(t.logoUrl)}" style="width:45px;height:45px;object-fit:cover;border-radius:8px">`:'-'}</td><td><b>${esc(t.team)}</b></td><td>${esc(t.captain)}</td><td>${esc(t.region||'-')}</td><td>${[1,2,3,4,5].map(i=>esc(t['p'+i+'_name']||'')).filter(Boolean).join(', ')}</td></tr>`).join('')}</tbody></table>`:'<div class="card">No teams registered yet.</div>';
- document.getElementById('standings').innerHTML=teams.map((t,i)=>`<tr><td>${i+1}</td><td>${esc(t.team)}</td><td>0</td><td>0</td><td>0</td><td><span class="pill">Registered</span></td></tr>`).join('')||'<tr><td colspan="6">No standings yet.</td></tr>';
-}
-
+ 
 async function fileToBase64(file){
  if(!file) return null;
  if(!['image/png','image/jpeg'].includes(file.type)) throw new Error('Logo must be PNG or JPG/JPEG.');
