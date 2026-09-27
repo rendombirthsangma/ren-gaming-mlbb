@@ -124,7 +124,8 @@ function esc(x){return String(x??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&l
 function render(){
  const teams=get('renTeams');
  document.getElementById('teamsTable').innerHTML=teams.length?`<table><thead><tr><th>Logo</th><th>Team</th><th>Captain</th><th>Region</th><th>Players</th></tr></thead><tbody>${teams.map(t=>`<tr><td>${t.logoUrl?`<img src="${esc(t.logoUrl)}" style="width:45px;height:45px;object-fit:cover;border-radius:8px">`:'-'}</td><td><b>${esc(t.team)}</b></td><td>${esc(t.captain)}</td><td>${esc(t.region||'-')}</td><td>${[1,2,3,4,5].map(i=>esc(t['p'+i+'_name']||'')).filter(Boolean).join(', ')}</td></tr>`).join('')}</tbody></table>`:'<div class="card">No teams registered yet.</div>';
- 
+}
+
 async function fileToBase64(file){
  if(!file) return null;
  if(!['image/png','image/jpeg'].includes(file.type)) throw new Error('Logo must be PNG or JPG/JPEG.');
@@ -171,19 +172,22 @@ document.getElementById('regForm').addEventListener('submit',async e=>{
  finally{btn.disabled=false}
 });
 
-document.getElementById('rejoinForm').addEventListener('submit',async e=>{
- e.preventDefault();
- const form=e.target,msg=document.getElementById('rejoinMsg'),btn=form.querySelector('button[type=submit]');
- btn.disabled=true;msg.innerHTML='<div class="notice">Submitting rejoin request...</div>';
- try{
-   const o=Object.fromEntries(new FormData(form));
-   const result=await postToGoogle({action:'rejoin',...o,fee:50});
-   if(!result.offline && !result.ok) throw new Error(result.error||'Rejoin request failed.');
-   let a=get('renRejoins');a.push({...o,id:Date.now(),fee:50,status:'Pending'});set('renRejoins',a);
-   form.reset();msg.innerHTML=result.offline?'<div class="notice">Saved locally. Configure Apps Script to send it to Google Sheets.</div>':'<div class="notice">Rejoin request received.</div>';
- }catch(err){msg.innerHTML='<div class="notice danger">'+esc(err.message)+'</div>'}
- finally{btn.disabled=false}
-});
+const rejoinForm=document.getElementById('rejoinForm');
+if(rejoinForm){
+ rejoinForm.addEventListener('submit',async e=>{
+  e.preventDefault();
+  const form=e.target,msg=document.getElementById('rejoinMsg'),btn=form.querySelector('button[type=submit]');
+  btn.disabled=true;msg.innerHTML='<div class="notice">Submitting rejoin request...</div>';
+  try{
+    const o=Object.fromEntries(new FormData(form));
+    const result=await postToGoogle({action:'rejoin',...o,fee:50});
+    if(!result.offline && !result.ok) throw new Error(result.error||'Rejoin request failed.');
+    let a=get('renRejoins');a.push({...o,id:Date.now(),fee:50,status:'Pending'});set('renRejoins',a);
+    form.reset();msg.innerHTML=result.offline?'<div class="notice">Saved locally. Configure Apps Script to send it to Google Sheets.</div>':'<div class="notice">Rejoin request received.</div>';
+  }catch(err){msg.innerHTML='<div class="notice danger">'+esc(err.message)+'</div>'}
+  finally{btn.disabled=false}
+ });
+}
 
 let LIVE_ADMIN_DATA=null;
 document.getElementById('adminForm').addEventListener('submit',async e=>{
