@@ -2,248 +2,599 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>REN GAMING • MLBB Tournament</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#080808">
+<meta name="description" content="Ren Gaming tournament information, rules, registration and registered teams.">
+<title>Ren Gaming | Tournament Registration</title>
+
 <style>
-:root{--bg:#07111f;--panel:#0d1b2d;--panel2:#10243b;--text:#f5f8ff;--muted:#9eb0c8;--accent:#39e7b0;--accent2:#7c6cff;--danger:#ff5c7a;--gold:#ffd166;--line:#20344e}
-*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(circle at 80% 0,#172b56 0,#07111f 40%);color:var(--text);font-family:Inter,Segoe UI,Arial,sans-serif}
-a{color:inherit;text-decoration:none}.nav{position:sticky;top:0;z-index:10;background:rgba(7,17,31,.88);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
-.navin{max-width:1180px;margin:auto;padding:14px 20px;display:flex;align-items:center;justify-content:space-between}.brand{font-weight:900;letter-spacing:.8px}.brand span{color:var(--accent)}
-.navlinks{display:flex;gap:14px;flex-wrap:wrap}.navlinks a{font-size:13px;color:var(--muted);padding:8px}.navlinks a:hover{color:#fff}
-.hero{max-width:1180px;margin:auto;padding:72px 20px 48px;display:grid;grid-template-columns:1.35fr .65fr;gap:28px;align-items:center}
-.badge{display:inline-block;padding:7px 11px;border:1px solid #285276;border-radius:999px;color:var(--accent);background:#0b2033;font-size:12px;font-weight:800}
-h1{font-size:clamp(40px,7vw,78px);line-height:.95;margin:18px 0}.hero p{color:var(--muted);font-size:17px;max-width:650px}
-.cta{display:flex;gap:12px;margin-top:25px;flex-wrap:wrap}.btn{border:0;border-radius:12px;padding:12px 17px;font-weight:800;cursor:pointer;background:var(--accent);color:#06131e}.btn.alt{background:var(--panel2);color:#fff;border:1px solid var(--line)}
-.prize{background:linear-gradient(145deg,#172a4b,#0b1728);border:1px solid #294667;border-radius:24px;padding:28px;text-align:center;box-shadow:0 20px 60px #0004}.prize .amount{font-size:54px;font-weight:950;color:var(--gold)}.prize small{color:var(--muted)}
-.container{max-width:1180px;margin:auto;padding:30px 20px}.section{margin:28px 0 64px}.section h2{font-size:30px;margin-bottom:8px}.sub{color:var(--muted);margin-top:0}
-.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.card{background:rgba(13,27,45,.9);border:1px solid var(--line);border-radius:18px;padding:20px}.card h3{margin-top:0}.stat{font-size:30px;font-weight:900;color:var(--accent)}
-form{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.field{display:flex;flex-direction:column;gap:7px}.field.full{grid-column:1/-1}label{font-size:13px;color:var(--muted)}input,select,textarea{width:100%;background:#091525;border:1px solid #263c57;color:#fff;border-radius:10px;padding:12px;outline:none}textarea{min-height:90px;resize:vertical}
-table{width:100%;border-collapse:collapse;background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden}th,td{padding:13px;text-align:left;border-bottom:1px solid var(--line);font-size:14px}th{color:var(--muted);font-weight:700}tr:last-child td{border-bottom:0}.pill{display:inline-block;padding:5px 8px;border-radius:999px;background:#17344a;color:var(--accent);font-size:11px;font-weight:800}
-.awards{grid-template-columns:repeat(2,1fr)}.award{border:1px solid #4a3d18;background:linear-gradient(135deg,#1b1a14,#0d1725)}.award strong{color:var(--gold)}
-.admin{border-color:#5c3d74;background:linear-gradient(145deg,#171027,#0d1725)}.hidden{display:none}.notice{padding:12px 14px;border-radius:10px;background:#102d2b;color:#a9ffe6;margin-top:12px}.danger{background:#321a23;color:#ffb2c1}
-footer{border-top:1px solid var(--line);padding:35px 20px;color:var(--muted);text-align:center}
-@media(max-width:800px){.hero{grid-template-columns:1fr}.grid,.awards{grid-template-columns:1fr}form{grid-template-columns:1fr}.field.full{grid-column:auto}.navlinks{display:none}}
+:root {
+    --red: #ff3030;
+    --red-dark: #c90000;
+    --bg: #080808;
+    --card: #141414;
+    --input: #202020;
+    --text: #ffffff;
+    --muted: #b5b5b5;
+    --border: #303030;
+    --green: #b6ffc6;
+}
+* { box-sizing: border-box; scroll-behavior: smooth; }
+body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font-family: Arial, Helvetica, sans-serif; line-height: 1.5;
+}
+a { color: inherit; }
+header {
+    position: sticky; top: 0; z-index: 20;
+    background: rgba(16,16,16,.97); border-bottom: 2px solid var(--red);
+    padding: 14px 5%; display: flex; justify-content: space-between;
+    align-items: center; gap: 16px; flex-wrap: wrap;
+}
+.brand { font-size: 23px; font-weight: 900; letter-spacing: 1px; text-decoration: none; }
+.brand span, .accent { color: var(--red); }
+nav { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+nav a {
+    text-decoration: none; color: #eee; padding: 8px 10px;
+    border-radius: 6px; font-size: 13px; font-weight: bold;
+}
+nav a:hover { background: #2a1010; color: white; }
+.nav-register, .btn-red {
+    background: var(--red-dark) !important; color: white !important;
+}
+.nav-register:hover, .btn-red:hover { background: var(--red) !important; }
+main { width: min(1000px, 94%); margin: 0 auto; }
+section[id] { scroll-margin-top: 95px; }
+.hero {
+    text-align: center; padding: 58px 18px 48px;
+    background: radial-gradient(ellipse at top, #321010 0%, #120909 38%, #080808 76%);
+    border-bottom: 1px solid #2b1717;
+}
+.hero-label {
+    display: inline-block; border: 1px solid #762020; color: #ffb3b3;
+    border-radius: 999px; padding: 6px 12px; font-size: 12px;
+    font-weight: bold; letter-spacing: 1px; text-transform: uppercase;
+}
+.hero h1 { font-size: clamp(34px, 7vw, 62px); line-height: 1.08; margin: 17px 0 12px; }
+.hero p { color: var(--muted); max-width: 680px; margin: 0 auto 23px; }
+.hero-actions { display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; }
+.btn, .action-link {
+    display: inline-block; border: 1px solid transparent; border-radius: 7px;
+    padding: 12px 16px; font-size: 14px; font-weight: bold;
+    cursor: pointer; text-decoration: none; transition: .2s;
+}
+.btn-outline, .action-outline {
+    background: transparent; border-color: var(--red); color: white;
+}
+.btn-outline:hover, .action-outline:hover { background: #301010; }
+.content-section { padding: 28px 0 6px; }
+.section-heading { margin: 0 0 7px; font-size: clamp(23px, 4vw, 30px); }
+.section-intro { color: var(--muted); margin: 0 0 18px; }
+.info-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 13px; }
+.info-card, .card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 13px; padding: 20px; margin-bottom: 18px;
+}
+.info-card .label { color: var(--muted); font-size: 13px; }
+.info-card .value { font-size: 21px; font-weight: 800; margin-top: 4px; }
+.prize-card { border-color: #7a2222; background: linear-gradient(145deg, #241010, #141414 75%); }
+.prize-card .value { color: #ff5555; font-size: 28px; }
+.detail-note { color: var(--muted); font-size: 13px; margin: 12px 0 0; }
+.rules-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.rule-item { background: #1b1b1b; border: 1px solid var(--border); border-radius: 9px; padding: 14px; }
+.rule-item strong { color: #ff6565; display: block; margin-bottom: 4px; }
+.pdf-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 15px; }
+.pdf-note { font-size: 12px; color: var(--muted); overflow-wrap: anywhere; }
+.page-title { text-align: center; margin: 24px 0; }
+.page-title h2 { font-size: clamp(25px, 5vw, 36px); margin: 0 0 5px; }
+.page-title p { color: var(--muted); margin: 0; }
+.section-title {
+    font-size: 20px; margin: 0 0 18px; padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+}
+.section-title span { color: var(--red); }
+.form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.field { min-width: 0; }
+.field.full { grid-column: 1 / -1; }
+label { display: block; font-size: 14px; font-weight: bold; margin-bottom: 7px; }
+input, textarea, select {
+    width: 100%; padding: 12px; color: white; background: var(--input);
+    border: 1px solid #383838; border-radius: 7px; font-size: 15px; outline: none;
+}
+input:focus, textarea:focus, select:focus { border-color: var(--red); }
+input[type="file"] { padding: 9px; }
+input[type="file"]::file-selector-button {
+    background: var(--red-dark); color: white; border: 0; border-radius: 5px;
+    padding: 8px 10px; margin-right: 10px; cursor: pointer;
+}
+textarea { resize: vertical; min-height: 90px; }
+.hint { display: block; font-size: 12px; color: var(--muted); margin-top: 5px; }
+.player-card, .substitute-card {
+    padding: 15px; margin-bottom: 12px; background: #1b1b1b;
+    border: 1px solid var(--border); border-radius: 9px;
+}
+.player-heading { font-weight: bold; color: var(--red); margin-bottom: 12px; }
+.player-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.substitute-card { margin-top: 12px; border-color: #383838; }
+.substitute-heading { font-weight: bold; margin-bottom: 12px; }
+.substitute-heading span { color: var(--red); }
+.substitute-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 15px; }
+.btn:disabled { opacity: .55; cursor: not-allowed; }
+.btn-remove { background: #303030; color: white; padding: 7px 10px; font-size: 12px; margin-bottom: 12px; }
+.submit-button { width: 100%; padding: 15px; font-size: 16px; margin-top: 5px; }
+#formMessage { display: none; padding: 13px; margin-top: 15px; border-radius: 7px; overflow-wrap: anywhere; }
+.message-success { display: block !important; background: #102b18; border: 1px solid #28733b; color: var(--green); }
+.message-error { display: block !important; background: #351010; border: 1px solid #a52b2b; color: #ffc3c3; }
+.registered-section { margin-top: 25px; }
+.registered-section p { color: var(--muted); }
+.team-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.team-item { display: flex; align-items: center; gap: 13px; min-width: 0; background: #1b1b1b; border: 1px solid var(--border); border-radius: 9px; padding: 12px; }
+.team-logo { width: 62px; height: 62px; object-fit: cover; border-radius: 8px; background: #292929; flex-shrink: 0; }
+.team-name { font-weight: bold; overflow-wrap: anywhere; }
+.empty-list { grid-column: 1 / -1; padding: 15px; background: #1b1b1b; border-radius: 8px; color: var(--muted); }
+.contact-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.contact-item { padding: 15px; border: 1px solid var(--border); border-radius: 9px; background: #1b1b1b; overflow-wrap: anywhere; }
+.contact-item strong { display: block; color: #ff6565; margin-bottom: 5px; }
+.contact-item a { text-decoration: none; }
+.contact-item a:hover { text-decoration: underline; }
+footer { text-align: center; color: #888; padding: 24px 10px 30px; font-size: 13px; border-top: 1px solid #222; margin-top: 30px; }
+@media (max-width: 700px) {
+    header { padding: 12px 4%; }
+    .brand { font-size: 19px; }
+    nav { gap: 3px; }
+    nav a { padding: 7px; font-size: 12px; }
+    .info-grid { grid-template-columns: 1fr; }
+    .rules-grid, .contact-grid, .form-grid, .player-grid, .team-list { grid-template-columns: 1fr; }
+    .hero { padding: 42px 14px 35px; }
+    .info-card, .card { padding: 16px; }
+}
 </style>
+</head>
+
+<body>
+<header>
+    <a class="brand" href="#home">REN <span>GAMING</span></a>
+    <nav aria-label="Main navigation">
+        <a href="#home">Home</a>
+        <a href="#tournament">Tournament</a>
+        <a href="#rules">Rules</a>
+        <a href="#registration" class="nav-register">Register</a>
+        <a href="#registered-teams">Teams</a>
+        <a href="#contact">Contact</a>
+    </nav>
+</header>
+
+<section class="hero" id="home">
+    <div class="hero-label">North-East India Esports</div>
+    <h1>REN <span class="accent">GAMING</span></h1>
+    <p>Compete with your squad, show your teamwork, and be part of our community tournament.</p>
+    <div class="hero-actions">
+        <a class="action-link btn-red" href="#registration">Register Your Team</a>
+        <a class="action-link action-outline" href="#tournament">Tournament Details</a>
+        <a class="action-link action-outline" href="#rules">Read Rules</a>
+    </div>
+</section>
+
+<main>
+    <section class="content-section" id="tournament">
+        <h2 class="section-heading">Tournament <span class="accent">Information</span></h2>
+        <p class="section-intro">Important dates and prize information for the current tournament.</p>
+        <div class="info-grid">
+            <article class="info-card prize-card">
+                <div class="label">First Prize</div>
+                <div class="value">₹1,000</div>
+                <div class="detail-note">Prize for the tournament winner.</div>
+            </article>
+            <article class="info-card">
+                <div class="label">Registration Deadline</div>
+                <div class="value">26 October</div>
+                <div class="detail-note">Submit your team registration before the deadline.</div>
+            </article>
+            <article class="info-card">
+                <div class="label">Matches Start</div>
+                <div class="value">28 October</div>
+                <div class="detail-note">Be ready and check tournament announcements.</div>
+            </article>
+        </div>
+        <div class="card">
+            <h3 class="section-title"><span>About</span> the Tournament</h3>
+            <p>Registration is free. Enter the correct team details and game IDs. Registrations are subject to community verification; approved teams will be informed about the tournament group.</p>
+            <p class="detail-note">Community: <strong>North-East India Esports WGH ML.08</strong></p>
+        </div>
+    </section>
+
+    <section class="content-section" id="rules">
+        <h2 class="section-heading">Tournament <span class="accent">Rules</span></h2>
+        <p class="section-intro">Read the rules before registering your team. The PDF below is intended to contain the full official rules.</p>
+        <div class="rules-grid">
+            <div class="rule-item"><strong>Free Registration</strong>Register your team without a registration fee.</div>
+            <div class="rule-item"><strong>Correct Player Details</strong>Use accurate in-game names and IDs. Details that do not match may be rejected.</div>
+            <div class="rule-item"><strong>Team Roster</strong>Register five main players. You may add up to two substitutes.</div>
+            <div class="rule-item"><strong>Verification</strong>Approved teams will be added to the tournament WhatsApp group after community verification.</div>
+            <div class="rule-item"><strong>Match Schedule</strong>Matches are planned to begin on 28 October. Follow official announcements for your match time.</div>
+            <div class="rule-item"><strong>Official Rules PDF</strong>Use the buttons below to view or download the complete rules document.</div>
+        </div>
+        <div class="card" style="margin-top:14px">
+            <h3 style="margin-top:0">Complete Rules PDF</h3>
+            <p class="section-intro">If the PDF does not open, check that its filename and path match the file uploaded to GitHub.</p>
+            <div class="pdf-actions">
+                <a class="action-link btn-red" id="viewRulesPdf" href="REN_GAMING_MLBB_Tournament_Rules.pdf" target="_blank" rel="noopener">View Rules PDF</a>
+                <a class="action-link action-outline" id="downloadRulesPdf" href="REN_GAMING_MLBB_Tournament_Rules.pdf" download>Download Rules PDF</a>
+            </div>
+            <p class="pdf-note">Current PDF path: <code id="pdfPathText">REN_GAMING_MLBB_Tournament_Rules.pdf</code></p>
+        </div>
+    </section>
+
+    <section class="content-section" id="registration">
+        <div class="page-title">
+            <h2>Tournament <span class="accent">Registration</span></h2>
+            <p>Register your team and get ready to compete!</p>
+        </div>
+
+        <form id="registrationForm">
+            <section class="card">
+                <h3 class="section-title"><span>01.</span> Team Information</h3>
+                <div class="form-grid">
+                    <div class="field full">
+                        <label for="team_name">Team Name *</label>
+                        <input id="team_name" name="team_name" type="text" placeholder="Enter your team name" maxlength="60" required>
+                    </div>
+                    <div class="field full">
+                        <label for="team_logo">Team Logo *</label>
+                        <input id="team_logo" name="team_logo" type="file" accept="image/png,image/jpeg,image/webp" required>
+                        <span class="hint">PNG, JPG or WEBP. Maximum file size: 3 MB.</span>
+                    </div>
+                    <div class="field">
+                        <label for="captain_name">Captain Name *</label>
+                        <input id="captain_name" name="captain_name" type="text" placeholder="Captain's name" maxlength="80" required>
+                    </div>
+                    <div class="field">
+                        <label for="phone">Phone Number *</label>
+                        <input id="phone" name="phone" type="tel" inputmode="tel" placeholder="Enter phone number" maxlength="20" required>
+                    </div>
+                    <div class="field full">
+                        <label for="town">Town / Village *</label>
+                        <input id="town" name="town" type="text" placeholder="Enter your town or village" maxlength="100" required>
+                    </div>
+                </div>
+            </section>
+
+            <section class="card">
+                <h3 class="section-title"><span>02.</span> Main Players</h3>
+                <p class="hint" style="margin-bottom:16px">Enter the names and game IDs of all five players.</p>
+                <div class="player-card">
+                    <div class="player-heading">Player 1 (Captain) *</div>
+                    <div class="player-grid">
+                        <div><label for="player1_name">Player Name *</label><input id="player1_name" name="player1_name" maxlength="80" required></div>
+                        <div><label for="player1_id">Game ID *</label><input id="player1_id" name="player1_id" inputmode="numeric" maxlength="40" required></div>
+                    </div>
+                </div>
+                <div class="player-card">
+                    <div class="player-heading">Player 2 *</div>
+                    <div class="player-grid">
+                        <div><label for="player2_name">Player Name *</label><input id="player2_name" name="player2_name" maxlength="80" required></div>
+                        <div><label for="player2_id">Game ID *</label><input id="player2_id" name="player2_id" inputmode="numeric" maxlength="40" required></div>
+                    </div>
+                </div>
+                <div class="player-card">
+                    <div class="player-heading">Player 3 *</div>
+                    <div class="player-grid">
+                        <div><label for="player3_name">Player Name *</label><input id="player3_name" name="player3_name" maxlength="80" required></div>
+                        <div><label for="player3_id">Game ID *</label><input id="player3_id" name="player3_id" inputmode="numeric" maxlength="40" required></div>
+                    </div>
+                </div>
+                <div class="player-card">
+                    <div class="player-heading">Player 4 *</div>
+                    <div class="player-grid">
+                        <div><label for="player4_name">Player Name *</label><input id="player4_name" name="player4_name" maxlength="80" required></div>
+                        <div><label for="player4_id">Game ID *</label><input id="player4_id" name="player4_id" inputmode="numeric" maxlength="40" required></div>
+                    </div>
+                </div>
+                <div class="player-card">
+                    <div class="player-heading">Player 5 *</div>
+                    <div class="player-grid">
+                        <div><label for="player5_name">Player Name *</label><input id="player5_name" name="player5_name" maxlength="80" required></div>
+                        <div><label for="player5_id">Game ID *</label><input id="player5_id" name="player5_id" inputmode="numeric" maxlength="40" required></div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="card">
+                <h3 class="section-title"><span>03.</span> Substitutes (Optional)</h3>
+                <p class="hint">You can register without substitutes. Add up to two substitutes if needed.</p>
+                <div id="substituteContainer"></div>
+                <div class="substitute-actions">
+                    <button type="button" class="btn btn-outline" id="addSubstituteBtn">+ Add Substitute</button>
+                </div>
+                <p class="hint" id="substituteHint">0 of 2 substitutes added.</p>
+            </section>
+
+            <section class="card">
+                <h3 class="section-title"><span>04.</span> Additional Information</h3>
+                <div class="field">
+                    <label for="notes">Notes (Optional)</label>
+                    <textarea id="notes" name="notes" maxlength="1000" placeholder="Write any additional information here..."></textarea>
+                </div>
+            </section>
+
+            <button type="submit" class="btn btn-red submit-button" id="submitBtn">Submit Registration</button>
+            <div id="formMessage" role="status" aria-live="polite"></div>
+        </form>
+
+        <section class="card registered-section" id="registered-teams">
+            <h2 class="section-title">Registered <span>Teams</span></h2>
+            <p>Check the teams registered for the tournament below.</p>
+            <div class="team-list" id="teamList">
+                <div class="empty-list">Loading registered teams...</div>
+            </div>
+            <button type="button" class="btn btn-outline" id="refreshTeamsBtn" style="margin-top:15px">Refresh Teams</button>
+        </section>
+    </section>
+
+    <section class="content-section" id="contact">
+        <h2 class="section-heading">Contact <span class="accent">Ren Gaming</span></h2>
+        <p class="section-intro">For tournament questions, registration corrections, or community information, use the contact options below.</p>
+        <div class="contact-grid">
+            <div class="contact-item">
+                <strong>WhatsApp</strong>
+                <a href="https://wa.me/918638129770" target="_blank" rel="noopener">8638129770 — Message Ren Gaming</a>
+            </div>
+            <div class="contact-item">
+                <strong>Email</strong>
+                <a href="mailto:rendombirthsangma@gmail.com">rendombirthsangma@gmail.com</a>
+            </div>
+            <div class="contact-item">
+                <strong>Instagram</strong>
+                <a href="https://www.instagram.com/ren_chisik03/" target="_blank" rel="noopener">@ren_chisik03</a>
+            </div>
+            <div class="contact-item">
+                <strong>Phone</strong>
+                <a href="tel:9864228608">9864228608</a> · <a href="tel:6009280905">6009280905</a>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer>© Ren Gaming — Tournament Registration and Community</footer>
 
 <script>
 /*
- * GOOGLE SHEETS CONFIGURATION
- * 1) Deploy the supplied Code.gs as a Web App.
- * 2) Copy the Web App URL and paste it below.
+ * IMPORTANT: This is the exact Google Apps Script URL from your supplied HTML.
+ * Do not change it when updating the website.
  */
-const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwbJW-y04A5HC7oJIjQXUb7-UKDUtTsXn4rqXPw2rhxqajuxlV32a8oEWoCy6-lrVev/exec";
-</script>
-</head>
-<body>
-<nav class="nav"><div class="navin"><div class="brand">REN <span>GAMING</span> • MLBB</div><div class="navlinks">
-<a href="#home">Home</a><a href="#register">Register</a><a href="#teams">Teams</a><a href="#rules">Rules</a><a href="#schedule">Schedule</a><a href="#results">Results</a><a href="#admin">Admin</a>
-</div></div></nav>
+const GOOGLE_SCRIPT_URL =
+    "https://script.google.com/macros/s/AKfycbz6JeH25RsrOJrzIHVHOP-XXw_Pr1ehgboNO_0ZFP3tlQ3E6rbt8_8wFyDdY_GIHEgU/exec";
 
-<header class="hero" id="home">
-<div><span class="badge">MOBILE LEGENDS: BANG BANG • COMMUNITY TOURNAMENT</span>
-<h1>REN GAMING<br><span style="color:var(--accent)">MLBB CUP</span></h1>
-<p>Compete, climb the standings, and play for the ₹1,000 first prize. Rejoin is available for ₹50 where permitted by the tournament rules.</p>
-<div class="cta"><a class="btn" href="#register">Register Your Team</a><a class="btn alt" href="REN_GAMING_MLBB_Tournament_Rules.pdf" target="_blank">View Rules PDF</a></div></div>
-<div class="prize"><small>1ST PRIZE</small><div class="amount">₹1,000</div><div>🏆 Champion Team</div><hr style="border-color:var(--line);border-width:1px 0 0"><small>Special awards</small><div style="margin-top:10px">⭐ Best Assist &nbsp; • &nbsp; 🔥 Best Killer</div></div>
-</header>
+/*
+ * PDF file path:
+ * This assumes REN_GAMING_MLBB_Tournament_Rules.pdf is in the same
+ * GitHub repository folder as index.html. If the file is in a folder,
+ * update this path after checking the actual location.
+ */
+const RULES_PDF_URL = "REN_GAMING_MLBB_Tournament_Rules.pdf";
+document.getElementById("viewRulesPdf").href = RULES_PDF_URL;
+document.getElementById("downloadRulesPdf").href = RULES_PDF_URL;
+document.getElementById("pdfPathText").textContent = RULES_PDF_URL;
 
-<main class="container">
-<section class="section"><div class="grid">
-<div class="card"><div class="stat">₹1,000</div><div>First Prize</div></div>
-<div class="card"><div class="stat">₹50</div><div>Rejoin Fee</div></div>
-<div class="card"><div class="stat">2</div><div>Special Awards</div></div>
-</div></section>
+/* ADD / REMOVE SUBSTITUTE FIELDS */
+const substituteContainer = document.getElementById("substituteContainer");
+const addSubstituteBtn = document.getElementById("addSubstituteBtn");
+const substituteHint = document.getElementById("substituteHint");
+let substituteCount = 0;
 
-<section class="section" id="register"><h2>📝 Team Registration</h2><p class="sub">Submit your squad details. This demo stores registrations in your browser.</p>
-<form id="regForm">
-<div class="field"><label>Team Name *</label><input name="team" required placeholder="e.g. REN Warriors"></div>
-<div class="field"><label>Team Logo * (PNG/JPG/JPEG)</label><input name="logo" type="file" accept=".png,.jpg,.jpeg,image/png,image/jpeg" required></div>
-<div class="field"><label>Captain / Manager Name *</label><input name="captain" required></div>
-<div class="field"><label>Contact Number *</label><input name="phone" required></div>
-<div class="field full"><label>Region / City</label><input name="region" placeholder="e.g. Meghalaya"></div>
-<div class="field full"><label>Player 1 Name *</label><input name="p1_name" placeholder="e.g. ABCD" required></div>
-<div class="field"><label>Player 1 User ID *</label><input name="p1_uid" placeholder="e.g. 123456789" required></div><div class="field"><label>Player 1 Server ID *</label><input name="p1_sid" placeholder="e.g. (12345)" required></div>
-<div class="field full"><label>Player 2 Name *</label><input name="p2_name" placeholder="e.g. ABCD" required></div>
-<div class="field"><label>Player 2 User ID *</label><input name="p2_uid" placeholder="e.g. 123456789" required></div><div class="field"><label>Player 2 Server ID *</label><input name="p2_sid" placeholder="e.g. (12345)" required></div>
-<div class="field full"><label>Player 3 Name *</label><input name="p3_name" placeholder="e.g. ABCD" required></div>
-<div class="field"><label>Player 3 User ID *</label><input name="p3_uid" placeholder="e.g. 123456789" required></div><div class="field"><label>Player 3 Server ID *</label><input name="p3_sid" placeholder="e.g. (12345)" required></div>
-<div class="field full"><label>Player 4 Name *</label><input name="p4_name" placeholder="e.g. ABCD" required></div>
-<div class="field"><label>Player 4 User ID *</label><input name="p4_uid" placeholder="e.g. 123456789" required></div><div class="field"><label>Player 4 Server ID *</label><input name="p4_sid" placeholder="e.g. (12345)" required></div>
-<div class="field full"><label>Player 5 Name *</label><input name="p5_name" placeholder="e.g. ABCD" required></div>
-<div class="field"><label>Player 5 User ID *</label><input name="p5_uid" placeholder="e.g. 123456789" required></div><div class="field"><label>Player 5 Server ID *</label><input name="p5_sid" placeholder="e.g. (12345)" required></div>
-<div class="field full"><label>Substitute Player 1 Name</label><input name="sub1_name" placeholder="e.g. ABCD"></div>
-<div class="field"><label>Substitute 1 User ID</label><input name="sub1_uid" placeholder="e.g. 123456789"></div><div class="field"><label>Substitute 1 Server ID</label><input name="sub1_sid" placeholder="e.g. (12345)"></div>
-<div class="field full"><label>Substitute Player 2 Name</label><input name="sub2_name" placeholder="e.g. ABCD"></div>
-<div class="field"><label>Substitute 2 User ID</label><input name="sub2_uid" placeholder="e.g. 123456789"></div><div class="field"><label>Substitute 2 Server ID</label><input name="sub2_sid" placeholder="e.g. (12345)"></div>
-<div class="field full"><label>Notes</label><textarea name="notes" placeholder="Anything the organizer should know"></textarea></div>
-<div class="field full"><button class="btn" type="submit">Submit Registration</button><div id="regMsg"></div></div>
-</form></section>
-
-<section class="section" id="teams"><h2>👥 Teams & Players</h2><p class="sub">Registered teams appear here on this browser.</p><div id="teamsTable"></div></section>
-
-<section class="section" id="rules"><h2>🎮 Tournament Rules & Regulations</h2>
-<p class="sub">Official rules supplied by REN GAMING • North-east India Esports WGH ML.08.</p>
-<div class="grid">
-<div class="card"><h3>📅 Important Dates</h3><p><b>Registration:</b> 26 September 2026</p><p><b>Last Date:</b> 26 October 2026</p><p><b>Match Start:</b> 28 October 2026</p><p><b>Match Time:</b> 6:00 PM – 10:00 PM</p></div>
-<div class="card"><h3>🏆 Tournament</h3><p>Online MLBB 5v5 tournament.</p><p><b>Entry:</b> FREE</p><p><b>1st Prize:</b> ₹1,000</p><p><b>Qualification:</b> 2 wins in the first round.</p></div>
-<div class="card"><h3>🔄 Rejoin</h3><p><b>Fee:</b> ₹50 per team.</p><p>Available only until the First Round is completely finished. Teams must contact REN GAMING and complete payment before acceptance.</p></div>
-<div class="card"><h3>👥 Roster</h3><p>Each team registers 5 main players. Substitute players may be included according to organizer instructions.</p><p>Only registered players may participate; one player cannot represent multiple teams.</p></div>
-<div class="card"><h3>🎮 Match Rules</h3><p>Matches use an MLBB Custom Room. Room ID and password are provided before matches. Teams should be ready at least 15 minutes before their scheduled match.</p></div>
-<div class="card"><h3>⭐ Special Awards</h3><p><b>Best Assist:</b> highest assists in a single match.</p><p><b>Best Killer:</b> highest kills in a single match.</p><p>Both receive a Weekly Diamond Pass and are confirmed after the tournament.</p></div>
-</div>
-<div class="card" style="margin-top:16px"><h3>📜 Fair Play & Disputes</h3>
-<p>Hacking, cheating, scripting, map hacks, unauthorized third-party applications, toxic/abusive behavior, harassment, match-fixing, collusion, intentional feeding and result manipulation are prohibited.</p>
-<p>Disputes should be reported to the REN GAMING administrator promptly with genuine screenshots, recordings, match results or other evidence. Final dispute decisions are made by the REN GAMING tournament administration.</p>
-</div>
-<p style="margin-top:16px"><a class="btn alt" href="REN_GAMING_MLBB_Tournament_Rules.pdf" target="_blank">📄 Open Official Rules PDF</a></p></section>
-
-<section class="section" id="contact"><h2>📞 Contact REN GAMING</h2><div class="grid">
-<div class="card"><h3>📧 Gmail</h3><p>rendombirthsangma@gmail.com</p></div>
-<div class="card"><h3>📱 Contact</h3><p>9864228608<br>6009280905</p></div>
-<div class="card"><h3>💬 WhatsApp</h3><p>8638129770</p></div>
-<div class="card"><h3>📸 Instagram</h3><p>ren_chisik03</p></div>
-</div><div class="card" style="margin-top:16px"><h3>REN GAMING</h3><p>North-east India Esports WGH ML.08</p><p><b>PLAY FAIR • PLAY TO WIN • RESPECT EVERY TEAM</b></p></div></section>
-
-<section class="section" id="admin"><h2>📊 Admin</h2><p class="sub">Demo organizer dashboard. This local version is intentionally front-end only; connect it to a database/authentication before public deployment.</p>
-<div class="card admin"><form id="adminForm"><div class="field"><label>Admin PIN</label><input id="pin" type="password" placeholder="123456"></div><div class="field"><label>Google Sheets Admin Read Token</label><input id="adminToken" type="password" placeholder="Token from Code.gs"></div><div class="field" style="align-self:end"><button class="btn" type="submit">Unlock</button></div></form>
-<div id="adminPanel" class="hidden"><hr style="border-color:var(--line);margin:20px 0">
-<div class="grid"><div class="card"><div class="stat" id="countTeams">0</div>Registered Teams</div><div class="card"><div class="stat" id="countRejoins">0</div>Rejoin Requests</div><div class="card"><div class="stat">₹1,000</div>First Prize</div></div>
-<div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap"><button class="btn" onclick="loadLiveAdmin()">🔄 Refresh Live Data</button><button class="btn alt" onclick="exportLiveData()">Export Live JSON</button><button class="btn alt" onclick="clearData()">Clear Local Data</button></div>
-<div id="adminMsg"></div>
-<div id="liveTeams" style="margin-top:18px"></div>
-<div id="liveRejoins" style="margin-top:18px"></div>
-</div></div></section>
-</main>
-<footer>© 2026 REN GAMING • MLBB Tournament Portal • Replace demo contact details and connect a backend before public launch.</footer>
-
-<script>
-const get=(k,d=[])=>JSON.parse(localStorage.getItem(k)||JSON.stringify(d));
-const set=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
-function esc(x){return String(x??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
-
-function render(){
- const teams=get('renTeams');
- document.getElementById('teamsTable').innerHTML=teams.length?`<table><thead><tr><th>Logo</th><th>Team</th><th>Captain</th><th>Region</th><th>Players</th></tr></thead><tbody>${teams.map(t=>`<tr><td>${t.logoUrl?`<img src="${esc(t.logoUrl)}" style="width:45px;height:45px;object-fit:cover;border-radius:8px">`:'-'}</td><td><b>${esc(t.team)}</b></td><td>${esc(t.captain)}</td><td>${esc(t.region||'-')}</td><td>${[1,2,3,4,5].map(i=>esc(t['p'+i+'_name']||'')).filter(Boolean).join(', ')}</td></tr>`).join('')}</tbody></table>`:'<div class="card">No teams registered yet.</div>';
+function updateSubstituteButtons() {
+    addSubstituteBtn.disabled = substituteCount >= 2;
+    if (substituteCount === 0) addSubstituteBtn.textContent = "+ Add Substitute";
+    else if (substituteCount === 1) addSubstituteBtn.textContent = "+ Add Another Substitute";
+    else addSubstituteBtn.textContent = "Maximum Substitutes Added";
+    substituteHint.textContent = substituteCount + " of 2 substitutes added.";
 }
 
-async function fileToBase64(file){
- if(!file) return null;
- if(!['image/png','image/jpeg'].includes(file.type)) throw new Error('Logo must be PNG or JPG/JPEG.');
- if(file.size>5*1024*1024) throw new Error('Logo must be 5 MB or smaller.');
- return await new Promise((resolve,reject)=>{
-   const r=new FileReader();
-   r.onload=()=>resolve({name:file.name,mimeType:file.type,base64:r.result.split(',')[1]});
-   r.onerror=reject;r.readAsDataURL(file);
- });
+function addSubstitute() {
+    if (substituteCount >= 2) return;
+    const existing = new Set(
+        Array.from(substituteContainer.querySelectorAll(".substitute-card"))
+            .map(card => Number(card.dataset.number))
+    );
+    let number = 1;
+    while (existing.has(number)) number++;
+
+    const card = document.createElement("div");
+    card.className = "substitute-card";
+    card.dataset.number = number;
+
+    const heading = document.createElement("div");
+    heading.className = "substitute-heading";
+    heading.innerHTML = "<span>Substitute " + number + "</span>";
+
+    const removeButton = document.createElement("button");
+    removeButton.type = "button";
+    removeButton.className = "btn btn-remove";
+    removeButton.textContent = "Remove Substitute";
+    removeButton.addEventListener("click", function () {
+        card.remove();
+        substituteCount--;
+        updateSubstituteButtons();
+    });
+
+    const grid = document.createElement("div");
+    grid.className = "player-grid";
+
+    const nameWrapper = document.createElement("div");
+    const nameLabel = document.createElement("label");
+    nameLabel.htmlFor = "sub" + number + "_name";
+    nameLabel.textContent = "Substitute Name";
+    const nameInput = document.createElement("input");
+    nameInput.type = "text";
+    nameInput.id = "sub" + number + "_name";
+    nameInput.name = "sub" + number + "_name";
+    nameInput.placeholder = "Enter substitute name";
+    nameInput.maxLength = 80;
+    nameInput.required = true;
+    nameWrapper.append(nameLabel, nameInput);
+
+    const idWrapper = document.createElement("div");
+    const idLabel = document.createElement("label");
+    idLabel.htmlFor = "sub" + number + "_id";
+    idLabel.textContent = "Game ID";
+    const idInput = document.createElement("input");
+    idInput.type = "text";
+    idInput.id = "sub" + number + "_id";
+    idInput.name = "sub" + number + "_id";
+    idInput.placeholder = "Enter game ID";
+    idInput.maxLength = 40;
+    idInput.required = true;
+    idWrapper.append(idLabel, idInput);
+
+    grid.append(nameWrapper, idWrapper);
+    card.append(heading, removeButton, grid);
+    substituteContainer.appendChild(card);
+    substituteCount++;
+    updateSubstituteButtons();
+}
+addSubstituteBtn.addEventListener("click", addSubstitute);
+updateSubstituteButtons();
+
+/* FORM MESSAGES */
+const form = document.getElementById("registrationForm");
+const submitBtn = document.getElementById("submitBtn");
+const formMessage = document.getElementById("formMessage");
+
+function showMessage(message, type) {
+    formMessage.textContent = message;
+    formMessage.className = type === "success" ? "message-success" : "message-error";
+}
+function makeTextElement(tag, className, text) {
+    const element = document.createElement(tag);
+    element.className = className;
+    element.textContent = text;
+    return element;
 }
 
-async function postToGoogle(payload){
- if(!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL.includes('PASTE_YOUR')){
-   return {ok:false,offline:true};
- }
- const res=await fetch(GOOGLE_SCRIPT_URL,{
-   method:'POST',
-   headers:{'Content-Type':'text/plain;charset=utf-8'},
-   body:JSON.stringify(payload)
- });
- const text=await res.text();
- try{return JSON.parse(text)}catch{return {ok:false,error:'Unexpected Apps Script response.'}}
+/* LOAD PUBLIC REGISTERED TEAMS */
+const teamList = document.getElementById("teamList");
+async function loadRegisteredTeams() {
+    teamList.replaceChildren(makeTextElement("div", "empty-list", "Loading registered teams..."));
+    try {
+        const response = await fetch(GOOGLE_SCRIPT_URL + "?action=teams&t=" + Date.now());
+        if (!response.ok) throw new Error("Could not load team list.");
+        const result = await response.json();
+        if (!result.success || !Array.isArray(result.teams)) {
+            throw new Error("Unexpected response from registration server.");
+        }
+        teamList.replaceChildren();
+        if (result.teams.length === 0) {
+            teamList.appendChild(makeTextElement("div", "empty-list", "No teams have registered yet."));
+            return;
+        }
+        result.teams.forEach(team => {
+            const item = document.createElement("div");
+            item.className = "team-item";
+            const logo = document.createElement("img");
+            logo.className = "team-logo";
+            logo.alt = "Team logo";
+            const logoUrl = String(team.team_logo_url || "");
+            try {
+                const parsedUrl = new URL(logoUrl);
+                if (parsedUrl.protocol === "https:" || parsedUrl.protocol === "http:") logo.src = parsedUrl.href;
+                else logo.alt = "Logo unavailable";
+            } catch { logo.alt = "Logo unavailable"; }
+            logo.onerror = function () {
+                logo.removeAttribute("src");
+                logo.alt = "Logo unavailable";
+            };
+            const name = makeTextElement("div", "team-name", String(team.team_name || "Unnamed Team"));
+            item.append(logo, name);
+            teamList.appendChild(item);
+        });
+    } catch (error) {
+        console.error("Error loading teams:", error);
+        teamList.replaceChildren(makeTextElement("div", "empty-list", "Unable to load registered teams. Please try Refresh Teams."));
+    }
 }
+document.getElementById("refreshTeamsBtn").addEventListener("click", loadRegisteredTeams);
 
-document.getElementById('regForm').addEventListener('submit',async e=>{
- e.preventDefault();
- const form=e.target, msg=document.getElementById('regMsg'), btn=form.querySelector('button[type=submit]');
- btn.disabled=true; msg.innerHTML='<div class="notice">Submitting registration...</div>';
- try{
-   const fd=new FormData(form), o=Object.fromEntries(fd);
-   const logoFile=fd.get('logo'); const logo=await fileToBase64(logoFile);
-   delete o.logo;
-   const payload={action:'register', ...o, logo};
-   const result=await postToGoogle(payload);
-   if(!result.offline && !result.ok) throw new Error(result.error||'Registration failed.');
-   const local={...o,logoUrl:result.logoUrl||'',id:Date.now()};
-   let a=get('renTeams'); a.push(local); set('renTeams',a);
-   form.reset();
-   msg.innerHTML=result.offline
-     ? '<div class="notice">Saved on this device. Add your Apps Script Web App URL to also send registrations to Google Sheets.</div>'
-     : '<div class="notice">Registration received successfully. Your team has been added to Google Sheets.</div>';
-   render();
- }catch(err){msg.innerHTML='<div class="notice danger">'+esc(err.message)+'</div>'}
- finally{btn.disabled=false}
+/* SUBMIT REGISTRATION */
+form.addEventListener("submit", async function (event) {
+    event.preventDefault();
+    if (!form.reportValidity()) return;
+
+    const logoFile = document.getElementById("team_logo").files[0];
+    if (!logoFile) {
+        showMessage("Please select a team logo.", "error");
+        return;
+    }
+    const allowedTypes = ["image/png", "image/jpeg", "image/webp"];
+    if (!allowedTypes.includes(logoFile.type)) {
+        showMessage("Please upload a PNG, JPG or WEBP image.", "error");
+        return;
+    }
+    if (logoFile.size > 3 * 1024 * 1024) {
+        showMessage("Your team logo must be 3 MB or smaller.", "error");
+        return;
+    }
+    const phone = document.getElementById("phone").value.trim();
+    if (!/^[0-9+\s()-]{7,20}$/.test(phone)) {
+        showMessage("Please enter a valid phone number.", "error");
+        return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = async function () {
+        const base64 = String(reader.result).split(",")[1];
+        if (!base64) {
+            showMessage("Could not read your logo. Please try again.", "error");
+            return;
+        }
+        const payload = {};
+        const formData = new FormData(form);
+        formData.forEach((value, key) => {
+            if (key !== "team_logo") payload[key] = String(value).trim();
+        });
+        payload.logo_name = logoFile.name;
+        payload.logo_mime_type = logoFile.type;
+        payload.logo_base64 = base64;
+        for (let number = 1; number <= 2; number++) {
+            payload["sub" + number + "_name"] =
+                document.getElementById("sub" + number + "_name")?.value.trim() || "";
+            payload["sub" + number + "_id"] =
+                document.getElementById("sub" + number + "_id")?.value.trim() || "";
+        }
+
+        submitBtn.disabled = true;
+        submitBtn.textContent = "Submitting...";
+        showMessage("Submitting your registration. Please wait...", "success");
+        try {
+            const response = await fetch(GOOGLE_SCRIPT_URL, {
+                method: "POST",
+                body: JSON.stringify(payload)
+            });
+            const result = await response.json();
+            if (!response.ok || !result.success) {
+                throw new Error(result.message || "Registration could not be completed.");
+            }
+            showMessage("Registration submitted successfully! Thank you for registering with REN GAMING.", "success");
+            form.reset();
+            substituteContainer.replaceChildren();
+            substituteCount = 0;
+            updateSubstituteButtons();
+            await loadRegisteredTeams();
+            document.getElementById("registered-teams").scrollIntoView({ behavior: "smooth", block: "start" });
+        } catch (error) {
+            console.error("Registration error:", error);
+            showMessage("We could not confirm your registration. Check your internet connection and Google Apps Script deployment. If a row was already added to the Sheet, do not submit repeatedly; refresh the registered teams list first.", "error");
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.textContent = "Submit Registration";
+        }
+    };
+    reader.onerror = function () {
+        showMessage("Could not read the selected logo. Please try again.", "error");
+    };
+    reader.readAsDataURL(logoFile);
 });
 
-const rejoinForm=document.getElementById('rejoinForm');
-if(rejoinForm){
- rejoinForm.addEventListener('submit',async e=>{
-  e.preventDefault();
-  const form=e.target,msg=document.getElementById('rejoinMsg'),btn=form.querySelector('button[type=submit]');
-  btn.disabled=true;msg.innerHTML='<div class="notice">Submitting rejoin request...</div>';
-  try{
-    const o=Object.fromEntries(new FormData(form));
-    const result=await postToGoogle({action:'rejoin',...o,fee:50});
-    if(!result.offline && !result.ok) throw new Error(result.error||'Rejoin request failed.');
-    let a=get('renRejoins');a.push({...o,id:Date.now(),fee:50,status:'Pending'});set('renRejoins',a);
-    form.reset();msg.innerHTML=result.offline?'<div class="notice">Saved locally. Configure Apps Script to send it to Google Sheets.</div>':'<div class="notice">Rejoin request received.</div>';
-  }catch(err){msg.innerHTML='<div class="notice danger">'+esc(err.message)+'</div>'}
-  finally{btn.disabled=false}
- });
-}
-
-let LIVE_ADMIN_DATA=null;
-document.getElementById('adminForm').addEventListener('submit',async e=>{
- e.preventDefault();
- if(document.getElementById('pin').value==='246822'){
-   document.getElementById('adminPanel').classList.remove('hidden');
-   await loadLiveAdmin();
- }else alert('Incorrect admin PIN')
-});
-
-function adminUrl(){
- const token=document.getElementById('adminToken').value.trim();
- return GOOGLE_SCRIPT_URL + '?action=adminData&token='+encodeURIComponent(token);
-}
-async function loadLiveAdmin(){
- const msg=document.getElementById('adminMsg');
- if(!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL.includes('PASTE_YOUR')){
-   msg.innerHTML='<div class="notice danger">Google Apps Script Web App URL is not configured.</div>'; return;
- }
- const token=document.getElementById('adminToken').value.trim();
- if(!token){msg.innerHTML='<div class="notice danger">Enter the Admin Read Token configured in Code.gs.</div>';return;}
- msg.innerHTML='<div class="notice">Loading live Google Sheets data...</div>';
- try{
-   const res=await fetch(adminUrl(),{method:'GET'});
-   const data=await res.json();
-   if(!data.ok) throw new Error(data.error||'Unable to load admin data.');
-   LIVE_ADMIN_DATA=data;
-   document.getElementById('countTeams').textContent=data.counts.teams;
-   document.getElementById('countRejoins').textContent=data.counts.rejoins;
-   renderLiveTeams(data.registrations);
-   renderLiveRejoins(data.rejoins);
-   msg.innerHTML='<div class="notice">Live data loaded from Google Sheets.</div>';
- }catch(err){msg.innerHTML='<div class="notice danger">'+esc(err.message)+'</div>'}
-}
-function renderLiveTeams(rows){
- const box=document.getElementById('liveTeams');
- if(!rows.length){box.innerHTML='<div class="card">No registrations found in Google Sheets.</div>';return;}
- box.innerHTML='<h3>Live Registered Teams</h3><div style="overflow:auto"><table><thead><tr><th>Logo</th><th>Team</th><th>Captain</th><th>Contact</th><th>Region</th><th>Players</th><th>Substitutes</th><th>Registered</th></tr></thead><tbody>'+
- rows.map(r=>{
-   const players=[1,2,3,4,5].map(i=>`${esc(r['Player '+i+' Name'])} <small>(${esc(r['Player '+i+' User ID'])}/${esc(r['Player '+i+' Server ID'])})</small>`).join('<br>');
-   const subs=[1,2].map(i=>r['Substitute '+i+' Name']?`${esc(r['Substitute '+i+' Name'])} <small>(${esc(r['Substitute '+i+' User ID'])}/${esc(r['Substitute '+i+' Server ID'])})</small>`:'').filter(Boolean).join('<br>')||'-';
-   return `<tr><td>${r['Logo URL']?`<a href="${esc(r['Logo URL'])}" target="_blank"><img src="${esc(r['Logo URL'])}" style="width:48px;height:48px;object-fit:cover;border-radius:8px"></a>`:'-'}</td><td><b>${esc(r['Team Name'])}</b></td><td>${esc(r['Captain / Manager'])}</td><td>${esc(r['Contact Number'])}</td><td>${esc(r['Region / City']||'-')}</td><td>${players}</td><td>${subs}</td><td>${esc(r['Timestamp'])}</td></tr>`;
- }).join('')+'</tbody></table></div>';
-}
-function renderLiveRejoins(rows){
- const box=document.getElementById('liveRejoins');
- if(!rows.length){box.innerHTML='<h3>Live Rejoin Requests</h3><div class="card">No rejoin requests found.</div>';return;}
- box.innerHTML='<h3>Live Rejoin Requests</h3><div style="overflow:auto"><table><thead><tr><th>Time</th><th>Team</th><th>Contact</th><th>Fee</th><th>Status</th></tr></thead><tbody>'+
- rows.map(r=>`<tr><td>${esc(r.Timestamp)}</td><td>${esc(r['Team Name'])}</td><td>${esc(r['Captain Contact'])}</td><td>₹${esc(r.Fee)}</td><td><span class="pill">${esc(r.Status)}</span></td></tr>`).join('')+
- '</tbody></table></div>';
-}
-function exportLiveData(){
- if(!LIVE_ADMIN_DATA){alert('Load live data first.');return}
- let blob=new Blob([JSON.stringify(LIVE_ADMIN_DATA,null,2)],{type:'application/json'});let a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='ren-gaming-live-admin-data.json';a.click()
-}
-function clearData(){if(confirm('Clear all local registrations and rejoin requests? This does NOT delete Google Sheets data.')){localStorage.removeItem('renTeams');localStorage.removeItem('renRejoins');render();}}
-render();
+loadRegisteredTeams();
 </script>
-</body></html>
+</body>
+</html>
