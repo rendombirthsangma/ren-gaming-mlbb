@@ -50,6 +50,8 @@ section[id] { scroll-margin-top: 95px; }
     background: radial-gradient(ellipse at top, #321010 0%, #120909 38%, #080808 76%);
     border-bottom: 1px solid #2b1717;
 }
+.status-banner { display: inline-flex; align-items: center; gap: 9px; margin: 0 auto 18px; padding: 9px 15px; border: 1px solid rgba(66, 211, 146, .45); border-radius: 999px; background: rgba(25, 150, 90, .12); color: #77efb4; font-weight: 800; font-size: 13px; letter-spacing: .7px; }
+.status-dot { width: 8px; height: 8px; border-radius: 50%; background: #48e39a; box-shadow: 0 0 10px rgba(72, 227, 154, .8); }
 .hero-label {
     display: inline-block; border: 1px solid #762020; color: #ffb3b3;
     border-radius: 999px; padding: 6px 12px; font-size: 12px;
@@ -165,9 +167,10 @@ footer { text-align: center; color: #888; padding: 24px 10px 30px; font-size: 13
 </header>
 
 <section class="hero" id="home">
+    <div class="status-banner"><span class="status-dot"></span> REN GAMING WEBSITE RESUMED</div>
     <div class="hero-label">North-East India Esports</div>
     <h1>REN <span class="accent">GAMING</span></h1>
-    <p>Compete with your squad, show your teamwork, and be part of our community tournament.</p>
+    <p>We are back online! Check the latest tournament information, read the rules, and register your team below.</p>
     <div class="hero-actions">
         <a class="action-link btn-red" href="#registration">Register Your Team</a>
         <a class="action-link action-outline" href="#tournament">Tournament Details</a>
@@ -178,7 +181,7 @@ footer { text-align: center; color: #888; padding: 24px 10px 30px; font-size: 13
 <main>
     <section class="content-section" id="tournament">
         <h2 class="section-heading">Tournament <span class="accent">Information</span></h2>
-        <p class="section-intro">Important dates and prize information for the current tournament.</p>
+        <p class="section-intro">Ren Gaming is back online. Here are the dates and prize details for the current tournament.</p>
         <div class="info-grid">
             <article class="info-card prize-card">
                 <div class="label">First Prize</div>
@@ -245,12 +248,12 @@ footer { text-align: center; color: #888; padding: 24px 10px 30px; font-size: 13
                         <span class="hint">PNG, JPG or WEBP. Maximum file size: 3 MB.</span>
                     </div>
                     <div class="field">
-                        <label for="captain_name">Leader/Captain Name *</label>
-                        <input id="captain_name" name="captain_name" type="text" placeholder="Full name" maxlength="80" required>
+                        <label for="captain_name">Captain Name *</label>
+                        <input id="captain_name" name="captain_name" type="text" placeholder="Captain's name" maxlength="80" required>
                     </div>
                     <div class="field">
                         <label for="phone">Phone Number *</label>
-                        <input id="phone" name="phone" type="tel" inputmode="tel" placeholder="Active Whatsapp Number" maxlength="20" required>
+                        <input id="phone" name="phone" type="tel" inputmode="tel" placeholder="Enter phone number" maxlength="20" required>
                     </div>
                     <div class="field full">
                         <label for="town">Town / Village *</label>
@@ -265,36 +268,36 @@ footer { text-align: center; color: #888; padding: 24px 10px 30px; font-size: 13
                 <div class="player-card">
                     <div class="player-heading">Player 1 (Captain) *</div>
                     <div class="player-grid">
-                        <div><label for="player1_name">Player Name *</label><input id="player1_name" name="player1_name" maxlength="80" placeholder="In Game Name"required></div>
-                        <div><label for="player1_id">Game User+Zone ID *</label><input id="player1_id" name="player1_id" inputmode="numeric" maxlength="40" placeholder="123456789(12345)"required></div>
+                        <div><label for="player1_name">Player Name *</label><input id="player1_name" name="player1_name" maxlength="80" required></div>
+                        <div><label for="player1_id">Game ID *</label><input id="player1_id" name="player1_id" inputmode="numeric" maxlength="40" required></div>
                     </div>
                 </div>
                 <div class="player-card">
                     <div class="player-heading">Player 2 *</div>
                     <div class="player-grid">
-                        <div><label for="player2_name">Player Name *</label><input id="player2_name" name="player2_name" maxlength="80" placeholder="In Game Name"required></div>
-                        <div><label for="player2_id">Game User+Zone ID *</label><input id="player2_id" name="player2_id" inputmode="numeric" maxlength="40"placeholder="123456789(12345)"required></div>
+                        <div><label for="player2_name">Player Name *</label><input id="player2_name" name="player2_name" maxlength="80" required></div>
+                        <div><label for="player2_id">Game ID *</label><input id="player2_id" name="player2_id" inputmode="numeric" maxlength="40" required></div>
                     </div>
                 </div>
                 <div class="player-card">
                     <div class="player-heading">Player 3 *</div>
                     <div class="player-grid">
-                        <div><label for="player3_name">Player Name *</label><input id="player3_name" name="player3_name" maxlength="80" placeholder="In Game Name"required></div>
-                        <div><label for="player3_id">Game User+Zone ID *</label><input id="player3_id" name="player3_id" inputmode="numeric" maxlength="40" placeholder="123456789(12345)"required></div>
+                        <div><label for="player3_name">Player Name *</label><input id="player3_name" name="player3_name" maxlength="80" required></div>
+                        <div><label for="player3_id">Game ID *</label><input id="player3_id" name="player3_id" inputmode="numeric" maxlength="40" required></div>
                     </div>
                 </div>
                 <div class="player-card">
                     <div class="player-heading">Player 4 *</div>
                     <div class="player-grid">
-                        <div><label for="player4_name">Player Name *</label><input id="player4_name" name="player4_name" maxlength="80" placeholder="In Game Name"required></div>
-                        <div><label for="player4_id">Game User+Zone ID *</label><input id="player4_id" name="player4_id" inputmode="numeric" maxlength="40" placeholder="123456789(12345)"required></div>
+                        <div><label for="player4_name">Player Name *</label><input id="player4_name" name="player4_name" maxlength="80" required></div>
+                        <div><label for="player4_id">Game ID *</label><input id="player4_id" name="player4_id" inputmode="numeric" maxlength="40" required></div>
                     </div>
                 </div>
                 <div class="player-card">
                     <div class="player-heading">Player 5 *</div>
                     <div class="player-grid">
-                        <div><label for="player5_name">Player Name *</label><input id="player5_name" name="player5_name" maxlength="80" placeholder="In Game Name"required></div>
-                        <div><label for="player5_id">Game User+Zone ID *</label><input id="player5_id" name="player5_id" inputmode="numeric" maxlength="40" placeholder="123456789(12345)"required></div>
+                        <div><label for="player5_name">Player Name *</label><input id="player5_name" name="player5_name" maxlength="80" required></div>
+                        <div><label for="player5_id">Game ID *</label><input id="player5_id" name="player5_id" inputmode="numeric" maxlength="40" required></div>
                     </div>
                 </div>
             </section>
