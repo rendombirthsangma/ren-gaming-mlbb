@@ -1,491 +1,189 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#080808">
 
-    <title>REN GAMING | MOBA Legends: 5v5!</title>
+  <title>REN GAMING | Play • Compete • Win</title>
+  <meta name="description" content="Join REN GAMING for competitive MOBA Legends 5v5 tournaments, esports events and live matches.">
 
-    <meta name="description"
-          content="Ren Gaming - Tournaments, Live Matches and Diamond Top-Up for MOBA Legends: 5v5!">
-
-    <link rel="stylesheet" href="css/style.css">
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="main.js"></script>
-    <link rel="icon" type="image/png" href="ren-gaming-rg.png">
-    <style>
-      .rg-logo-image{width:48px;height:48px;object-fit:contain;flex:0 0 48px;border-radius:50%;border:1px solid #ff1e1e;box-shadow:0 0 12px #ff1e1e55;display:block;background:#050505}
-      .brand{align-items:center}
-      .footer-brand .rg-logo-image{width:42px;height:42px;flex:0 0 42px;object-fit:contain}
-      @media(max-width:600px){.rg-logo-image{width:40px;height:40px;flex-basis:40px}.brand{min-width:0;gap:9px}}
-    </style>
+  <!-- CSS file must be in the same folder as index.html -->
+  <link rel="stylesheet" href="./style.css">
 </head>
 
 <body>
-
-    <!-- ================= HEADER ================= -->
-    <header class="header">
-
-        <div class="container nav-container">
-
-            <!-- REN GAMING LOGO -->
-<a href="index.html" class="brand" aria-label="REN GAMING Home">
-    <img class="rg-logo-image" src="ren-gaming-rg.png" alt="REN GAMING RG emblem">
-
-    <div class="brand-text">
-        <span class="brand-name">REN GAMING</span>
-        <span class="brand-tagline">PLAY • COMPETE • WIN</span>
-    </div>
-</a>
-
-
-            <!-- NAVIGATION -->
-            <nav class="navigation">
-                <a href="#home" class="active">Home</a>
-                <a href="#tournaments">Tournaments</a>
-                <a href="#live">Live</a>
-                <a href="#topup">Diamond Top-Up</a>
-                <a href="#about">About</a>
-            </nav>
-
-            <!-- LOGIN -->
-            <a href="login.html" class="login-button">
-    Login / Register
-</a>
-
-        </div>
-
-    </header>
-
-
-    <!-- ================= HERO ================= -->
-    <main>
-
-        <section id="home" class="hero">
-
-            <div class="hero-background"></div>
-
-            <div class="container hero-content">
-
-                <div class="hero-text">
-
-                    <div class="small-label">
-                        INDIA ESPORTS COMMUNITY
-                    </div>
-
-                    <h1>
-                        REN
-                        <span>GAMING</span>
-                    </h1>
-
-                    <h2>
-                        MOBA LEGENDS: 5v5!
-                    </h2>
-
-                    <p>
-                        Play. Compete. Win.
-                        Join tournaments, follow live matches
-                        and experience competitive gaming with Ren Gaming.
-                    </p>
-
-                    <div class="hero-buttons">
-
-                       <div class="hero-buttons">
-
-    <a href="#tournaments" class="btn btn-primary">
-        JOIN TOURNAMENT
+  <header class="site-header">
+    <a class="brand" href="./index.html">
+      <img src="./ren-gaming-rg.png" alt="REN GAMING logo" class="brand-logo">
+      <span class="brand-name">REN <span>GAMING</span></span>
     </a>
 
-    <span class="btn btn-primary" aria-disabled="true"
-      style="opacity:.8;cursor:not-allowed;">
-        💎 DIAMOND TOP-UP — COMING SOON
-    </span>
+    <button class="menu-toggle" id="menu-toggle"
+      aria-label="Toggle navigation" aria-expanded="false">☰</button>
 
-</div>
+    <nav class="main-nav" id="main-nav">
+      <a href="./index.html">Home</a>
+      <a href="./tournament-register.html">Tournaments</a>
+      <a href="#live">Live</a>
+      <a href="./topup.html">Diamond Top-Up</a>
+      <a href="#about">About</a>
+      <a class="nav-login" href="./login.html">Login / Register</a>
+    </nav>
+  </header>
 
-                    </div>
+  <main>
+    <section class="hero">
+      <p class="eyebrow">INDIA ESPORTS COMMUNITY</p>
+      <h1>WELCOME TO <span>REN GAMING</span></h1>
+      <h2>MOBA LEGENDS: 5v5!</h2>
 
-                </div>
+      <p class="hero-description">
+        Play. Compete. Win. Join tournaments, follow live matches
+        and experience competitive gaming with REN GAMING.
+      </p>
 
-                <!-- RG VISUAL -->
-                <div class="hero-logo-area">
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="./tournament-register.html">
+          JOIN TOURNAMENT
+        </a>
+        <a class="btn btn-secondary" href="./topup.html">
+          💎 DIAMOND TOP-UP
+        </a>
+      </div>
 
-                    <div class="rg-big">
-                        RG
-                    </div>
+      <div class="hero-mark">
+        <span class="rg-mark">RG</span>
+        <span class="ren-mark">REN</span>
+        <span class="hero-tagline">COMPETE WITH THE BEST</span>
+      </div>
+    </section>
 
-                    <div class="rg-circle">
-                        REN
-                    </div>
+    <section class="section tournament-section" id="tournaments">
+      <div class="section-heading">
+        <p class="eyebrow">READY FOR THE BATTLE?</p>
+        <h2>Upcoming Tournament</h2>
+        <p>Check the tournament details before registering.</p>
+      </div>
 
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- ================= UPCOMING TOURNAMENT ================= -->
-        <section id="tournaments" class="section">
-
-            <div class="container">
-
-                <div class="section-heading">
-
-                    <div>
-                        <span class="section-label">
-                            COMPETE WITH THE BEST
-                        </span>
-
-                        <h2>
-                            Upcoming Tournament
-                        </h2>
-                    </div>
-
-                    <a href="#" class="view-all">
-                        View All →
-                    </a>
-
-                </div>
-
-
-               <div class="tournament-card" id="tournament-card">
-
-    <div class="tournament-image">
-
-        <div class="game-badge" id="tournament-game">
+      <article class="tournament-card">
+        <div class="tournament-card-top">
+          <span class="game-label" id="tournament-game">
             MOBA LEGENDS: 5v5!
+          </span>
+          <span class="status-label" id="tournament-status">
+            LOADING
+          </span>
         </div>
 
-        <h3 id="tournament-name">
-            Loading Tournament...
-        </h3>
-
-    </div>
-
-
-    <div class="tournament-info">
-
-        <div class="status" id="tournament-status">
-            ● LOADING
-        </div>
-
-        <h3 id="tournament-title">
-            Loading...
-        </h3>
+        <h3 id="tournament-name">Loading tournament...</h3>
+        <h4 id="tournament-title">Please wait</h4>
 
         <p id="tournament-description">
-            Loading tournament information...
+          Loading tournament information...
         </p>
 
         <div class="tournament-details">
+          <div class="detail-item">
+            <span class="detail-label">Team Size</span>
+            <strong id="tournament-size">5v5</strong>
+          </div>
 
-            <div>
-                <span>FORMAT</span>
-                <strong id="tournament-size">5v5</strong>
-            </div>
+          <div class="detail-item">
+            <span class="detail-label">Entry Fee</span>
+            <strong id="tournament-entry">—</strong>
+          </div>
 
-            <div>
-                <span>ENTRY</span>
-                <strong id="tournament-entry">FREE</strong>
-            </div>
-
-            <div>
-                <span>PRIZE</span>
-                <strong id="tournament-prize">₹0</strong>
-            </div>
-
+          <div class="detail-item">
+            <span class="detail-label">Prize Pool</span>
+            <strong id="tournament-prize">—</strong>
+          </div>
         </div>
 
-       <a href="tournament-register.html" class="btn btn-primary">
-    REGISTER NOW
-</a>
+        <a class="btn btn-primary tournament-button"
+           href="./tournament-register.html">
+          VIEW / REGISTER
+        </a>
+      </article>
 
+      <div class="section-footer">
+        <a href="./tournament-register.html">View tournament details →</a>
+      </div>
+    </section>
+
+    <section class="section feature-section" id="live">
+      <div class="section-heading">
+        <p class="eyebrow">STAY CONNECTED</p>
+        <h2>Watch. Play. Compete.</h2>
+      </div>
+
+      <div class="feature-grid">
+        <article class="feature-card">
+          <div class="feature-icon">🏆</div>
+          <h3>Esports Tournaments</h3>
+          <p>Register your team and compete for tournament prizes.</p>
+          <a href="./tournament-register.html">Explore tournaments →</a>
+        </article>
+
+        <article class="feature-card">
+          <div class="feature-icon">🎮</div>
+          <h3>Player Dashboard</h3>
+          <p>Sign in to access your player account.</p>
+          <a href="./dashboard.html">Open dashboard →</a>
+        </article>
+
+        <article class="feature-card">
+          <div class="feature-icon">💎</div>
+          <h3>Diamond Top-Up</h3>
+          <p>Visit our top-up page for service information.</p>
+          <a href="./topup.html">Visit top-up →</a>
+        </article>
+      </div>
+    </section>
+
+    <section class="section about-section" id="about">
+      <p class="eyebrow">OUR COMMUNITY</p>
+      <h2>About REN GAMING</h2>
+      <p>
+        REN GAMING is an esports community focused on competitive gaming,
+        tournaments and bringing players together.
+      </p>
+      <p class="about-tagline">PLAY • COMPETE • WIN</p>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <a class="footer-brand" href="./index.html">REN GAMING</a>
+    <p>Play • Compete • Win</p>
+
+    <div class="footer-links">
+      <a href="./tournament-register.html">Tournaments</a>
+      <a href="./login.html">Login</a>
+      <a href="./topup.html">Diamond Top-Up</a>
     </div>
 
-</div>
-
-                    <div class="tournament-image">
-
-                        <div class="game-badge">
-                            MOBA LEGENDS: 5v5!
-                        </div>
-
-                        <h3>
-                            REN GAMING
-                            <br>
-                            TOURNAMENT
-                        </h3>
-
-                    </div>
-
-
-                    <div class="tournament-info">
-
-                        <div class="status">
-                            ● REGISTRATION OPEN
-                        </div>
-
-                        <h3>
-                            MOBA LEGENDS: 5v5!
-                        </h3>
-
-                        <p>
-                            Join the Ren Gaming tournament
-                            and compete against other teams.
-                        </p>
-
-                        <div class="tournament-details">
-
-                            <div>
-                                <span>FORMAT</span>
-                                <strong>5v5</strong>
-                            </div>
-
-                            <div>
-                                <span>ENTRY</span>
-                                <strong>FREE</strong>
-                            </div>
-
-                            <div>
-                                <span>PRIZE</span>
-                                <strong>₹1,000</strong>
-                            </div>
-
-                        </div>
-
-                        <a href="#" class="btn btn-primary">
-                            REGISTER NOW
-                        </a>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- ================= FEATURES ================= -->
-        <section class="features">
-
-            <div class="container feature-grid">
-
-                <div class="feature-box">
-                    <div class="feature-icon">🏆</div>
-                    <h3>Tournaments</h3>
-                    <p>Join competitive tournaments.</p>
-                </div>
-
-                <div class="feature-box">
-                    <div class="feature-icon">💎</div>
-                    <h3>Diamond Top-Up</h3>
-                    <p>Diamond Top-Up is coming soon.</p>
-                </div>
-
-                <div class="feature-box">
-                    <div class="feature-icon">🔴</div>
-                    <h3>Live Matches</h3>
-                    <p>Watch Ren Gaming matches live.</p>
-                </div>
-
-                <div class="feature-box">
-                    <div class="feature-icon">👥</div>
-                    <h3>Community</h3>
-                    <p>Connect with other players.</p>
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- ================= LIVE ================= -->
-        <section id="live" class="section live-section">
-
-            <div class="container">
-
-                <div class="section-heading">
-                    <div>
-                        <span class="section-label">
-                            WATCH THE ACTION
-                        </span>
-
-                        <h2>
-                            Live Tournament
-                        </h2>
-                    </div>
-                </div>
-
-
-                <div class="live-card">
-
-                    <div class="live-status">
-                        <span></span>
-                        LIVE
-                    </div>
-
-                    <h3>
-                        No live tournament right now
-                    </h3>
-
-                    <p>
-                        When a Ren Gaming tournament goes live,
-                        the YouTube stream will appear here.
-                    </p>
-
-                    <a href="#" class="btn btn-secondary">
-                        WATCH LIVE
-                    </a>
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- ================= HOW IT WORKS ================= -->
-        <section class="section">
-
-            <div class="container">
-
-                <div class="section-heading centered">
-
-                    <span class="section-label">
-                        SIMPLE & EASY
-                    </span>
-
-                    <h2>
-                        How It Works
-                    </h2>
-
-                </div>
-
-
-                <div class="steps">
-
-                    <div class="step">
-                        <div class="step-number">01</div>
-                        <h3>Create Account</h3>
-                        <p>Create your Ren Gaming account.</p>
-                    </div>
-
-                    <div class="step">
-                        <div class="step-number">02</div>
-                        <h3>Register</h3>
-                        <p>Register your team for a tournament.</p>
-                    </div>
-
-                    <div class="step">
-                        <div class="step-number">03</div>
-                        <h3>Get Verified</h3>
-                        <p>Verify your player details.</p>
-                    </div>
-
-                    <div class="step">
-                        <div class="step-number">04</div>
-                        <h3>Compete</h3>
-                        <p>Play, compete and win.</p>
-                    </div>
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- ================= TOP UP PREVIEW ================= -->
-        <section id="topup" class="topup-section">
-
-            <div class="container">
-
-                <div class="topup-content">
-
-                    <span class="section-label">
-                        REN GAMING STORE
-                    </span>
-
-                    <h2>
-                        MOBA LEGENDS: 5v5!
-                        <span>DIAMOND TOP-UP</span>
-                    </h2>
-
-                    <p>
-                        Our Diamond Top-Up service is not available yet.
-                        Stay tuned for updates from Ren Gaming.
-                    </p>
-
-                    <span class="btn btn-primary" aria-disabled="true"
-                          style="opacity:.8;cursor:not-allowed;">
-                        💎 COMING SOON
-                    </span>
-
-                </div>
-
-                <div class="diamond-visual">
-                    💎
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- ================= ABOUT ================= -->
-        <section id="about" class="section">
-
-            <div class="container about">
-
-                <span class="section-label">
-                    ABOUT REN GAMING
-                </span>
-
-                <h2>
-                    Play • Compete • Win
-                </h2>
-
-                <p>
-                    Ren Gaming is an esports community and gaming
-                    platform focused on competitive tournaments,
-                    live matches and gaming services.
-                </p>
-
-            </div>
-
-        </section>
-
-    </main>
-
-
-    <!-- ================= FOOTER ================= -->
-    <footer class="footer">
-
-        <div class="container footer-content">
-
-            <div class="footer-brand">
-
-                <img class="rg-logo-image" src="ren-gaming-rg.png" alt="REN GAMING RG logo">
-
-                <div>
-                    <strong>REN GAMING</strong>
-                    <small>PLAY • COMPETE • WIN</small>
-                </div>
-
-            </div>
-
-            <p>
-                © 2026 Ren Gaming. All rights reserved.
-            </p>
-
-        </div>
-
-    </footer>
-
-
-    <!-- JAVASCRIPT -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="js/main.js"></script></body>
+    <p class="copyright">
+      © <span id="current-year"></span> REN GAMING. All rights reserved.
+    </p>
+  </footer>
+
+  <!-- Supabase JavaScript library -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <!-- JavaScript file must be in the same folder as index.html -->
+  <script src="./main.js"></script>
+
+  <script>
+    document.getElementById("current-year").textContent =
+      new Date().getFullYear();
+
+    const menuToggle = document.getElementById("menu-toggle");
+    const mainNav = document.getElementById("main-nav");
+
+    menuToggle.addEventListener("click", function () {
+      const isOpen = mainNav.classList.toggle("nav-open");
+      menuToggle.setAttribute("aria-expanded", String(isOpen));
+    });
+  </script>
+</body>
 </html>
