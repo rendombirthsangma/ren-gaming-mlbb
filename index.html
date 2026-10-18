@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -85,7 +86,7 @@ p { color: var(--muted); }
 
 .top-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
   gap: 18px;
 }
 
@@ -111,20 +112,6 @@ p { color: var(--muted); }
   color: #eee;
   font-size: 14px;
 }
-
-.qr-box { text-align: center; }
-
-.qr-image {
-  display: block;
-  width: min(100%, 300px);
-  max-height: 380px;
-  object-fit: contain;
-  margin: 16px auto;
-  border-radius: 12px;
-  background: white;
-}
-
-.hint { margin: 5px 0 0; font-size: 12px; color: #999; }
 
 form { display: grid; gap: 15px; }
 
@@ -204,7 +191,7 @@ button:disabled { opacity: .65; cursor: wait; }
   overflow-wrap: anywhere;
 }
 
-/* RULES PDF */
+/* TOURNAMENT RULES */
 .rules-actions {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -232,6 +219,8 @@ button:disabled { opacity: .65; cursor: wait; }
   border: 1px solid #555;
   color: white;
 }
+
+.hint { margin: 5px 0 0; font-size: 12px; color: #999; }
 
 footer {
   padding: 22px 16px;
@@ -318,7 +307,7 @@ footer a { color: #ff6873; text-decoration: none; }
 }
 
 @media (max-width: 650px) {
-  .top-grid, .field-grid, .players-grid { grid-template-columns: 1fr; }
+  .field-grid, .players-grid { grid-template-columns: 1fr; }
   .popup-box { padding: 22px 17px; }
   .rules-actions { grid-template-columns: 1fr; }
 }
@@ -326,6 +315,7 @@ footer a { color: #ff6873; text-decoration: none; }
 </head>
 
 <body>
+
 <header>
   <p class="brand">REN GAMING</p>
   <p class="tagline">North-East India Esports WGH ML.08</p>
@@ -336,17 +326,13 @@ footer a { color: #ff6873; text-decoration: none; }
   <!-- TOURNAMENT RULES PDF -->
   <section class="panel" id="rules">
     <div class="eyebrow">IMPORTANT INFORMATION</div>
-    <h2>Tournament Rules & Regulations</h2>
-    <p>
-      Please read the official tournament rules before submitting
-      your rejoin request.
-    </p>
+    <h2>Tournament Rules &amp; Regulations</h2>
+    <p>Please read the official tournament rules before submitting your rejoin request.</p>
 
     <div class="rules-actions">
       <a class="rules-button rules-open"
          href="REN_GAMING_MLBB_Tournament_Rules.pdf"
-         target="_blank"
-         rel="noopener noreferrer">
+         target="_blank" rel="noopener noreferrer">
         📄 OPEN RULES PDF
       </a>
 
@@ -358,45 +344,37 @@ footer a { color: #ff6873; text-decoration: none; }
     </div>
 
     <p class="hint">
-      If the PDF does not open, make sure it has been uploaded to
-      the same GitHub folder as index.html.
+      The PDF must be uploaded to the same GitHub folder as index.html.
     </p>
   </section>
 
-  <!-- REJOIN INFORMATION -->
-  <div class="top-grid">
-    <section class="panel">
-      <div class="eyebrow">TOURNAMENT SUPPORT</div>
-      <h1>Rejoin Request</h1>
+  <!-- REJOIN INFORMATION - NO QR ON HOMEPAGE -->
+  <section class="panel">
+    <div class="eyebrow">TOURNAMENT SUPPORT</div>
+    <h1>Rejoin Request</h1>
 
-      <p>
-        Request re-entry into the current tournament after elimination.
-        All rejoin requests are subject to organizer approval.
-      </p>
+    <p>
+      Request re-entry into the current tournament after elimination.
+      All rejoin requests are subject to organizer approval.
+    </p>
 
-      <div class="fee">
-        <div>
-          <strong>Rejoin Fee</strong>
-          <div class="hint">Pay only when instructed by the organizer.</div>
-        </div>
-        <strong>₹50</strong>
+    <div class="fee">
+      <div>
+        <strong>Rejoin Fee</strong>
+        <div class="hint">Pay only when instructed by the organizer.</div>
       </div>
+      <strong>₹50</strong>
+    </div>
 
-      <p class="notice">
-        Submitting a request does not guarantee re-entry.
-        Confirm your eligibility with the organizer before paying.
-      </p>
+    <p class="notice">
+      Submitting a request does not guarantee re-entry.
+      Confirm your eligibility with the organizer before paying.
+    </p>
 
-      <button type="button" onclick="openPopup('qrPopup')">
-        Rejoin Now
-      </button>
-    </section>
-    
-      <p class="hint">
-        The same QR code will appear when you click Rejoin Now.
-      </p>
-    </section>
-  </div>
+    <button type="button" onclick="openPopup('qrPopup')">
+      Rejoin Now
+    </button>
+  </section>
 
   <!-- APPLICATION FORM -->
   <section class="panel" id="applicationPanel" hidden>
@@ -411,21 +389,18 @@ footer a { color: #ff6873; text-decoration: none; }
       <div class="field-grid">
         <div>
           <label for="teamName">Registered Team Name *</label>
-          <input id="teamName" name="teamName" required
-                 placeholder="Enter registered team name">
+          <input id="teamName" name="teamName" required placeholder="Enter registered team name">
         </div>
 
         <div>
           <label for="captainName">Captain / Team Leader *</label>
-          <input id="captainName" name="captainName" required
-                 placeholder="Enter captain name">
+          <input id="captainName" name="captainName" required placeholder="Enter captain name">
         </div>
 
         <div>
           <label for="whatsapp">WhatsApp Number *</label>
-          <input id="whatsapp" name="whatsapp" type="tel"
-                 inputmode="tel" required
-                 placeholder="Enter contact number">
+          <input id="whatsapp" name="whatsapp" type="tel" inputmode="tel"
+                 required placeholder="Enter contact number">
         </div>
 
         <div>
@@ -502,8 +477,8 @@ footer a { color: #ff6873; text-decoration: none; }
       <div class="field-grid">
         <div>
           <label for="paymentScreenshot">Payment Screenshot *</label>
-          <input id="paymentScreenshot" name="paymentScreenshot"
-                 type="file" accept="image/jpeg,image/png,image/webp" required>
+          <input id="paymentScreenshot" name="paymentScreenshot" type="file"
+                 accept="image/jpeg,image/png,image/webp" required>
           <p class="hint">JPG, PNG, or WebP. Maximum size 2 MB.</p>
         </div>
 
@@ -520,12 +495,9 @@ footer a { color: #ff6873; text-decoration: none; }
                   placeholder="Tell us which match your team was eliminated in"></textarea>
       </div>
 
-      <button type="submit" id="submitButton">
-        Submit Rejoin Request
-      </button>
+      <button type="submit" id="submitButton">Submit Rejoin Request</button>
 
-      <div class="form-message" id="formMessage"
-           role="status" aria-live="polite"></div>
+      <div class="form-message" id="formMessage" role="status" aria-live="polite"></div>
     </form>
   </section>
 </main>
@@ -533,30 +505,25 @@ footer a { color: #ff6873; text-decoration: none; }
 <footer>
   <strong>Contact Us</strong><br>
   WhatsApp:
-  <a href="https://wa.me/918638129770"
-     target="_blank" rel="noopener noreferrer">8638129770</a>
+  <a href="https://wa.me/918638129770" target="_blank" rel="noopener noreferrer">8638129770</a>
   &nbsp;|&nbsp;
   Email:
-  <a href="mailto:rendombirthsangma@gmail.com">
-    rendombirthsangma@gmail.com
-  </a>
+  <a href="mailto:rendombirthsangma@gmail.com">rendombirthsangma@gmail.com</a>
+
   <p>Ren Gaming · Rejoin requests are reviewed by the tournament organizers.</p>
 </footer>
 
-<!-- PAYMENT QR POPUP -->
+<!-- PAYMENT QR POPUP: QR REMAINS HERE -->
 <div id="qrPopup" class="popup-overlay"
      role="dialog" aria-modal="true" aria-labelledby="qrTitle">
   <div class="popup-box">
     <button type="button" class="popup-close"
-            aria-label="Close popup"
-            onclick="closePopup('qrPopup')">×</button>
+            aria-label="Close popup" onclick="closePopup('qrPopup')">×</button>
 
     <h2 id="qrTitle">Rejoin Tournament</h2>
     <p>Your rejoin fee is <strong>₹50</strong>.</p>
 
-    <img class="popup-qr"
-         src="payment-qr.jpeg"
-         alt="Ren Gaming payment QR code">
+    <img class="popup-qr" src="payment-qr.jpeg" alt="Ren Gaming payment QR code">
 
     <p>
       Scan this QR code to pay. After paying, continue to the form
@@ -567,14 +534,8 @@ footer a { color: #ff6873; text-decoration: none; }
       Pay only if your team has been instructed to rejoin by the organizer.
     </p>
 
-    <button type="button" onclick="continueToForm()">
-      Continue to Rejoin Form
-    </button>
-
-    <button type="button" class="secondary-button"
-            onclick="closePopup('qrPopup')">
-      Cancel
-    </button>
+    <button type="button" onclick="continueToForm()">Continue to Rejoin Form</button>
+    <button type="button" class="secondary-button" onclick="closePopup('qrPopup')">Cancel</button>
   </div>
 </div>
 
@@ -598,10 +559,7 @@ footer a { color: #ff6873; text-decoration: none; }
       Contact Us on WhatsApp
     </a>
 
-    <button type="button" class="secondary-button"
-            onclick="closePopup('thanksPopup')">
-      Close
-    </button>
+    <button type="button" class="secondary-button" onclick="closePopup('thanksPopup')">Close</button>
   </div>
 </div>
 
@@ -653,8 +611,7 @@ function readFileAsDataURL(file) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onload = () => resolve(reader.result);
-    reader.onerror = () =>
-      reject(new Error("Unable to read payment screenshot."));
+    reader.onerror = () => reject(new Error("Unable to read payment screenshot."));
     reader.readAsDataURL(file);
   });
 }
@@ -664,24 +621,16 @@ form.addEventListener("submit", async function(event) {
 
   if (!form.reportValidity()) return;
 
-  const screenshot =
-    document.getElementById("paymentScreenshot").files[0];
-
+  const screenshot = document.getElementById("paymentScreenshot").files[0];
   const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
 
   if (!screenshot || !allowedTypes.includes(screenshot.type)) {
-    showFormMessage(
-      "Please upload a JPG, PNG, or WebP payment screenshot.",
-      true
-    );
+    showFormMessage("Please upload a JPG, PNG, or WebP payment screenshot.", true);
     return;
   }
 
   if (screenshot.size > 2 * 1024 * 1024) {
-    showFormMessage(
-      "Please choose a screenshot smaller than 2 MB.",
-      true
-    );
+    showFormMessage("Please choose a screenshot smaller than 2 MB.", true);
     return;
   }
 
@@ -693,14 +642,10 @@ form.addEventListener("submit", async function(event) {
     const imageData = await readFileAsDataURL(screenshot);
     const data = new URLSearchParams();
 
-    data.append("teamName",
-      document.getElementById("teamName").value.trim());
-    data.append("captainName",
-      document.getElementById("captainName").value.trim());
-    data.append("whatsapp",
-      document.getElementById("whatsapp").value.trim());
-    data.append("captainUserId",
-      document.getElementById("captainGameId").value.trim());
+    data.append("teamName", document.getElementById("teamName").value.trim());
+    data.append("captainName", document.getElementById("captainName").value.trim());
+    data.append("whatsapp", document.getElementById("whatsapp").value.trim());
+    data.append("captainUserId", document.getElementById("captainGameId").value.trim());
 
     for (let i = 1; i <= 5; i++) {
       data.append("player" + i + "Ign",
@@ -709,26 +654,20 @@ form.addEventListener("submit", async function(event) {
         document.getElementById("p" + i + "id").value.trim());
     }
 
-    data.append("sub1Ign",
-      document.getElementById("s1name").value.trim());
-    data.append("sub1Id",
-      document.getElementById("s1id").value.trim());
-    data.append("sub2Ign",
-      document.getElementById("s2name").value.trim());
-    data.append("sub2Id",
-      document.getElementById("s2id").value.trim());
+    data.append("sub1Ign", document.getElementById("s1name").value.trim());
+    data.append("sub1Id", document.getElementById("s1id").value.trim());
+    data.append("sub2Ign", document.getElementById("s2name").value.trim());
+    data.append("sub2Id", document.getElementById("s2id").value.trim());
 
-    data.append("paymentUTR",
-      document.getElementById("paymentRef").value.trim());
+    data.append("paymentUTR", document.getElementById("paymentRef").value.trim());
     data.append("paymentScreenshotBase64", imageData);
     data.append("paymentScreenshotType", screenshot.type);
     data.append("paymentScreenshotName", screenshot.name);
-    data.append("notes",
-      document.getElementById("notes").value.trim());
+    data.append("notes", document.getElementById("notes").value.trim());
 
     /*
-      With no-cors, the browser cannot read Google's response.
-      A completed fetch does not confirm that the sheet saved the request.
+      no-cors prevents the browser from reading Google's response.
+      A completed fetch does not prove the spreadsheet saved the request.
     */
     await fetch(REJOIN_WEB_APP_URL, {
       method: "POST",
@@ -737,17 +676,17 @@ form.addEventListener("submit", async function(event) {
     });
 
     showFormMessage(
-      "The request was sent from this page, but Google Sheets saving " +
-      "has not been confirmed. Check your Rejoin Requests sheet before " +
-      "submitting again. If no row appears, contact Ren Gaming."
+      "The request was sent from this page, but Google Sheets saving has not " +
+      "been confirmed. Check your Rejoin Requests sheet before submitting again. " +
+      "If no row appears, contact Ren Gaming."
     );
 
     openPopup("thanksPopup");
 
   } catch (error) {
     showFormMessage(
-      "We could not send the request. Check your internet connection " +
-      "and contact Ren Gaming if the problem continues.",
+      "We could not send the request. Check your internet connection and " +
+      "contact Ren Gaming if the problem continues.",
       true
     );
   } finally {
@@ -756,14 +695,14 @@ form.addEventListener("submit", async function(event) {
   }
 });
 
-// Close a popup by clicking its dark background.
+// Close popups when clicking the dark background.
 document.querySelectorAll(".popup-overlay").forEach(popup => {
   popup.addEventListener("click", function(event) {
     if (event.target === popup) closePopup(popup.id);
   });
 });
 
-// Close popups using the Escape key.
+// Escape key closes open popups.
 document.addEventListener("keydown", function(event) {
   if (event.key === "Escape") {
     document.querySelectorAll(".popup-overlay").forEach(popup => {
@@ -772,5 +711,6 @@ document.addEventListener("keydown", function(event) {
   }
 });
 </script>
+
 </body>
 </html>
