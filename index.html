@@ -12,65 +12,82 @@
   --bg: #080808;
   --panel: #141414;
   --muted: #bdbdbd;
-  --green: #168b50;
 }
 
 * { box-sizing: border-box; }
 
+html { scroll-behavior: smooth; }
+
 body {
   margin: 0;
   background: var(--bg);
-  color: white;
+  color: #fff;
   font-family: Arial, Helvetica, sans-serif;
   line-height: 1.55;
 }
 
-body.popup-open { overflow: hidden; }
-
 header {
   text-align: center;
-  padding: 22px 16px;
-  background: #0e0e0e;
+  padding: 20px 16px;
   border-bottom: 1px solid #292929;
+  background: #0e0e0e;
 }
 
 .brand {
   margin: 0;
   color: var(--red);
-  font-size: 26px;
+  font-size: 24px;
   font-weight: 900;
   letter-spacing: 3px;
 }
 
-.tagline { margin: 4px 0 0; color: var(--muted); font-size: 13px; }
+.tagline {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+}
 
-main { width: min(100% - 28px, 900px); margin: 28px auto 40px; }
+main {
+  width: min(100% - 28px, 760px);
+  margin: 30px auto 42px;
+}
 
 .panel {
   background: var(--panel);
   border: 1px solid #303030;
   border-radius: 16px;
-  padding: clamp(18px, 4vw, 30px);
+  padding: clamp(20px, 5vw, 34px);
   margin-bottom: 18px;
 }
 
-.eyebrow { color: #ff7b83; font-size: 12px; font-weight: 800; letter-spacing: 2px; }
-h1 { margin: 8px 0; font-size: clamp(28px, 6vw, 40px); line-height: 1.15; }
-h2 { margin: 0 0 12px; font-size: 21px; }
-h3 { margin: 22px 0 10px; color: #ff7b83; }
-p { color: var(--muted); }
-
-.top-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 18px;
+.eyebrow {
+  color: #ff7b83;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 2px;
 }
+
+h1 {
+  margin: 8px 0;
+  font-size: clamp(28px, 6vw, 40px);
+  line-height: 1.15;
+}
+
+h2 { margin: 0 0 12px; font-size: 21px; }
+
+h3 {
+  margin: 22px 0 10px;
+  font-size: 17px;
+  color: #ff7b83;
+}
+
+p { color: var(--muted); }
 
 .fee {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  gap: 12px;
+  justify-content: space-between;
+  gap: 16px;
   margin-top: 20px;
   padding: 16px;
   border-radius: 12px;
@@ -78,28 +95,75 @@ p { color: var(--muted); }
   border: 1px solid #572128;
 }
 
-.fee strong { font-size: 25px; color: white; }
+.fee small {
+  display: block;
+  color: #d0bfc0;
+}
+
+.fee strong { color: #fff; font-size: 25px; }
 
 .notice {
   padding: 12px 14px;
   border-left: 3px solid var(--red);
   background: #201113;
   border-radius: 6px;
-  color: #eee;
+  color: #e7dfe0;
   font-size: 14px;
 }
 
+.qr-wrap { text-align: center; }
+
 .qr-image {
   display: block;
-  width: min(100%, 300px);
-  max-height: 380px;
-  object-fit: contain;
+  width: 100%;
+  max-width: 280px;
   margin: 16px auto;
-  border-radius: 12px;
+  padding: 10px;
   background: white;
+  border-radius: 12px;
 }
 
-.hint { margin: 5px 0 0; font-size: 12px; color: #999; }
+.rules-card {
+  border: 1px solid #482027;
+  background: linear-gradient(145deg, #211013, #111);
+  border-radius: 12px;
+  padding: 18px;
+}
+
+.rules-card p { margin-bottom: 16px; }
+
+.button-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  min-width: 150px;
+  padding: 12px 16px;
+  border-radius: 8px;
+  text-align: center;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.btn-primary {
+  background: var(--red);
+  color: #fff;
+}
+
+.btn-secondary {
+  background: #222;
+  color: #fff;
+  border: 1px solid #444;
+}
+
+.btn:hover { filter: brightness(1.12); }
 
 form { display: grid; gap: 15px; }
 
@@ -107,12 +171,6 @@ form { display: grid; gap: 15px; }
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 14px;
-}
-
-.players-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
 }
 
 label {
@@ -124,29 +182,41 @@ label {
 
 input, textarea {
   width: 100%;
-  padding: 12px;
-  color: white;
+  padding: 12px 13px;
+  color: #fff;
   background: #090909;
   border: 1px solid #424242;
   border-radius: 8px;
   font: inherit;
 }
 
-input:focus, textarea:focus { outline: 2px solid #a92731; border-color: var(--red); }
+input:focus, textarea:focus {
+  outline: 2px solid #a92731;
+  border-color: var(--red);
+}
+
 input[type="file"] { font-size: 13px; }
 
+.hint {
+  margin: 5px 0 0;
+  font-size: 12px;
+  color: #999;
+}
+
 .player-card {
-  padding: 12px;
+  padding: 14px;
   border: 1px solid #333;
   border-radius: 10px;
   background: #101010;
 }
 
-.player-card h4 { margin: 0 0 12px; font-size: 14px; }
-.player-card h4 span { color: var(--red); }
+.player-card h4 {
+  margin: 0 0 12px;
+  font-size: 14px;
+  color: #fff;
+}
 
-button, .action-button {
-  display: inline-block;
+button {
   width: 100%;
   padding: 14px 18px;
   border: 0;
@@ -155,13 +225,11 @@ button, .action-button {
   background: var(--red);
   font-size: 15px;
   font-weight: 800;
-  text-align: center;
-  text-decoration: none;
   cursor: pointer;
 }
 
-button:hover, .action-button:hover { filter: brightness(.9); }
-button:disabled { opacity: .65; cursor: wait; }
+button:hover { background: #d91f2c; }
+button:disabled { opacity: .6; cursor: wait; }
 
 .form-message {
   display: none;
@@ -171,6 +239,18 @@ button:disabled { opacity: .65; cursor: wait; }
   color: #f2dda0;
   font-size: 14px;
   overflow-wrap: anywhere;
+}
+
+.form-message.success {
+  display: block;
+  background: #0d2817;
+  color: #8af0ae;
+}
+
+.form-message.error {
+  display: block;
+  background: #301014;
+  color: #ff9ba2;
 }
 
 footer {
@@ -183,119 +263,10 @@ footer {
 
 footer a { color: #ff6873; text-decoration: none; }
 
-/* POPUPS */
-.popup-overlay {
-  display: none;
-  position: fixed;
-  inset: 0;
-  z-index: 9999;
-  background: rgba(0, 0, 0, .88);
-  align-items: center;
-  justify-content: center;
-  padding: 16px;
-  overflow-y: auto;
-}
-
-.popup-box {
-  position: relative;
-  width: min(100%, 440px);
-  max-height: 92vh;
-  overflow-y: auto;
-  padding: 25px;
-  background: #141414;
-  border: 1px solid var(--red);
-  border-radius: 16px;
-  text-align: center;
-  box-shadow: 0 0 35px rgba(240, 45, 58, .2);
-}
-
-.popup-box h2 { color: white; margin-top: 5px; }
-.popup-box p { color: #ccc; }
-
-.popup-qr {
-  display: block;
-  width: min(100%, 250px);
-  max-height: 32vh;
-  object-fit: contain;
-  margin: 15px auto;
-  border-radius: 12px;
-  background: white;
-}
-
-.popup-close {
-  width: auto;
-  padding: 2px 10px;
-  position: absolute;
-  top: 5px;
-  right: 7px;
-  background: transparent;
-  color: white;
-  font-size: 28px;
-}
-
-.upi-options { margin: 18px 0; text-align: center; }
-.upi-options > p { color: white; margin-bottom: 12px; }
-
-.upi-button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  padding: 12px;
-  margin: 9px 0;
-  border-radius: 10px;
-  text-decoration: none;
-  color: white;
-  font-weight: 800;
-  border: 1px solid #444;
-}
-
-.gpay { background: #202b40; }
-.phonepe { background: #40205f; }
-.paytm { background: #073b66; }
-.other-upi { background: #252525; }
-
-.upi-icon {
-  display: inline-grid;
-  place-items: center;
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  background: white;
-  color: #111;
-  font-size: 16px;
-}
-
-.green-button { background: var(--green); }
-.secondary-button { background: #333; margin-top: 10px; }
-
-.success-icon {
-  width: 60px;
-  height: 60px;
-  display: grid;
-  place-items: center;
-  margin: 0 auto 15px;
-  border-radius: 50%;
-  background: #163c25;
-  color: #65e895;
-  font-size: 34px;
-  font-weight: 900;
-}
-
-.whatsapp-button {
-  display: block;
-  padding: 13px;
-  margin: 18px 0 10px;
-  border-radius: 9px;
-  background: var(--green);
-  color: white;
-  font-weight: 800;
-  text-decoration: none;
-}
-
-@media (max-width: 650px) {
-  .top-grid, .field-grid, .players-grid { grid-template-columns: 1fr; }
-  .popup-box { padding: 22px 17px; }
+@media (max-width: 560px) {
+  .field-grid { grid-template-columns: 1fr; }
+  .button-row { flex-direction: column; }
+  .btn { width: 100%; }
 }
 </style>
 </head>
@@ -309,141 +280,221 @@ footer a { color: #ff6873; text-decoration: none; }
 
 <main>
 
-  <div class="top-grid">
-    <section class="panel">
-      <div class="eyebrow">TOURNAMENT SUPPORT</div>
-      <h1>Rejoin Request</h1>
-      <p>Request re-entry into the tournament after elimination. All requests are subject to organizer approval.</p>
+  <!-- REJOIN INFORMATION -->
+  <section class="panel">
+    <div class="eyebrow">TOURNAMENT SUPPORT</div>
+    <h1>Rejoin Request</h1>
 
-      <div class="fee">
-        <div>
-          <strong>Rejoin Fee</strong>
-          <div class="hint">Pay only when instructed by the organizer.</div>
-        </div>
-        <strong>₹50</strong>
+    <p>
+      Complete this form to request re-entry into the current tournament
+      after elimination. Every request is subject to organizer approval.
+    </p>
+
+    <div class="fee">
+      <div>
+        <strong>Rejoin Fee</strong>
+        <small>Pay only after organizer confirmation.</small>
       </div>
+      <strong>₹50</strong>
+    </div>
 
-      <p class="notice">
-        Please confirm your eligibility with the organizer before paying.
+    <p class="notice">
+      Rejoining is available only until the First Round is completely
+      finished. Submitting a request does not guarantee acceptance.
+    </p>
+  </section>
+
+  <!-- OFFICIAL TOURNAMENT RULES PDF -->
+  <section class="panel" id="rules">
+    <div class="eyebrow">OFFICIAL DOCUMENT</div>
+    <h2>📜 Tournament Rules & Regulations</h2>
+
+    <div class="rules-card">
+      <h3 style="margin-top:0">REN GAMING — Official Rules PDF</h3>
+
+      <p>
+        Read the official tournament rules before submitting your rejoin
+        request. The document includes tournament format, qualification,
+        rejoin conditions, match rules, fair play, prizes and important dates.
       </p>
 
-      <button type="button" onclick="openPopup('qrPopup')">
-        Rejoin Now
-      </button>
-    </section>
+      <div class="button-row">
+        <a
+          class="btn btn-primary"
+          href="Ren_Gaming_MLBB_Tournament_Rules.pdf"
+          target="_blank"
+          rel="noopener noreferrer">
+          📄 OPEN RULES PDF
+        </a>
 
-    <section class="panel" style="text-align:center">
-      <h2>Payment QR Code</h2>
-      <p>Scan to pay the OmniCard account linked to 9864228608.</p>
-      <img class="qr-image" src="payment-qr.jpeg" alt="Ren Gaming payment QR code">
-      <p class="hint">The QR code is also available in the Rejoin popup.</p>
-    </section>
-  </div>
+        <a
+          class="btn btn-secondary"
+          href="Ren_Gaming_MLBB_Tournament_Rules.pdf"
+          download>
+          ⬇ DOWNLOAD PDF
+        </a>
+      </div>
+    </div>
+  </section>
 
-  <section class="panel" id="applicationPanel" hidden>
+  <!-- PAYMENT QR -->
+  <section class="panel">
+    <h2>Payment QR Code</h2>
+
+    <p>
+      Pay the ₹50 rejoin fee only after the organizer confirms that your
+      team is eligible to rejoin.
+    </p>
+
+    <div class="qr-wrap">
+      <img
+        class="qr-image"
+        src="payment-qr.jpeg"
+        alt="Ren Gaming payment QR code"
+        onerror="this.style.display='none';document.getElementById('qrError').style.display='block';">
+
+      <p id="qrError" class="notice" style="display:none">
+        The payment QR image could not be loaded. Check that
+        payment-qr.jpeg is uploaded beside index.html in GitHub.
+      </p>
+    </div>
+
+    <p class="hint">
+      Before paying, check the recipient name and amount displayed in your
+      payment app. Upload the successful payment screenshot and enter the
+      payment reference below.
+    </p>
+  </section>
+
+  <!-- REJOIN FORM -->
+  <section class="panel">
     <h2>Rejoin Application</h2>
-    <p class="hint">Enter registered player details. Substitute details are optional.</p>
 
     <form id="rejoinForm">
+
       <div class="field-grid">
         <div>
           <label for="teamName">Registered Team Name *</label>
-          <input id="teamName" required placeholder="Enter team name">
+          <input id="teamName" name="teamName" required
+                 placeholder="Enter registered team name">
         </div>
+
         <div>
           <label for="captainName">Captain / Team Leader *</label>
-          <input id="captainName" required placeholder="Enter captain name">
+          <input id="captainName" name="captainName" required
+                 placeholder="Enter captain name">
         </div>
+
         <div>
           <label for="whatsapp">WhatsApp Number *</label>
-          <input id="whatsapp" type="tel" required placeholder="Enter contact number">
+          <input id="whatsapp" name="whatsapp" type="tel"
+                 inputmode="tel" required
+                 placeholder="Enter contact number">
         </div>
+
         <div>
           <label for="captainGameId">Captain's User ID + Server ID *</label>
-          <input id="captainGameId" required placeholder="123456789(12345)">
+          <input id="captainGameId" name="captainUserId" required
+                 placeholder="e.g. 123456789(12345)">
         </div>
       </div>
 
       <h3>Player Details</h3>
-      <div class="players-grid">
-        <div class="player-card">
-          <h4><span>Player 1 (Captain) *</span></h4>
-          <label for="p1name">IGN *</label>
-          <input id="p1name" required placeholder="In-game name">
-          <label for="p1id">User ID + Server ID *</label>
-          <input id="p1id" required placeholder="123456789(12345)">
-        </div>
-
-        <div class="player-card">
-          <h4><span>Player 2 *</span></h4>
-          <label for="p2name">IGN *</label>
-          <input id="p2name" required placeholder="In-game name">
-          <label for="p2id">User ID + Server ID *</label>
-          <input id="p2id" required placeholder="123456789(12345)">
-        </div>
-
-        <div class="player-card">
-          <h4><span>Player 3 *</span></h4>
-          <label for="p3name">IGN *</label>
-          <input id="p3name" required placeholder="In-game name">
-          <label for="p3id">User ID + Server ID *</label>
-          <input id="p3id" required placeholder="123456789(12345)">
-        </div>
-
-        <div class="player-card">
-          <h4><span>Player 4 *</span></h4>
-          <label for="p4name">IGN *</label>
-          <input id="p4name" required placeholder="In-game name">
-          <label for="p4id">User ID + Server ID *</label>
-          <input id="p4id" required placeholder="123456789(12345)">
-        </div>
-
-        <div class="player-card">
-          <h4><span>Player 5 *</span></h4>
-          <label for="p5name">IGN *</label>
-          <input id="p5name" required placeholder="In-game name">
-          <label for="p5id">User ID + Server ID *</label>
-          <input id="p5id" required placeholder="123456789(12345)">
-        </div>
-      </div>
+      <p class="hint">
+        Enter the registered details of all five main players.
+        Substitute details are optional. Enter each player's User ID
+        and Server ID together, for example 123456789(12345).
+      </p>
 
       <div class="field-grid">
+
         <div class="player-card">
-          <h4><span>Substitute 1</span> (Optional)</h4>
-          <label for="s1name">IGN</label>
-          <input id="s1name" placeholder="In-game name">
-          <label for="s1id">User ID + Server ID</label>
-          <input id="s1id" placeholder="123456789(12345)">
+          <h4>Player 1 — Captain *</h4>
+          <label for="p1name">In-game Name (IGN) *</label>
+          <input id="p1name" name="player1Ign" required placeholder="Enter IGN">
+          <label for="p1id">User ID + Server ID *</label>
+          <input id="p1id" name="player1Id" required placeholder="123456789(12345)">
         </div>
 
         <div class="player-card">
-          <h4><span>Substitute 2</span> (Optional)</h4>
-          <label for="s2name">IGN</label>
-          <input id="s2name" placeholder="In-game name">
-          <label for="s2id">User ID + Server ID</label>
-          <input id="s2id" placeholder="123456789(12345)">
+          <h4>Player 2 *</h4>
+          <label for="p2name">In-game Name (IGN) *</label>
+          <input id="p2name" name="player2Ign" required placeholder="Enter IGN">
+          <label for="p2id">User ID + Server ID *</label>
+          <input id="p2id" name="player2Id" required placeholder="123456789(12345)">
         </div>
+
+        <div class="player-card">
+          <h4>Player 3 *</h4>
+          <label for="p3name">In-game Name (IGN) *</label>
+          <input id="p3name" name="player3Ign" required placeholder="Enter IGN">
+          <label for="p3id">User ID + Server ID *</label>
+          <input id="p3id" name="player3Id" required placeholder="123456789(12345)">
+        </div>
+
+        <div class="player-card">
+          <h4>Player 4 *</h4>
+          <label for="p4name">In-game Name (IGN) *</label>
+          <input id="p4name" name="player4Ign" required placeholder="Enter IGN">
+          <label for="p4id">User ID + Server ID *</label>
+          <input id="p4id" name="player4Id" required placeholder="123456789(12345)">
+        </div>
+
+        <div class="player-card">
+          <h4>Player 5 *</h4>
+          <label for="p5name">In-game Name (IGN) *</label>
+          <input id="p5name" name="player5Ign" required placeholder="Enter IGN">
+          <label for="p5id">User ID + Server ID *</label>
+          <input id="p5id" name="player5Id" required placeholder="123456789(12345)">
+        </div>
+
+        <div class="player-card">
+          <h4>Substitute 1 (Optional)</h4>
+          <label for="s1name">In-game Name (IGN)</label>
+          <input id="s1name" name="sub1Ign" placeholder="Enter IGN">
+          <label for="s1id">User ID + Server ID</label>
+          <input id="s1id" name="sub1Id" placeholder="123456789(12345)">
+        </div>
+
+        <div class="player-card">
+          <h4>Substitute 2 (Optional)</h4>
+          <label for="s2name">In-game Name (IGN)</label>
+          <input id="s2name" name="sub2Ign" placeholder="Enter IGN">
+          <label for="s2id">User ID + Server ID</label>
+          <input id="s2id" name="sub2Id" placeholder="123456789(12345)">
+        </div>
+
       </div>
 
       <h3>Payment Details</h3>
-      <div class="field-grid">
-        <div>
-          <label for="paymentScreenshot">Payment Screenshot *</label>
-          <input id="paymentScreenshot" type="file"
-                 accept="image/jpeg,image/png,image/webp" required>
-          <p class="hint">JPG, PNG, or WebP. Maximum size 2 MB.</p>
-        </div>
-        <div>
-          <label for="paymentRef">Transaction Reference / UTR *</label>
-          <input id="paymentRef" required placeholder="Enter UTR number">
-        </div>
+
+      <div>
+        <label for="paymentScreenshot">Payment Screenshot *</label>
+        <input
+          id="paymentScreenshot"
+          name="paymentScreenshot"
+          type="file"
+          accept="image/jpeg,image/png,image/webp"
+          required>
+        <p class="hint">
+          Upload a clear screenshot of the successful payment. Maximum size: 2 MB.
+        </p>
       </div>
 
-      <label for="notes">Notes (Optional)</label>
-      <textarea id="notes" rows="3" placeholder="Match eliminated in or other details"></textarea>
+      <div>
+        <label for="paymentRef">Payment Reference / UTR Number *</label>
+        <input id="paymentRef" name="paymentUTR" required
+               placeholder="Enter payment reference / UTR">
+      </div>
 
-      <button type="submit" id="submitButton">Submit Rejoin Request</button>
-      <div class="form-message" id="formMessage" role="status" aria-live="polite"></div>
+      <div>
+        <label for="notes">Notes (Optional)</label>
+        <textarea id="notes" name="notes" rows="3"
+          placeholder="Tell us which match your team was eliminated in"></textarea>
+      </div>
+
+      <button id="submitButton" type="submit">Submit Rejoin Request</button>
+      <div class="form-message" id="formMessage" role="status"></div>
     </form>
   </section>
 
@@ -451,116 +502,46 @@ footer a { color: #ff6873; text-decoration: none; }
 
 <footer>
   <strong>Contact Us</strong><br>
+
   WhatsApp:
-  <a href="https://wa.me/918638129770" target="_blank" rel="noopener noreferrer">8638129770</a>
+  <a href="https://wa.me/918638129770"
+     target="_blank" rel="noopener noreferrer">8638129770</a>
+
   &nbsp;|&nbsp;
-  Email: <a href="mailto:rendombirthsangma@gmail.com">rendombirthsangma@gmail.com</a>
+
+  Email:
+  <a href="mailto:rendombirthsangma@gmail.com">
+    rendombirthsangma@gmail.com
+  </a>
+
   <p>Ren Gaming · Rejoin requests are reviewed by the tournament organizers.</p>
 </footer>
 
-<!-- PAYMENT POPUP -->
-<div id="qrPopup" class="popup-overlay" role="dialog" aria-modal="true">
-  <div class="popup-box">
-    <button type="button" class="popup-close" aria-label="Close"
-            onclick="closePopup('qrPopup')">×</button>
-
-    <h2>Rejoin Tournament</h2>
-    <p>Rejoin fee: <strong>₹50</strong></p>
-
-    <img class="popup-qr" src="payment-qr.jpeg" alt="Ren Gaming payment QR code">
-
-    <div class="upi-options">
-      <p><strong>Choose your payment app</strong></p>
-
-      <a class="upi-button gpay" href="upi://pay?pa=9864228608%40omni&pn=Rendombirth%20Sangma&am=50.00&cu=INR&tn=Ren%20Gaming%20Rejoin%20Fee">
-        <span class="upi-icon">G</span> Pay with Google Pay
-      </a>
-
-      <a class="upi-button phonepe" href="upi://pay?pa=9864228608%40omni&pn=Rendombirth%20Sangma&am=50.00&cu=INR&tn=Ren%20Gaming%20Rejoin%20Fee">
-        <span class="upi-icon">P</span> Pay with PhonePe
-      </a>
-
-      <a class="upi-button paytm" href="upi://pay?pa=9864228608%40omni&pn=Rendombirth%20Sangma&am=50.00&cu=INR&tn=Ren%20Gaming%20Rejoin%20Fee">
-        <span class="upi-icon">₹</span> Pay with Paytm
-      </a>
-
-      <a class="upi-button other-upi" href="upi://pay?pa=9864228608%40omni&pn=Rendombirth%20Sangma&am=50.00&cu=INR&tn=Ren%20Gaming%20Rejoin%20Fee">
-        Other UPI Apps
-      </a>
-    </div>
-
-    <p class="hint">
-      Confirm the recipient and amount in your payment app before paying.
-      If an app does not open, scan the QR code instead.
-    </p>
-
-    <button type="button" onclick="continueToForm()">Continue to Rejoin Form</button>
-    <button type="button" class="secondary-button" onclick="closePopup('qrPopup')">Cancel</button>
-  </div>
-</div>
-
-<!-- THANK YOU POPUP -->
-<div id="thanksPopup" class="popup-overlay" role="dialog" aria-modal="true">
-  <div class="popup-box">
-    <div class="success-icon">✓</div>
-    <h2>Thank You for Rejoining!</h2>
-    <p>Thank you for submitting your Ren Gaming rejoin request.</p>
-    <p>Your request must be reviewed by the tournament organizers. Please contact us if you need to confirm your submission.</p>
-
-    <a class="whatsapp-button"
-       href="https://wa.me/918638129770?text=Hello%20Ren%20Gaming%2C%20I%20have%20submitted%20my%20tournament%20rejoin%20request."
-       target="_blank" rel="noopener noreferrer">
-      Contact Us on WhatsApp
-    </a>
-
-    <button type="button" class="secondary-button" onclick="closePopup('thanksPopup')">Close</button>
-  </div>
-</div>
-
 <script>
 const REJOIN_WEB_APP_URL =
-  "https://script.google.com/macros/s/AKfycbzlxZUZxt-mvakQH395sGyRXPBmEaJNIm0CTSuUervSY-zlQ9qiDid6eGW5Vja5W4tatA/exec";
+  "https://script.google.com/macros/s/AKfycbzlxZUZxt-mvakQH395sGyRXPBmEaJNIm0CTSuUervSY-zlq9qiDid6eGW5Vja5W4tatA/exec";
 
 const form = document.getElementById("rejoinForm");
-const formMessage = document.getElementById("formMessage");
+const message = document.getElementById("formMessage");
 const submitButton = document.getElementById("submitButton");
+const screenshotInput = document.getElementById("paymentScreenshot");
 
-function openPopup(id) {
-  document.getElementById(id).style.display = "flex";
-  document.body.classList.add("popup-open");
+function showMessage(text, type) {
+  message.textContent = text;
+  message.className = "form-message " + (type || "");
+  message.style.display = "block";
 }
 
-function closePopup(id) {
-  document.getElementById(id).style.display = "none";
-
-  const anyOpen = Array.from(
-    document.querySelectorAll(".popup-overlay")
-  ).some(p => p.style.display === "flex");
-
-  if (!anyOpen) document.body.classList.remove("popup-open");
-}
-
-function continueToForm() {
-  closePopup("qrPopup");
-
-  const panel = document.getElementById("applicationPanel");
-  panel.hidden = false;
-
-  panel.scrollIntoView({ behavior: "smooth", block: "start" });
-}
-
-function showFormMessage(text, isError = false) {
-  formMessage.style.display = "block";
-  formMessage.style.background = isError ? "#351216" : "#242012";
-  formMessage.style.color = isError ? "#ffb6bc" : "#f2dda0";
-  formMessage.textContent = text;
-}
-
-function readFileAsDataURL(file) {
+function fileToBase64(file) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = () => reject(new Error("Could not read screenshot."));
+
+    reader.onload = () => {
+      const result = String(reader.result || "");
+      resolve(result.substring(result.indexOf(",") + 1));
+    };
+
+    reader.onerror = () => reject(new Error("Could not read the screenshot."));
     reader.readAsDataURL(file);
   });
 }
@@ -568,82 +549,72 @@ function readFileAsDataURL(file) {
 form.addEventListener("submit", async function(event) {
   event.preventDefault();
 
-  if (!form.reportValidity()) return;
+  const screenshot = screenshotInput.files[0];
 
-  const screenshot = document.getElementById("paymentScreenshot").files[0];
-  const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
-
-  if (!screenshot || !allowedTypes.includes(screenshot.type)) {
-    showFormMessage("Please upload a JPG, PNG, or WebP screenshot.", true);
+  if (!screenshot) {
+    showMessage("Please upload your payment screenshot.", "error");
     return;
   }
 
   if (screenshot.size > 2 * 1024 * 1024) {
-    showFormMessage("Screenshot must be smaller than 2 MB.", true);
+    showMessage("Your screenshot must be 2 MB or smaller.", "error");
+    return;
+  }
+
+  if (!["image/jpeg", "image/png", "image/webp"].includes(screenshot.type)) {
+    showMessage("Please upload a JPG, PNG, or WebP image.", "error");
     return;
   }
 
   submitButton.disabled = true;
   submitButton.textContent = "Submitting...";
-  showFormMessage("Sending your request. Please wait...");
+  showMessage("Preparing your rejoin request...", "");
 
   try {
-    const imageData = await readFileAsDataURL(screenshot);
-    const data = new URLSearchParams();
+    const data = Object.fromEntries(new FormData(form).entries());
 
-    data.append("teamName", document.getElementById("teamName").value.trim());
-    data.append("captainName", document.getElementById("captainName").value.trim());
-    data.append("whatsapp", document.getElementById("whatsapp").value.trim());
-    data.append("captainUserId", document.getElementById("captainGameId").value.trim());
+    data.action = "rejoin";
+    data.paymentScreenshotBase64 = await fileToBase64(screenshot);
+    data.paymentScreenshotType = screenshot.type;
+    data.paymentScreenshotName = screenshot.name;
+    data.fee = 50;
 
-    for (let i = 1; i <= 5; i++) {
-      data.append("player" + i + "Ign", document.getElementById("p" + i + "name").value.trim());
-      data.append("player" + i + "Id", document.getElementById("p" + i + "id").value.trim());
-    }
+    delete data.paymentScreenshot;
 
-    data.append("sub1Ign", document.getElementById("s1name").value.trim());
-    data.append("sub1Id", document.getElementById("s1id").value.trim());
-    data.append("sub2Ign", document.getElementById("s2name").value.trim());
-    data.append("sub2Id", document.getElementById("s2id").value.trim());
-
-    data.append("paymentUTR", document.getElementById("paymentRef").value.trim());
-    data.append("paymentScreenshotBase64", imageData);
-    data.append("paymentScreenshotType", screenshot.type);
-    data.append("paymentScreenshotName", screenshot.name);
-    data.append("notes", document.getElementById("notes").value.trim());
+    showMessage(
+      "Sending your request. Please wait and do not submit it again yet.",
+      ""
+    );
 
     /*
-      This no-cors request cannot confirm whether Apps Script
-      actually saved the request. Verify the row in Google Sheets.
+      no-cors requests cannot read the server's response.
+      Therefore, a successful fetch does not prove that the request
+      was saved. Check the Google Sheet before trying again.
     */
     await fetch(REJOIN_WEB_APP_URL, {
       method: "POST",
       mode: "no-cors",
-      body: data
+      headers: {
+        "Content-Type": "text/plain;charset=utf-8"
+      },
+      body: JSON.stringify(data)
     });
 
-    showFormMessage(
+    showMessage(
       "The request was sent from this page, but saving is not confirmed. " +
-      "Check your Google Sheet before submitting again."
+      "Please contact Ren Gaming or check with the organizer before submitting again.",
+      ""
     );
 
-    openPopup("thanksPopup");
-
   } catch (error) {
-    showFormMessage(
-      "Unable to send the request. Check your connection or contact Ren Gaming.",
-      true
+    showMessage(
+      "We could not send the request from this page. Please contact Ren Gaming before trying again.",
+      "error"
     );
   } finally {
     submitButton.disabled = false;
     submitButton.textContent = "Submit Rejoin Request";
   }
-});
-
-document.querySelectorAll(".popup-overlay").forEach(popup => {
-  popup.addEventListener("click", function(event) {
-    if (event.target === popup) closePopup(popup.id);
-  });
 });
 </script>
 
