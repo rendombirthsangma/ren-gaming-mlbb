@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ren Gaming — Player Verification</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        background: #080808;
+        color: #fff;
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+    header {
+        background: #0d0d0d;
+        border-bottom: 1px solid #292929;
+        padding: 18px 28px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .logo {
+        font-weight: 900;
+        letter-spacing: 1px;
+        color: #ff1e1e;
+    }
+
+    .header-actions {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .btn {
+        border: 1px solid #333;
+        background: #171717;
+        color: #fff;
+        padding: 10px 14px;
+        border-radius: 7px;
+        text-decoration: none;
+        cursor: pointer;
+        font-weight: 700;
+    }
+
+    .btn:hover {
+        border-color: #ff1e1e;
+    }
+
+    .btn-red {
+        background: #351313;
+        border-color: #ff1e1e;
+    }
+
+    .container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 30px 20px 60px;
+    }
+
+    h1 {
+        margin: 0 0 8px;
+        font-size: 30px;
+    }
+
+    .subtitle {
+        color: #888;
+        margin-bottom: 25px;
+    }
+
+    .mode-bar {
+        background: #111;
+        border: 1px solid #292929;
+        border-radius: 9px;
+        padding: 14px 16px;
+        margin-bottom: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 15px;
+        flex-wrap: wrap;
+    }
+
+    .mode-title {
+        font-weight: 800;
+    }
+
+    .mode-title span {
+        color: #ff1e1e;
+    }
+
+    .stats {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 15px;
+        margin-bottom: 25px;
+    }
+
+    .stat {
+        background: #111;
+        border: 1px solid #292929;
+        border-radius: 9px;
+        padding: 18px;
+    }
+
+    .stat h3 {
+        margin: 0 0 8px;
+        color: #888;
+        font-size: 12px;
+        letter-spacing: .5px;
+    }
+
+    .stat strong {
+        font-size: 28px;
+    }
+
+    .section {
+        background: #101010;
+        border: 1px solid #292929;
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    .section-header {
+        padding: 18px 20px;
+        border-bottom: 1px solid #292929;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 15px;
+        flex-wrap: wrap;
+    }
+
+    .section-header h2 {
+        margin: 0;
+        font-size: 20px;
+    }
+
+    .table-wrap {
+        overflow-x: auto;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 1050px;
+    }
+
+    th, td {
+        padding: 14px 12px;
+        border-bottom: 1px solid #252525;
+        text-align: left;
+        vertical-align: top;
+    }
+
+    th {
+        color: #888;
+        font-size: 12px;
+        text-transform: uppercase;
+        background: #0b0b0b;
+    }
+
+    td {
+        font-size: 14px;
+    }
+
+    tr:hover td {
+        background: #151515;
+    }
+
+    .team-name {
+        font-weight: 800;
+        color: #fff;
+    }
+
+    .player-name {
+        color: #ff4a4a;
+        font-weight: 800;
+    }
+
+    .muted {
+        color: #888;
+        font-size: 12px;
+        margin-top: 4px;
+    }
+
+    .status {
+        display: inline-block;
+        padding: 6px 9px;
+        border-radius: 5px;
+        font-size: 11px;
+        font-weight: 800;
+        text-transform: uppercase;
+    }
+
+    .status-pending {
+        background: #3a2b00;
+        color: #ffd666;
+    }
+
+    .status-verified {
+        background: #0d3518;
+        color: #6ee7a0;
+    }
+
+    .status-rejected {
+        background: #3a1010;
+        color: #ff7777;
+    }
+
+    .actions {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    .action-btn {
+        padding: 8px 12px;
+        border-radius: 6px;
+        border: 1px solid #333;
+        color: #fff;
+        background: #181818;
+        cursor: pointer;
+        font-weight: 700;
+        font-size: 12px;
+    }
+
+    .action-btn:hover {
+        border-color: #ff1e1e;
+    }
+
+    .verify-btn {
+        background: #12351d;
+        border-color: #236b37;
+    }
+
+    .reject-btn {
+        background: #351313;
+        border-color: #762525;
+    }
+
+    .message {
+        display: none;
+        padding: 12px 14px;
+        border-radius: 7px;
+        margin-bottom: 20px;
+    }
+
+    .message.success {
+        display: block;
+        background: #102814;
+        border: 1px solid #238636;
+        color: #7ee787;
+    }
+
+    .message.error {
+        display: block;
+        background: #2b1010;
+        border: 1px solid #ff1e1e;
+        color: #ff7777;
+    }
+
+    .empty {
+        padding: 30px 20px;
+        color: #888;
+        text-align: center;
+    }
+
+    .loading {
+        padding: 30px 20px;
+        color: #888;
+        text-align: center;
+    }
+
+    @media (max-width: 800px) {
+        .stats {
+            grid-template-columns: 1fr;
+        }
+
+        header {
+            padding: 15px;
+        }
+    }
+</style>
+</head>
+
+<body>
+
+<header>
+    <div class="logo">REN GAMING — PLAYER VERIFICATION</div>
+
+    <div class="header-actions">
+        <a href="admin.html" class="btn">← ADMIN DASHBOARD</a>
+        <button class="btn btn-red" id="logoutBtn">LOGOUT</button>
+    </div>
+</header>
+
+<div class="container">
+
+    <h1>Player Verification</h1>
+    <div class="subtitle">
+        Review submitted player IDs and manually verify or reject player accounts.
+    </div>
+
+    <div id="message" class="message"></div>
+
+    <div class="mode-bar">
+        <div class="mode-title" id="modeTitle">
+            Showing <span>all players</span>
+        </div>
+
+        <div class="header-actions">
+            <a href="admin-player-verification.html" class="btn">ALL PLAYERS</a>
+            <a href="admin-player-verification.html?status=pending"
+               class="btn btn-red">PENDING ONLY</a>
+            <button class="btn" onclick="loadPlayers()">REFRESH</button>
+        </div>
+    </div>
+
+    <div class="stats">
+        <div class="stat">
+            <h3>PENDING VERIFICATION</h3>
+            <strong id="pendingCount">0</strong>
+        </div>
+
+        <div class="stat">
+            <h3>VERIFIED</h3>
+            <strong id="verifiedCount">0</strong>
+        </div>
+
+        <div class="stat">
+            <h3>REJECTED</h3>
+            <strong id="rejectedCount">0</strong>
+        </div>
+    </div>
+
+    <div class="section">
+
+        <div class="section-header">
+            <h2 id="tableTitle">All Players</h2>
+        </div>
+
+        <div class="table-wrap">
+            <div id="playersContainer" class="loading">
+                Loading players...
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+const SUPABASE_URL =
+    "https://bixpvxkpnaqdifmvkhvp.supabase.co";
+
+const SUPABASE_PUBLISHABLE_KEY =
+    "sb_publishable_XtzkrIFbBPTGUmoLHqHu5Q_XeznKoVI";
+
+const supabaseClient = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_PUBLISHABLE_KEY
+);
+
+const pendingOnly =
+    new URLSearchParams(window.location.search).get("status") === "pending";
+
+let allPlayers = [];
+let teamMap = {};
+
+function escapeHtml(value) {
+    if (value === null || value === undefined) {
+        return "";
+    }
+
+    return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
+function isPending(player) {
+    return !player.verification_status ||
+           player.verification_status === "unverified";
+}
+
+function showMessage(text, type) {
+    const box = document.getElementById("message");
+
+    box.textContent = text;
+    box.className = "message " + type;
+
+    setTimeout(() => {
+        box.className = "message";
+    }, 3500);
+}
+
+async function checkAdmin() {
+    const {
+        data: { user }
+    } = await supabaseClient.auth.getUser();
+
+    if (!user) {
+        window.location.href = "login.html";
+        return false;
+    }
+
+    const { data: profile, error } =
+        await supabaseClient
+            .from("profiles")
+            .select("role")
+            .eq("id", user.id)
+            .single();
+
+    if (error || !profile || profile.role !== "admin") {
+        document.body.innerHTML = `
+            <div style="
+                min-height:100vh;
+                display:flex;
+                align-items:center;
+                justify-content:center;
+                background:#080808;
+                color:#fff;
+                font-family:Arial;
+                text-align:center;
+                padding:20px;">
+                <div>
+                    <h1 style="color:#ff1e1e;">ACCESS DENIED</h1>
+                    <p>You must be a Ren Gaming admin to access this page.</p>
+                    <a href="index.html"
+                       style="color:#ff4a4a;">
+                        Return to website
+                    </a>
+                </div>
+            </div>
+        `;
+        return false;
+    }
+
+    return true;
+}
+
+async function loadTeams() {
+    const { data, error } =
+        await supabaseClient
+            .from("teams")
+            .select("id, team_name");
+
+    if (error) {
+        console.error("Team loading error:", error);
+        throw error;
+    }
+
+    teamMap = {};
+
+    (data || []).forEach(team => {
+        teamMap[team.id] = team;
+    });
+}
+
+async function loadPlayers() {
+    const container =
+        document.getElementById("playersContainer");
+
+    container.innerHTML =
+        `<div class="loading">Loading players...</div>`;
+
+    try {
+        await loadTeams();
+
+        const { data, error } =
+            await supabaseClient
+                .from("team_players")
+                .select("*")
+                .order("created_at", { ascending: true });
+
+        if (error) {
+            console.error("Player loading error:", error);
+
+            container.innerHTML =
+                `<div class="empty">Unable to load players.</div>`;
+
+            return;
+        }
+
+        allPlayers = data || [];
+
+        updateStats();
+        renderPlayers();
+
+    } catch (error) {
+        console.error(error);
+
+        container.innerHTML =
+            `<div class="empty">Unable to load player verification data.</div>`;
+    }
+}
+
+function updateStats() {
+    const pending =
+        allPlayers.filter(isPending).length;
+
+    const verified =
+        allPlayers.filter(player =>
+            player.verification_status === "verified"
+        ).length;
+
+    const rejected =
+        allPlayers.filter(player =>
+            player.verification_status === "rejected"
+        ).length;
+
+    document.getElementById("pendingCount").textContent =
+        pending;
+
+    document.getElementById("verifiedCount").textContent =
+        verified;
+
+    document.getElementById("rejectedCount").textContent =
+        rejected;
+}
+
+function renderPlayers() {
+    const container =
+        document.getElementById("playersContainer");
+
+    const visiblePlayers = pendingOnly
+        ? allPlayers.filter(isPending)
+        : allPlayers;
+
+    if (pendingOnly) {
+        document.getElementById("modeTitle").innerHTML =
+            'Showing <span>pending players only</span>';
+
+        document.getElementById("tableTitle").textContent =
+            "Pending Player Verification";
+    } else {
+        document.getElementById("modeTitle").innerHTML =
+            'Showing <span>all players</span>';
+
+        document.getElementById("tableTitle").textContent =
+            "All Players";
+    }
+
+    if (visiblePlayers.length === 0) {
+        container.innerHTML = `
+            <div class="empty">
+                ${pendingOnly
+                    ? "There are no pending player verifications."
+                    : "No players found."}
+            </div>
+        `;
+        return;
+    }
+
+    container.innerHTML = `
+        <table>
+            <thead>
+                <tr>
+                    <th>Team</th>
+                    <th>Player</th>
+                    <th>Username</th>
+                    <th>Game User ID</th>
+                    <th>Server ID</th>
+                    <th>Status</th>
+                    <th>Message</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                ${visiblePlayers.map(player => {
+
+                    const team =
+                        teamMap[player.team_id];
+
+                    const status =
+                        player.verification_status ||
+                        "unverified";
+
+                    const statusClass =
+                        status === "verified"
+                            ? "status-verified"
+                            : status === "rejected"
+                                ? "status-rejected"
+                                : "status-pending";
+
+                    const actionButtons =
+                        isPending(player)
+                            ? `
+                                <div class="actions">
+                                    <button
+                                        class="action-btn verify-btn"
+                                        onclick="verifyPlayer('${player.id}')">
+                                        VERIFY
+                                    </button>
+
+                                    <button
+                                        class="action-btn reject-btn"
+                                        onclick="rejectPlayer('${player.id}')">
+                                        REJECT
+                                    </button>
+                                </div>
+                              `
+                            : `
+                                <div class="muted">
+                                    ${status === "verified"
+                                        ? "Already verified"
+                                        : "Already rejected"}
+                                </div>
+                              `;
+
+                    return `
+                        <tr>
+                            <td>
+                                <div class="team-name">
+                                    ${escapeHtml(
+                                        team?.team_name ||
+                                        "Unknown Team"
+                                    )}
+                                </div>
+
+                                <div class="muted">
+                                    Team ID:
+                                    ${escapeHtml(player.team_id)}
+                                </div>
+                            </td>
+
+                            <td>
+                                <div class="player-name">
+                                    ${escapeHtml(
+                                        player.player_type || "Player"
+                                    )}
+                                    ${escapeHtml(
+                                        player.player_number || ""
+                                    )}
+                                </div>
+
+                                <div class="muted">
+                                    Role:
+                                    ${escapeHtml(
+                                        player.role || "Not selected"
+                                    )}
+                                </div>
+                            </td>
+
+                            <td>
+                                ${escapeHtml(
+                                    player.username || "Not verified"
+                                )}
+                            </td>
+
+                            <td>
+                                ${escapeHtml(
+                                    player.game_user_id
+                                )}
+                            </td>
+
+                            <td>
+                                ${escapeHtml(
+                                    player.server_id
+                                )}
+                            </td>
+
+                            <td>
+                                <span class="status ${statusClass}">
+                                    ${escapeHtml(status)}
+                                </span>
+                            </td>
+
+                            <td>
+                                ${escapeHtml(
+                                    player.verification_message ||
+                                    "No message"
+                                )}
+
+                                ${
+                                    player.verified_at
+                                    ? `<div class="muted">
+                                         ${new Date(
+                                             player.verified_at
+                                         ).toLocaleString()}
+                                       </div>`
+                                    : ""
+                                }
+                            </td>
+
+                            <td>
+                                ${actionButtons}
+                            </td>
+                        </tr>
+                    `;
+                }).join("")}
+            </tbody>
+        </table>
+    `;
+}
+
+async function updatePlayer(playerId, updateData, successMessage) {
+    const { error } =
+        await supabaseClient
+            .from("team_players")
+            .update(updateData)
+            .eq("id", playerId);
+
+    if (error) {
+        console.error("Player update error:", error);
+
+        showMessage(
+            "Unable to update player verification.",
+            "error"
+        );
+
+        return;
+    }
+
+    showMessage(successMessage, "success");
+
+    await loadPlayers();
+}
+
+async function verifyPlayer(playerId) {
+    await updatePlayer(
+        playerId,
+        {
+            verification_status: "verified",
+            verified_at: new Date().toISOString(),
+            verification_message:
+                "Player verified manually by Ren Gaming admin."
+        },
+        "Player verified successfully."
+    );
+}
+
+async function rejectPlayer(playerId) {
+    await updatePlayer(
+        playerId,
+        {
+            verification_status: "rejected",
+            verified_at: null,
+            verification_message:
+                "Player ID does not match the submitted account details."
+        },
+        "Player rejected successfully."
+    );
+}
+
+document.getElementById("logoutBtn")
+    .addEventListener("click", async () => {
+
+        await supabaseClient.auth.signOut();
+
+        window.location.href = "login.html";
+    });
+
+(async function init() {
+    const isAdmin = await checkAdmin();
+
+    if (!isAdmin) {
+        return;
+    }
+
+    await loadPlayers();
+})();
+</script>
+
+</body>
+</html>

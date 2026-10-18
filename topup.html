@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Diamond Top-Up | Ren Gaming</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #080808;
+            color: white;
+            min-height: 100vh;
+        }
+
+        header {
+            height: 70px;
+            background: #0d0d0d;
+            border-bottom: 1px solid #222;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 6%;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 900;
+            color: #ff1e1e;
+        }
+
+        .back-btn {
+            color: white;
+            text-decoration: none;
+            border: 1px solid #333;
+            padding: 10px 18px;
+            border-radius: 6px;
+        }
+
+        .back-btn:hover {
+            border-color: #ff1e1e;
+            color: #ff1e1e;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 45px auto;
+            padding: 0 20px;
+        }
+
+        .title {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .title h1 {
+            font-size: 38px;
+            color: white;
+            margin-bottom: 10px;
+        }
+
+        .title h1 span {
+            color: #ff1e1e;
+        }
+
+        .title p {
+            color: #999;
+        }
+
+        .card {
+            background: #111;
+            border: 1px solid #292929;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 25px;
+        }
+
+        .card h2 {
+            margin-bottom: 20px;
+            color: #ff1e1e;
+        }
+
+        .packages {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+
+        .package {
+            background: #171717;
+            border: 1px solid #333;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .package:hover {
+            border-color: #ff1e1e;
+            transform: translateY(-2px);
+        }
+
+        .package.selected {
+            border: 2px solid #ff1e1e;
+            background: #211010;
+        }
+
+        .diamond {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+
+        .package h3 {
+            margin-bottom: 7px;
+        }
+
+        .package .price {
+            color: #ff3b3b;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #ddd;
+            font-weight: bold;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 13px;
+            margin-bottom: 18px;
+            background: #080808;
+            border: 1px solid #333;
+            border-radius: 6px;
+            color: white;
+            font-size: 15px;
+        }
+
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: #ff1e1e;
+        }
+
+        .submit-btn {
+            width: 100%;
+            border: none;
+            background: #e50914;
+            color: white;
+            padding: 15px;
+            font-size: 17px;
+            font-weight: bold;
+            border-radius: 7px;
+            cursor: pointer;
+        }
+
+        .submit-btn:hover {
+            background: #ff1e1e;
+        }
+
+        .submit-btn:disabled {
+            background: #555;
+            cursor: not-allowed;
+        }
+
+        .message {
+            display: none;
+            padding: 14px;
+            margin-top: 18px;
+            border-radius: 6px;
+            text-align: center;
+        }
+
+        .success {
+            display: block;
+            background: #102814;
+            border: 1px solid #238636;
+            color: #7ee787;
+        }
+
+        .error {
+            display: block;
+            background: #2b1010;
+            border: 1px solid #ff1e1e;
+            color: #ff7777;
+        }
+
+        .selected-info {
+            margin-top: 15px;
+            color: #aaa;
+            text-align: center;
+        }
+
+        @media (max-width: 700px) {
+            .packages {
+                grid-template-columns: 1fr;
+            }
+
+            .title h1 {
+                font-size: 30px;
+            }
+
+            .card {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <div class="logo">REN GAMING</div>
+
+    <a href="dashboard.html" class="back-btn">
+        Dashboard
+    </a>
+</header>
+
+<div class="container">
+
+    <div class="title">
+        <h1>💎 <span>DIAMOND</span> TOP-UP</h1>
+        <p>Top up your Moba Legends: 5v5! account</p>
+    </div>
+
+    <div class="card">
+
+        <h2>1. Select Diamond Package</h2>
+
+        <div class="packages">
+
+            <div class="package" data-name="86 Diamonds" data-diamonds="86" data-price="99">
+                <div class="diamond">💎</div>
+                <h3>86 Diamonds</h3>
+                <div class="price">₹99</div>
+            </div>
+
+            <div class="package" data-name="172 Diamonds" data-diamonds="172" data-price="199">
+                <div class="diamond">💎</div>
+                <h3>172 Diamonds</h3>
+                <div class="price">₹199</div>
+            </div>
+
+            <div class="package" data-name="257 Diamonds" data-diamonds="257" data-price="299">
+                <div class="diamond">💎</div>
+                <h3>257 Diamonds</h3>
+                <div class="price">₹299</div>
+            </div>
+
+        </div>
+
+        <div class="selected-info" id="selectedInfo">
+            No package selected
+        </div>
+
+    </div>
+
+    <div class="card">
+
+        <h2>2. Game Account</h2>
+
+        <label for="gameUserId">Game User ID</label>
+        <input
+            type="text"
+            id="gameUserId"
+            placeholder="Enter your Game User ID"
+        >
+
+        <label for="serverId">Server ID</label>
+        <input
+            type="text"
+            id="serverId"
+            placeholder="Enter your Server ID"
+        >
+
+    </div>
+
+    <div class="card">
+
+        <h2>3. Payment Method</h2>
+
+        <label for="paymentMethod">Choose Payment Method</label>
+
+        <select id="paymentMethod">
+            <option value="">Select payment method</option>
+            <option value="UPI">UPI</option>
+            <option value="Other">Other</option>
+        </select>
+
+        <button class="submit-btn" id="submitBtn">
+            SUBMIT TOP-UP ORDER
+        </button>
+
+        <div id="message" class="message"></div>
+
+    </div>
+
+</div>
+
+<script>
+
+const SUPABASE_URL =
+    "https://bixpvxkpnaqdifmvkhvp.supabase.co";
+
+const SUPABASE_PUBLISHABLE_KEY =
+    "sb_publishable_XtzkrIFbBPTGUmoLHqHu5Q_XeznKoVI";
+
+const supabaseClient = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_PUBLISHABLE_KEY
+);
+
+let selectedPackage = null;
+
+const packages = document.querySelectorAll(".package");
+
+packages.forEach(packageElement => {
+
+    packageElement.addEventListener("click", () => {
+
+        packages.forEach(p => {
+            p.classList.remove("selected");
+        });
+
+        packageElement.classList.add("selected");
+
+        selectedPackage = {
+            name: packageElement.dataset.name,
+            diamonds: Number(packageElement.dataset.diamonds),
+            price: Number(packageElement.dataset.price)
+        };
+
+        document.getElementById("selectedInfo").textContent =
+            `${selectedPackage.name} selected — ₹${selectedPackage.price}`;
+    });
+
+});
+
+
+document.getElementById("submitBtn").addEventListener("click", async () => {
+
+    const message = document.getElementById("message");
+
+    message.className = "message";
+    message.textContent = "";
+
+    if (!selectedPackage) {
+        message.textContent = "Please select a diamond package.";
+        message.classList.add("error");
+        return;
+    }
+
+    const gameUserId =
+        document.getElementById("gameUserId").value.trim();
+
+    const serverId =
+        document.getElementById("serverId").value.trim();
+
+    const paymentMethod =
+        document.getElementById("paymentMethod").value;
+
+    if (!gameUserId || !serverId) {
+        message.textContent =
+            "Please enter your Game User ID and Server ID.";
+
+        message.classList.add("error");
+        return;
+    }
+
+    if (!paymentMethod) {
+        message.textContent =
+            "Please select a payment method.";
+
+        message.classList.add("error");
+        return;
+    }
+
+    const {
+        data: { user }
+    } = await supabaseClient.auth.getUser();
+
+    if (!user) {
+        message.textContent =
+            "Please login before placing a top-up order.";
+
+        message.classList.add("error");
+        return;
+    }
+
+    const submitButton =
+        document.getElementById("submitBtn");
+
+    submitButton.disabled = true;
+    submitButton.textContent = "SUBMITTING...";
+
+    const { error } = await supabaseClient
+        .from("topup_orders")
+        .insert({
+            user_id: user.id,
+            game_user_id: gameUserId,
+            server_id: serverId,
+            package_name: selectedPackage.name,
+            diamonds: selectedPackage.diamonds,
+            amount: selectedPackage.price,
+            payment_method: paymentMethod,
+            status: "pending"
+        });
+
+    if (error) {
+
+        console.error(error);
+
+        message.textContent =
+            "Unable to submit your top-up order.";
+
+        message.classList.add("error");
+
+        submitButton.disabled = false;
+        submitButton.textContent =
+            "SUBMIT TOP-UP ORDER";
+
+        return;
+    }
+
+    message.textContent =
+        "Top-up order submitted successfully! Your order is now pending.";
+
+    message.classList.add("success");
+
+    submitButton.textContent =
+        "ORDER SUBMITTED";
+
+});
+
+</script>
+
+</body>
+</html>
