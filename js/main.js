@@ -1,4 +1,3 @@
-javascript
 // ========================================
 // REN GAMING - SUPABASE CONNECTION
 // ========================================
@@ -40,8 +39,6 @@ function setText(id, value) {
 
 async function signInWithGoogle() {
     try {
-        console.log("Starting Google sign-in...");
-
         const { data, error } =
             await supabaseClient.auth.signInWithOAuth({
                 provider: "google",
@@ -53,10 +50,7 @@ async function signInWithGoogle() {
         if (error) {
             console.error("Google sign-in error:", error);
             alert("Google login failed: " + error.message);
-            return;
         }
-
-        console.log("Google sign-in started:", data);
 
     } catch (error) {
         console.error("Unexpected Google login error:", error);
@@ -64,8 +58,6 @@ async function signInWithGoogle() {
     }
 }
 
-
-// Connect the function to a button using this ID.
 document.addEventListener("DOMContentLoaded", function () {
     const googleButton =
         document.getElementById("google-login-btn");
@@ -93,8 +85,6 @@ async function checkUserSession() {
             return null;
         }
 
-        console.log("Current session:", data.session);
-
         return data.session;
 
     } catch (error) {
@@ -105,74 +95,127 @@ async function checkUserSession() {
 
 
 // ========================================
-// LOAD TOURNAMENTS
+// TOURNAMENT DISPLAY HELPERS
+// ========================================
+
+function showTournamentCard(show) {
+    const card = document.getElementById("tournament-card");
+
+    if (card) {
+        card.hidden = !show;
+    }
+
+    const emptyMessage = document.getElementById("no-tournament");
+
+    if (emptyMessage) {
+        emptyMessage.hidden = show;
+    }
+}
+
+
+function disableRegistration(message) {
+    const button = document.getElementById("tournament-register");
+
+    if (!button) return;
+
+    button.textContent = message;
+    button.removeAttribute("href");
+    button.classList.add("registration-closed");
+    button.setAttribute("aria-disabled", "true");
+    button.setAttribute("tabindex", "-1");
+}
+
+
+function enableRegistration(tournamentId) {
+    const button = document.getElementById("tournament-register");
+
+    if (!button) return;
+
+    // Keep the existing registration page.
+    // Pass the tournament ID in case the page supports it.
+    button.href =
+        "tournament-register.html?id=" +
+        encodeURIComponent(tournamentId);
+
+    button.textContent = "REGISTER NOW";
+    button.classList.remove("registration-closed");
+    button.removeAttribute("aria-disabled");
+    button.removeAttribute("tabindex");
+}
+
+
+// ========================================
+// LOAD TOURNAMENTS FROM SUPABASE
 // ========================================
 
 async function loadTournaments() {
+    showTournamentCard(false);
+
     try {
         const { data, error } = await supabaseClient
             .from("tournament")
-            .select("*")
-            .order("start_date", { ascending: true });
+            .select("*");
 
         if (error) {
-            console.error("Tournament loading error:", error);
-
-            setText(
-                "tournament-name",
-                "Unable to load tournaments"
-            );
-
-            setText(
-                "tournament-title",
-                "Please try again later"
-            );
-
-            setText(
-                "tournament-description",
-                "We couldn't load tournament information. Please try again soon."
-            );
-
-            return;
+            throw error;
         }
 
         console.log("TOURNAMENT DATA:", data);
 
-        if (!data || data.length === 0) {
-            setText("tournament-name", "No Upcoming Tournament");
-            setText("tournament-title", "No tournament available");
-
-            setText(
-                "tournament-game",
-                "MOBA LEGENDS: 5v5!"
-            );
-
-            setText(
-                "tournament-description",
-                "Check back soon for upcoming Ren Gaming tournaments."
-            );
-
-            setText("tournament-size", "5v5");
-            setText("tournament-entry", "—");
-            setText("tournament-prize", "—");
-            setText("tournament-status", "No tournaments available");
-
-            return;
-        }
+        const tournaments = Array.isArray(data) ? data : [];
 
         const now = new Date();
 
-        const tournament = data.find(item => {
-            if (!item.start_date) return true;
+        // Hide completed or cancelled tournaments from
+        // the featured tournament section.
+        const availableTournaments = tournaments.filter(item => {
+            const status = String(item.status || "upcoming")
+                .trim()
+                .toLowerCase();
 
-            const startDate = new Date(item.start_date);
+            return status !== "completed" &&
+                   status !== "cancelled";
+        });
 
-            return (
-                !Number.isNaN(startDate.getTime()) &&
-                startDate >= now
-            );
-        }) || data[0];
+        if (availableTournaments.length === 0) {
+            showTournamentCard(false);
+            disableRegistration("NO TOURNAMENT AVAILABLE");
+            console.log("No available tournaments to display.");
+            return;
+        }
 
+        // Prefer ongoing tournaments. Otherwise show the
+        // nearest upcoming tournament.
+        availableTournaments.sort((a, b) => {
+            const statusA = String(a.status || "upcoming").toLowerCase();
+            const statusB = String(b.status || "upcoming").toLowerCase();
+
+            if (statusA === "ongoing" && statusB !== "ongoing") {
+                return -1;
+            }
+
+            if (statusB === "ongoing" && statusA !== "ongoing") {
+                return 1;
+            }
+
+            const dateA = a.start_date
+                ? new Date(a.start_date).getTime()
+                : Number.MAX_SAFE_INTEGER;
+
+            const dateB = b.start_date
+                ? new Date(b.start_date).getTime()
+                : Number.MAX_SAFE_INTEGER;
+
+            return dateA - dateB;
+        });
+
+        // Choose the first available tournament.
+        const tournament = availableTournaments[0];
+
+        // Show the tournament card.
+        showTournamentCard(true);
+
+        // Name and game.
         setText(
             "tournament-name",
             tournament.name || "Ren Gaming Tournament"
@@ -191,20 +234,26 @@ async function loadTournaments() {
         setText(
             "tournament-description",
             tournament.description ||
-                "Join the Ren Gaming tournament and compete against other teams."
+            "Join the Ren Gaming tournament and compete against other teams."
         );
+
+        // Team size.
+        const teamSize = Number(tournament.team_size);
 
         setText(
             "tournament-size",
-            tournament.team_size
-                ? `${tournament.team_size}v${tournament.team_size}`
+            Number.isFinite(teamSize) && teamSize > 0
+                ? `${teamSize}v${teamSize}`
                 : "5v5"
         );
 
+        // Entry fee.
         const entryFee = Number(tournament.entry_fee);
 
         setText(
             "tournament-entry",
+            tournament.entry_fee !== null &&
+            tournament.entry_fee !== "" &&
             Number.isFinite(entryFee)
                 ? entryFee === 0
                     ? "FREE"
@@ -212,18 +261,25 @@ async function loadTournaments() {
                 : "—"
         );
 
+        // Prize.
         const prize = Number(tournament.prize);
 
         setText(
             "tournament-prize",
+            tournament.prize !== null &&
+            tournament.prize !== "" &&
             Number.isFinite(prize)
-                ? `₹${prize}`
+                ? `₹${prize.toLocaleString("en-IN")}`
                 : "—"
         );
 
-        const status = String(
-            tournament.status || "unknown"
-        ).toLowerCase();
+        // ========================================
+        // REGISTRATION STATUS
+        // ========================================
+
+        const status = String(tournament.status || "upcoming")
+            .trim()
+            .toLowerCase();
 
         const registrationOpen =
             tournament.registration_open === true;
@@ -233,34 +289,84 @@ async function loadTournaments() {
             : null;
 
         const deadlineValid =
-            deadline &&
-            !Number.isNaN(deadline.getTime());
+            deadline && !Number.isNaN(deadline.getTime());
 
-        let statusText = status.toUpperCase();
+        const deadlinePassed =
+            deadlineValid && deadline.getTime() < now.getTime();
 
-        if (status === "completed" || status === "cancelled") {
-            statusText = status.toUpperCase();
-        } else if (
-            !registrationOpen ||
-            (deadlineValid && deadline < now)
-        ) {
-            statusText = "REGISTRATION CLOSED";
-        } else if (status === "upcoming") {
-            statusText = "REGISTRATION OPEN";
+        const statusElement =
+            document.getElementById("tournament-status");
+
+        if (statusElement) {
+            statusElement.classList.remove(
+                "registration-closed",
+                "registration-open"
+            );
         }
 
-        setText(
-            "tournament-status",
-            `● ${statusText}`
-        );
+        // Completed or cancelled.
+        if (status === "completed" || status === "cancelled") {
+            setText(
+                "tournament-status",
+                status === "completed"
+                    ? "● COMPLETED"
+                    : "● CANCELLED"
+            );
+
+            disableRegistration(
+                status === "completed"
+                    ? "TOURNAMENT COMPLETED"
+                    : "TOURNAMENT CANCELLED"
+            );
+
+            return;
+        }
+
+        // Registration closed by admin or deadline.
+        if (!registrationOpen || deadlinePassed) {
+            setText(
+                "tournament-status",
+                "● REGISTRATION CLOSED"
+            );
+
+            disableRegistration("REGISTRATION CLOSED");
+            return;
+        }
+
+        // Registration open.
+        if (status === "ongoing") {
+            setText(
+                "tournament-status",
+                "● ONGOING — REGISTRATION OPEN"
+            );
+        } else {
+            setText(
+                "tournament-status",
+                "● REGISTRATION OPEN"
+            );
+        }
+
+        if (statusElement) {
+            statusElement.classList.add("registration-open");
+        }
+
+        enableRegistration(tournament.id);
 
     } catch (error) {
-        console.error("Unexpected tournament error:", error);
+        console.error("Tournament loading error:", error);
 
-        setText(
-            "tournament-description",
-            "Something went wrong while loading tournaments. Please try again later."
-        );
+        showTournamentCard(false);
+        disableRegistration("UNABLE TO LOAD TOURNAMENT");
+
+        const emptyMessage = document.getElementById("no-tournament");
+
+        if (emptyMessage) {
+            emptyMessage.hidden = false;
+            emptyMessage.innerHTML = `
+                <h3>Unable to load tournaments</h3>
+                <p>Please refresh the page and try again later.</p>
+            `;
+        }
     }
 }
 
@@ -269,5 +375,7 @@ async function loadTournaments() {
 // START
 // ========================================
 
-loadTournaments();
-checkUserSession();
+document.addEventListener("DOMContentLoaded", function () {
+    loadTournaments();
+    checkUserSession();
+});
