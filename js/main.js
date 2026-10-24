@@ -1,3 +1,4 @@
+javascript
 // ========================================
 // REN GAMING - SUPABASE CONNECTION
 // ========================================
@@ -7,6 +8,9 @@ const SUPABASE_URL =
 
 const SUPABASE_PUBLISHABLE_KEY =
     "sb_publishable_XtzkrIFbBPTGUmoLHqHu5Q_XeznKoVI";
+
+const REN_GAMING_URL =
+    "https://rendombirthsangma.github.io/ren-gaming-mlbb/";
 
 const supabaseClient = window.supabase.createClient(
     SUPABASE_URL,
@@ -26,6 +30,76 @@ function setText(id, value) {
 
     if (element) {
         element.textContent = value;
+    }
+}
+
+
+// ========================================
+// GOOGLE LOGIN
+// ========================================
+
+async function signInWithGoogle() {
+    try {
+        console.log("Starting Google sign-in...");
+
+        const { data, error } =
+            await supabaseClient.auth.signInWithOAuth({
+                provider: "google",
+                options: {
+                    redirectTo: REN_GAMING_URL
+                }
+            });
+
+        if (error) {
+            console.error("Google sign-in error:", error);
+            alert("Google login failed: " + error.message);
+            return;
+        }
+
+        console.log("Google sign-in started:", data);
+
+    } catch (error) {
+        console.error("Unexpected Google login error:", error);
+        alert("Unable to start Google login. Please try again.");
+    }
+}
+
+
+// Connect the function to a button using this ID.
+document.addEventListener("DOMContentLoaded", function () {
+    const googleButton =
+        document.getElementById("google-login-btn");
+
+    if (googleButton) {
+        googleButton.addEventListener("click", function (event) {
+            event.preventDefault();
+            signInWithGoogle();
+        });
+    }
+});
+
+
+// ========================================
+// HANDLE AUTHENTICATION SESSION
+// ========================================
+
+async function checkUserSession() {
+    try {
+        const { data, error } =
+            await supabaseClient.auth.getSession();
+
+        if (error) {
+            console.error("Session error:", error);
+            return null;
+        }
+
+        console.log("Current session:", data.session);
+
+        return data.session;
+
+    } catch (error) {
+        console.error("Unable to check session:", error);
+        return null;
     }
 }
 
@@ -67,23 +141,25 @@ async function loadTournaments() {
         if (!data || data.length === 0) {
             setText("tournament-name", "No Upcoming Tournament");
             setText("tournament-title", "No tournament available");
+
             setText(
                 "tournament-game",
                 "MOBA LEGENDS: 5v5!"
             );
+
             setText(
                 "tournament-description",
                 "Check back soon for upcoming Ren Gaming tournaments."
             );
+
             setText("tournament-size", "5v5");
             setText("tournament-entry", "—");
             setText("tournament-prize", "—");
             setText("tournament-status", "No tournaments available");
+
             return;
         }
 
-        // Find the next tournament that has not ended.
-        // This does not assume that registration is open.
         const now = new Date();
 
         const tournament = data.find(item => {
@@ -91,8 +167,10 @@ async function loadTournaments() {
 
             const startDate = new Date(item.start_date);
 
-            return !Number.isNaN(startDate.getTime()) &&
-                startDate >= now;
+            return (
+                !Number.isNaN(startDate.getTime()) &&
+                startDate >= now
+            );
         }) || data[0];
 
         setText(
@@ -138,12 +216,14 @@ async function loadTournaments() {
 
         setText(
             "tournament-prize",
-            Number.isFinite(prize) ? `₹${prize}` : "—"
+            Number.isFinite(prize)
+                ? `₹${prize}`
+                : "—"
         );
 
-        // Determine registration status conservatively.
-        const status = String(tournament.status || "unknown")
-            .toLowerCase();
+        const status = String(
+            tournament.status || "unknown"
+        ).toLowerCase();
 
         const registrationOpen =
             tournament.registration_open === true;
@@ -153,7 +233,8 @@ async function loadTournaments() {
             : null;
 
         const deadlineValid =
-            deadline && !Number.isNaN(deadline.getTime());
+            deadline &&
+            !Number.isNaN(deadline.getTime());
 
         let statusText = status.toUpperCase();
 
@@ -168,7 +249,10 @@ async function loadTournaments() {
             statusText = "REGISTRATION OPEN";
         }
 
-        setText("tournament-status", `● ${statusText}`);
+        setText(
+            "tournament-status",
+            `● ${statusText}`
+        );
 
     } catch (error) {
         console.error("Unexpected tournament error:", error);
@@ -186,3 +270,4 @@ async function loadTournaments() {
 // ========================================
 
 loadTournaments();
+checkUserSession();
