@@ -111,7 +111,9 @@
                 Continue with Google
             </button>
 
-            <div id="loginMessage" class="message" role="status"
+            <div id="loginMessage"
+                 class="message"
+                 role="status"
                  aria-live="polite"></div>
 
             <a href="index.html" class="back-home">
@@ -123,6 +125,10 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <script>
+        // ========================================
+        // SUPABASE CONFIGURATION
+        // ========================================
+
         const SUPABASE_URL =
             "https://bixpvxkpnaqdifmvkhvp.supabase.co";
 
@@ -131,14 +137,30 @@
 
         const supabaseClient = window.supabase.createClient(
             SUPABASE_URL,
-            SUPABASE_PUBLISHABLE_KEY
+            SUPABASE_PUBLISHABLE_KEY,
+            {
+                auth: {
+                    flowType: "pkce",
+                    persistSession: true,
+                    autoRefreshToken: true,
+                    detectSessionInUrl: true
+                }
+            }
         );
 
-        const googleLogin = document.getElementById("googleLogin");
-        const loginMessage = document.getElementById("loginMessage");
+        const googleLogin =
+            document.getElementById("googleLogin");
 
-        // Return to this page after Google authentication.
-        const redirectUrl = new URL("login.html", window.location.href).href;
+        const loginMessage =
+            document.getElementById("loginMessage");
+
+        // Return to the same login page on the current host.
+        const redirectUrl =
+            new URL("login.html", window.location.href).href;
+
+        // ========================================
+        // SAVE GOOGLE USER PROFILE
+        // ========================================
 
         async function saveProfile(user) {
             const fullName =
@@ -159,50 +181,72 @@
                         full_name: fullName,
                         avatar_url: avatarUrl
                     },
-                    { onConflict: "id" }
+                    {
+                        onConflict: "id"
+                    }
                 );
 
             if (error) {
-                console.error("Profile creation error:", error);
+                console.error("Profile save error:", error);
+
                 throw new Error(
-                    "You signed in, but your profile could not be saved. Please contact support."
+                    "Your Google account was authenticated, but your profile could not be saved. Please check the profiles table permissions."
                 );
             }
         }
 
-        async function checkUser() {
+        // ========================================
+        // COMPLETE LOGIN
+        // ========================================
+
+        async function finishLogin() {
             try {
+                loginMessage.textContent =
+                    "Checking your Google account...";
+
                 const { data, error } =
-                    await supabaseClient.auth.getUser();
+                    await supabaseClient.auth.getSession();
 
-                if (error) throw error;
+                if (error) {
+                    throw error;
+                }
 
-                if (!data.user) return;
+                if (!data.session?.user) {
+                    loginMessage.textContent =
+                        "Please sign in with Google to continue.";
 
-                loginMessage.textContent = "Finishing your login...";
+                    googleLogin.disabled = false;
+                    return;
+                }
 
-                await saveProfile(data.user);
+                await saveProfile(data.session.user);
 
                 loginMessage.textContent =
                     "Login successful! Opening your dashboard...";
 
-                // Relative URL also works under a GitHub Pages project path.
-                window.location.href = "dashboard.html";
+                window.location.replace("dashboard.html");
 
             } catch (error) {
-                console.error("Login check error:", error);
+                console.error("Login completion error:", error);
 
                 loginMessage.textContent =
-                    error.message || "Unable to verify your login.";
+                    error.message ||
+                    "Unable to complete login. Please try again.";
 
                 googleLogin.disabled = false;
                 googleLogin.textContent = "Continue with Google";
             }
         }
 
-        googleLogin.addEventListener("click", async () => {
+        // ========================================
+        // GOOGLE SIGN-IN
+        // ========================================
+
+        googleLogin.addEventListener("click", async function () {
             googleLogin.disabled = true;
-            loginMessage.textContent = "Opening Google login...";
+
+            loginMessage.textContent =
+                "Opening Google login...";
 
             try {
                 const { error } =
@@ -213,19 +257,44 @@
                         }
                     });
 
-                if (error) throw error;
+                if (error) {
+                    throw error;
+                }
 
             } catch (error) {
-                console.error("Google login error:", error);
+                console.error("Google sign-in error:", error);
 
                 loginMessage.textContent =
-                    error.message || "Unable to start Google login.";
+                    error.message ||
+                    "Unable to start Google login.";
 
                 googleLogin.disabled = false;
             }
         });
 
-        checkUser();
+        // ========================================
+        // HANDLE RETURN FROM GOOGLE
+        // ========================================
+
+        async function initializeLogin() {
+            const url = new URL(window.location.href);
+
+            if (url.searchParams.has("error")) {
+                const description =
+                    url.searchParams.get("error_description") ||
+                    url.searchParams.get("error");
+
+                loginMessage.textContent =
+                    "Google login error: " +
+                    description.replace(/\+/g, " ");
+
+                return;
+            }
+
+            await finishLogin();
+        }
+
+        initializeLogin();
     </script>
 </body>
 </html>
