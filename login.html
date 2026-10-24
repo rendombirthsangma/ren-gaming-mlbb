@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | Ren Gaming</title>
+    <link rel="stylesheet" href="css/style.css">
+
+    <style>
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #050505;
+        }
+
+        .login-page {
+            width: 100%;
+            max-width: 430px;
+            padding: 20px;
+        }
+
+        .login-card {
+            background: #111;
+            border: 1px solid #292929;
+            padding: 40px 30px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .login-logo {
+            width: 70px;
+            height: 70px;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #e50914;
+            color: white;
+            font-size: 28px;
+            font-weight: 900;
+            border-radius: 12px;
+        }
+
+        .login-card h1 {
+            color: white;
+            margin-bottom: 8px;
+        }
+
+        .login-card p {
+            color: #999;
+            margin-bottom: 30px;
+        }
+
+        .google-btn {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid #444;
+            background: white;
+            color: #111;
+            border-radius: 6px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .google-btn:hover {
+            background: #eee;
+        }
+
+        .google-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .message {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #aaa;
+            min-height: 20px;
+            overflow-wrap: anywhere;
+        }
+
+        .back-home {
+            display: inline-block;
+            margin-top: 25px;
+            color: #e50914;
+            text-decoration: none;
+        }
+
+        .back-home:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+    <main class="login-page">
+        <section class="login-card">
+            <div class="login-logo">RG</div>
+
+            <h1>Welcome to Ren Gaming</h1>
+
+            <p>
+                Sign in to join tournaments
+                and manage your account.
+            </p>
+
+            <button id="googleLogin" class="google-btn" type="button">
+                Continue with Google
+            </button>
+
+            <div id="loginMessage" class="message" role="status"
+                 aria-live="polite"></div>
+
+            <a href="index.html" class="back-home">
+                ← Back to Ren Gaming
+            </a>
+        </section>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script>
+        const SUPABASE_URL =
+            "https://bixpvxkpnaqdifmvkhvp.supabase.co";
+
+        const SUPABASE_PUBLISHABLE_KEY =
+            "sb_publishable_XtzkrIFbBPTGUmoLHqHu5Q_XeznKoVI";
+
+        const supabaseClient = window.supabase.createClient(
+            SUPABASE_URL,
+            SUPABASE_PUBLISHABLE_KEY
+        );
+
+        const googleLogin = document.getElementById("googleLogin");
+        const loginMessage = document.getElementById("loginMessage");
+
+        // Return to this page after Google authentication.
+        const redirectUrl = new URL("login.html", window.location.href).href;
+
+        async function saveProfile(user) {
+            const fullName =
+                user.user_metadata?.full_name ||
+                user.user_metadata?.name ||
+                "";
+
+            const avatarUrl =
+                user.user_metadata?.avatar_url ||
+                user.user_metadata?.picture ||
+                "";
+
+            const { error } = await supabaseClient
+                .from("profiles")
+                .upsert(
+                    {
+                        id: user.id,
+                        full_name: fullName,
+                        avatar_url: avatarUrl
+                    },
+                    { onConflict: "id" }
+                );
+
+            if (error) {
+                console.error("Profile creation error:", error);
+                throw new Error(
+                    "You signed in, but your profile could not be saved. Please contact support."
+                );
+            }
+        }
+
+        async function checkUser() {
+            try {
+                const { data, error } =
+                    await supabaseClient.auth.getUser();
+
+                if (error) throw error;
+
+                if (!data.user) return;
+
+                loginMessage.textContent = "Finishing your login...";
+
+                await saveProfile(data.user);
+
+                loginMessage.textContent =
+                    "Login successful! Opening your dashboard...";
+
+                // Relative URL also works under a GitHub Pages project path.
+                window.location.href = "dashboard.html";
+
+            } catch (error) {
+                console.error("Login check error:", error);
+
+                loginMessage.textContent =
+                    error.message || "Unable to verify your login.";
+
+                googleLogin.disabled = false;
+                googleLogin.textContent = "Continue with Google";
+            }
+        }
+
+        googleLogin.addEventListener("click", async () => {
+            googleLogin.disabled = true;
+            loginMessage.textContent = "Opening Google login...";
+
+            try {
+                const { error } =
+                    await supabaseClient.auth.signInWithOAuth({
+                        provider: "google",
+                        options: {
+                            redirectTo: redirectUrl
+                        }
+                    });
+
+                if (error) throw error;
+
+            } catch (error) {
+                console.error("Google login error:", error);
+
+                loginMessage.textContent =
+                    error.message || "Unable to start Google login.";
+
+                googleLogin.disabled = false;
+            }
+        });
+
+        checkUser();
+    </script>
+</body>
+</html>
