@@ -3,399 +3,458 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ren Gaming — Tournament Management</title>
+<title>Ren Gaming — Match Management</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:Arial,sans-serif;background:#080808;color:#fff;min-height:100vh}
-header{background:#0d0d0d;border-bottom:1px solid #292929;padding:20px 6%;display:flex;justify-content:space-between;align-items:center}
-.logo{color:#ff1e1e;font-size:24px;font-weight:900}
-button,.btn{font-family:inherit;cursor:pointer}
-.logout,.back{background:#171717;color:#fff;border:1px solid #333;padding:10px 16px;border-radius:6px;text-decoration:none}
-.logout:hover,.back:hover{border-color:#ff1e1e}
+header{background:#0d0d0d;border-bottom:1px solid #292929;padding:20px 6%;display:flex;justify-content:space-between;align-items:center;gap:15px}
+.logo{color:#ff1e1e;font-size:22px;font-weight:900}
+.header-actions{display:flex;gap:10px;flex-wrap:wrap}
+button,a{font-family:inherit;cursor:pointer}
+.back,.logout{background:#171717;color:#fff;border:1px solid #333;padding:10px 15px;border-radius:6px;text-decoration:none}
+.back:hover,.logout:hover{border-color:#ff1e1e}
 .container{max-width:1200px;margin:35px auto;padding:0 20px}
 h1{margin-bottom:25px}
-.card{background:#111;border:1px solid #292929;border-radius:10px;padding:25px;margin-bottom:25px}
 h2{margin-bottom:20px}
+.card{background:#111;border:1px solid #292929;border-radius:10px;padding:24px;margin-bottom:25px}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 .field{display:flex;flex-direction:column;gap:7px}
-.field.full{grid-column:1/-1}
+.full{grid-column:1/-1}
 label{font-size:13px;color:#aaa}
-input,textarea,select{width:100%;background:#080808;color:#fff;border:1px solid #333;border-radius:6px;padding:12px}
-textarea{min-height:100px;resize:vertical}
-input:focus,textarea:focus,select:focus{outline:none;border-color:#ff1e1e}
-.check{display:flex;align-items:center;gap:10px;margin-top:10px}
-.check input{width:auto}
-.primary,.secondary,.danger{color:#fff;border:0;padding:11px 18px;border-radius:6px;font-weight:bold;cursor:pointer}
+input,select,textarea{width:100%;background:#080808;color:#fff;border:1px solid #333;border-radius:6px;padding:12px}
+input:focus,select:focus,textarea:focus{outline:none;border-color:#ff1e1e}
+textarea{min-height:80px}
+.primary,.secondary,.danger{color:#fff;border:0;padding:11px 16px;border-radius:6px;font-weight:bold}
 .primary{background:#e31313}
 .primary:hover{background:#ff2424}
 .secondary{background:#242424;border:1px solid #444}
-.secondary:hover{border-color:#ff1e1e}
 .danger{background:#5b1616;border:1px solid #8b2525}
-.danger:hover{background:#7a1d1d}
-.form-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
-.message{display:none;padding:12px;border-radius:6px;margin-bottom:18px}
+.form-actions,.item-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+.message{display:none;padding:12px;border-radius:6px;margin-bottom:18px;overflow-wrap:anywhere}
 .success{display:block;background:#102814;border:1px solid #238636;color:#7ee787}
 .error{display:block;background:#2b1010;border:1px solid #ff1e1e;color:#ff7777}
-.note{color:#888;font-size:13px;margin-top:10px;line-height:1.5}
-.tournament-list{display:grid;gap:15px}
-.tournament-item{background:#0b0b0b;border:1px solid #292929;border-radius:8px;padding:18px}
-.tournament-header{display:flex;justify-content:space-between;gap:15px;align-items:flex-start}
-.tournament-name{font-size:19px;font-weight:bold}
-.tournament-meta{color:#999;font-size:13px;line-height:1.7;margin-top:7px}
-.status{display:inline-block;padding:5px 9px;border-radius:5px;font-size:11px;font-weight:bold;text-transform:uppercase;white-space:nowrap}
-.status-upcoming{background:#3a2b00;color:#ffd666}
+.note{color:#888;font-size:13px;line-height:1.5;margin-top:12px}
+.match-list{display:grid;gap:15px}
+.match-item{background:#0b0b0b;border:1px solid #292929;border-radius:8px;padding:18px}
+.match-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.match-name{font-size:18px;font-weight:bold}
+.meta{font-size:13px;color:#aaa;line-height:1.8;margin-top:8px;overflow-wrap:anywhere}
+.badge{padding:5px 9px;border-radius:5px;font-size:11px;font-weight:bold;text-transform:uppercase;background:#292929;white-space:nowrap}
+.status-scheduled{background:#3a2b00;color:#ffd666}
 .status-ongoing{background:#0d3518;color:#6ee7a0}
 .status-completed{background:#242424;color:#aaa}
-.item-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:15px}
-.empty{color:#888;background:#0b0b0b;border:1px solid #292929;padding:18px;border-radius:8px}
+.status-cancelled{background:#451515;color:#ff9999}
+.empty{background:#0b0b0b;border:1px solid #292929;border-radius:8px;padding:18px;color:#aaa}
 .hidden{display:none!important}
-@media(max-width:700px){.grid{grid-template-columns:1fr}.field.full{grid-column:auto}.tournament-header{flex-direction:column}.header-actions{display:flex;gap:8px;flex-wrap:wrap}.header-actions .back,.header-actions .logout{padding:9px 12px}}
+@media(max-width:700px){
+ header{padding:16px;align-items:flex-start;flex-direction:column}
+ .container{margin:24px auto}
+ .grid{grid-template-columns:1fr}
+ .full{grid-column:auto}
+ .match-head{flex-direction:column}
+}
 </style>
 </head>
-<body>
 
+<body>
 <header>
   <div class="logo">REN GAMING — ADMIN</div>
   <div class="header-actions">
     <a class="back" href="admin.html">← ADMIN PANEL</a>
+    <a class="back" href="admin-tournament-management.html">TOURNAMENTS</a>
     <button class="logout" id="logoutBtn">LOGOUT</button>
   </div>
 </header>
 
-<div class="container">
-  <h1>🏆 Tournament Management</h1>
+<main class="container">
+  <h1>⚔️ Match Management</h1>
+  <div id="message" class="message" role="status"></div>
 
-  <div id="message" class="message"></div>
+  <section class="card">
+    <h2 id="formTitle">Create New Match</h2>
 
-  <div class="card">
-    <h2 id="formTitle">Create New Tournament</h2>
-
-    <form id="tournamentForm">
+    <form id="matchForm">
       <input type="hidden" id="editingId">
+
       <div class="grid">
-
         <div class="field">
-          <label>Tournament Name *</label>
-          <input id="name" required placeholder="e.g. Ren Gaming Championship">
+          <label for="tournament_id">Tournament ID *</label>
+          <input id="tournament_id" required placeholder="Paste tournament ID">
         </div>
 
         <div class="field">
-          <label>Game *</label>
-          <input id="game" required value="Moba Legends: 5v5!">
-        </div>
-
-        <div class="field full">
-          <label>Description</label>
-          <textarea id="description" placeholder="Tournament description"></textarea>
+          <label for="group_name">Group</label>
+          <input id="group_name" placeholder="e.g. Group A">
         </div>
 
         <div class="field">
-          <label>Start Date & Time</label>
-          <input id="start_date" type="datetime-local">
+          <label for="round_name">Round</label>
+          <input id="round_name" placeholder="e.g. Round 1">
         </div>
 
         <div class="field">
-          <label>Registration Deadline</label>
-          <input id="registration_deadline" type="datetime-local">
+          <label for="match_number">Match Number</label>
+          <input id="match_number" type="number" min="1" placeholder="e.g. 1">
         </div>
 
         <div class="field">
-          <label>Entry Fee (₹)</label>
-          <input id="entry_fee" type="number" min="0" step="1" value="0">
+          <label for="team1_id">Team 1 ID *</label>
+          <input id="team1_id" required placeholder="Paste first team ID">
         </div>
 
         <div class="field">
-          <label>Prize (₹)</label>
-          <input id="prize" type="number" min="0" step="1" value="1000">
+          <label for="team2_id">Team 2 ID *</label>
+          <input id="team2_id" required placeholder="Paste second team ID">
         </div>
 
         <div class="field">
-          <label>Team Size</label>
-          <input id="team_size" type="number" min="1" value="5">
+          <label for="match_date">Match Date & Time</label>
+          <input id="match_date" type="datetime-local">
         </div>
 
         <div class="field">
-          <label>Maximum Teams</label>
-          <input id="max_teams" type="number" min="1" placeholder="e.g. 32">
-        </div>
-
-        <div class="field">
-          <label>Status</label>
+          <label for="status">Match Status</label>
           <select id="status">
-            <option value="upcoming">Upcoming</option>
+            <option value="scheduled">Scheduled</option>
             <option value="ongoing">Ongoing</option>
             <option value="completed">Completed</option>
+            <option value="cancelled">Cancelled</option>
           </select>
         </div>
 
         <div class="field">
-          <label>Registration</label>
-          <div class="check">
-            <input id="registration_open" type="checkbox" checked>
-            <span>Registration Open</span>
-          </div>
+          <label for="team1_score">Team 1 Score</label>
+          <input id="team1_score" type="number" min="0" placeholder="Optional">
         </div>
 
+        <div class="field">
+          <label for="team2_score">Team 2 Score</label>
+          <input id="team2_score" type="number" min="0" placeholder="Optional">
+        </div>
+
+        <div class="field full">
+          <label for="winner_id">Winner Team ID</label>
+          <input id="winner_id" placeholder="Leave blank until the winner is decided">
+        </div>
+
+        <div class="field full">
+          <label for="notes">Notes</label>
+          <textarea id="notes" placeholder="Optional match details"></textarea>
+        </div>
       </div>
 
       <div class="form-actions">
-        <button class="primary" id="submitBtn" type="submit">CREATE TOURNAMENT</button>
-        <button class="secondary hidden" id="cancelEditBtn" type="button">CANCEL EDIT</button>
+        <button class="primary" id="saveBtn" type="submit">CREATE MATCH</button>
+        <button class="secondary hidden" id="cancelBtn" type="button">CANCEL EDIT</button>
       </div>
-      <p class="note" id="formNote">Create a new tournament. Existing tournaments can be edited or deleted from the list below.</p>
-    </form>
-  </div>
 
-  <div class="card">
-    <div style="display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:20px;flex-wrap:wrap;">
-      <h2 style="margin-bottom:0">📋 Existing Tournaments</h2>
+      <p class="note">
+        Use the exact IDs stored in your database. This page does not create teams or tournaments.
+        A match can only be saved if the fields and relationships match your Supabase schema.
+      </p>
+    </form>
+  </section>
+
+  <section class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:20px">
+      <h2 style="margin:0">📋 Existing Matches</h2>
       <button class="secondary" id="refreshBtn" type="button">REFRESH</button>
     </div>
-    <div id="tournamentsContainer" class="tournament-list">
-      Loading tournaments...
-    </div>
-  </div>
-</div>
+    <div id="matchList" class="match-list">Loading matches...</div>
+  </section>
+</main>
 
 <script>
 const SUPABASE_URL="https://bixpvxkpnaqdifmvkhvp.supabase.co";
 const SUPABASE_PUBLISHABLE_KEY="sb_publishable_XtzkrIFbBPTGUmoLHqHu5Q_XeznKoVI";
-const supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);
+const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);
 
-function showMessage(text,type){
-  const el=document.getElementById("message");
-  el.textContent=text;
-  el.className="message "+type;
-  setTimeout(()=>el.className="message",5000);
+let matchColumns=[];
+let currentMatches=[];
+let busy=false;
+
+const $=id=>document.getElementById(id);
+
+function message(text,type="error"){
+  $("message").textContent=text;
+  $("message").className="message "+type;
+  window.scrollTo({top:0,behavior:"smooth"});
 }
 
-function escapeHtml(value){
-  if(value===null||value===undefined)return "";
-  return String(value)
-    .replace(/&/g,"&amp;")
-    .replace(/</g,"&lt;")
-    .replace(/>/g,"&gt;")
-    .replace(/"/g,"&quot;")
-    .replace(/'/g,"&#039;");
+function clearMessage(){
+  $("message").textContent="";
+  $("message").className="message";
+}
+
+function esc(value){
+  return String(value??"").replace(/[&<>"']/g,c=>({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+  })[c]);
 }
 
 async function checkAdmin(){
-  const {data:{user}}=await supabaseClient.auth.getUser();
-  if(!user){window.location.href="login.html";return false}
+  const {data,error}=await db.auth.getUser();
+  const user=data?.user;
 
-  const {data:profile,error}=await supabaseClient
-    .from("profiles").select("role").eq("id",user.id).single();
+  if(error||!user){
+    window.location.href="login.html";
+    return false;
+  }
 
-  if(error||!profile||profile.role!=="admin"){
+  const {data:profile,error:profileError}=await db
+    .from("profiles").select("role").eq("id",user.id).maybeSingle();
+
+  if(profileError||!profile||String(profile.role).toLowerCase()!=="admin"){
     alert("Admin access required.");
     window.location.href="dashboard.html";
     return false;
   }
+
   return true;
 }
 
-function toIso(id){
-  const value=document.getElementById(id).value;
-  return value ? new Date(value).toISOString() : null;
+function localDate(value){
+  if(!value)return "";
+  const d=new Date(value);
+  if(Number.isNaN(d.getTime()))return "";
+  return new Date(d.getTime()-d.getTimezoneOffset()*60000)
+    .toISOString().slice(0,16);
 }
 
-function toLocalDateTime(value){
-  if(!value)return "";
-  const date=new Date(value);
-  if(Number.isNaN(date.getTime()))return "";
-  const local=new Date(date.getTime()-date.getTimezoneOffset()*60000);
-  return local.toISOString().slice(0,16);
+function isoDate(id){
+  const v=$(id).value;
+  return v?new Date(v).toISOString():null;
 }
 
 function resetForm(){
-  document.getElementById("tournamentForm").reset();
-  document.getElementById("editingId").value="";
-  document.getElementById("game").value="Moba Legends: 5v5!";
-  document.getElementById("entry_fee").value="0";
-  document.getElementById("prize").value="1000";
-  document.getElementById("team_size").value="5";
-  document.getElementById("registration_open").checked=true;
-  document.getElementById("formTitle").textContent="Create New Tournament";
-  document.getElementById("submitBtn").textContent="CREATE TOURNAMENT";
-  document.getElementById("cancelEditBtn").classList.add("hidden");
-  document.getElementById("formNote").textContent="Create a new tournament. Existing tournaments can be edited or deleted from the list below.";
+  $("matchForm").reset();
+  $("editingId").value="";
+  $("formTitle").textContent="Create New Match";
+  $("saveBtn").textContent="CREATE MATCH";
+  $("cancelBtn").classList.add("hidden");
 }
 
-function editTournament(tournament){
-  document.getElementById("editingId").value=tournament.id;
-  document.getElementById("name").value=tournament.name||"";
-  document.getElementById("game").value=tournament.game||"Moba Legends: 5v5!";
-  document.getElementById("description").value=tournament.description||"";
-  document.getElementById("start_date").value=toLocalDateTime(tournament.start_date);
-  document.getElementById("registration_deadline").value=toLocalDateTime(tournament.registration_deadline);
-  document.getElementById("entry_fee").value=tournament.entry_fee ?? 0;
-  document.getElementById("prize").value=tournament.prize ?? 0;
-  document.getElementById("team_size").value=tournament.team_size ?? 5;
-  document.getElementById("max_teams").value=tournament.max_teams ?? "";
-  document.getElementById("status").value=tournament.status||"upcoming";
-  document.getElementById("registration_open").checked=tournament.registration_open !== false;
-
-  document.getElementById("formTitle").textContent="Edit Tournament";
-  document.getElementById("submitBtn").textContent="SAVE CHANGES";
-  document.getElementById("cancelEditBtn").classList.remove("hidden");
-  document.getElementById("formNote").textContent="You are editing this tournament. Save changes when finished.";
+function fillForm(m){
+  $("editingId").value=m.id??"";
+  $("tournament_id").value=m.tournament_id??"";
+  $("group_name").value=m.group_name??m.group_name??"";
+  $("round_name").value=m.round_name??m.round??"";
+  $("match_number").value=m.match_number??"";
+  $("team1_id").value=m.team1_id??"";
+  $("team2_id").value=m.team2_id??"";
+  $("match_date").value=localDate(m.match_date??m.scheduled_at??m.start_time);
+  $("status").value=m.status??"scheduled";
+  $("team1_score").value=m.team1_score??m.score1??"";
+  $("team2_score").value=m.team2_score??m.score2??"";
+  $("winner_id").value=m.winner_id??"";
+  $("notes").value=m.notes??"";
+  $("formTitle").textContent="Edit Match";
+  $("saveBtn").textContent="SAVE CHANGES";
+  $("cancelBtn").classList.remove("hidden");
   window.scrollTo({top:0,behavior:"smooth"});
 }
 
-async function loadTournaments(){
-  const container=document.getElementById("tournamentsContainer");
-  container.innerHTML="Loading tournaments...";
-
-  const {data,error}=await supabaseClient
-    .from("tournament")
-    .select("*")
-    .order("created_at",{ascending:false});
-
-  if(error){
-    console.error(error);
-    container.innerHTML='<div class="empty">Unable to load tournaments.</div>';
-    return;
-  }
-
-  if(!data||data.length===0){
-    container.innerHTML='<div class="empty">No tournaments found.</div>';
-    return;
-  }
-
-  container.innerHTML=data.map(tournament=>{
-    const status=tournament.status||"upcoming";
-    const statusClass=status==="ongoing"?"status-ongoing":status==="completed"?"status-completed":"status-upcoming";
-    const start=tournament.start_date?new Date(tournament.start_date).toLocaleString():"Not set";
-    const deadline=tournament.registration_deadline?new Date(tournament.registration_deadline).toLocaleString():"Not set";
-    const registration=tournament.registration_open===false?"Closed":"Open";
-    const teamSize=tournament.team_size?String(tournament.team_size)+"v"+String(tournament.team_size):"5v5";
-
-    return `
-      <div class="tournament-item">
-        <div class="tournament-header">
-          <div>
-            <div class="tournament-name">${escapeHtml(tournament.name||"Unnamed Tournament")}</div>
-            <div class="tournament-meta">
-              Game: ${escapeHtml(tournament.game||"Not set")}<br>
-              Start: ${escapeHtml(start)}<br>
-              Registration Deadline: ${escapeHtml(deadline)}<br>
-              Entry Fee: ₹${escapeHtml(tournament.entry_fee??0)} &nbsp;|&nbsp;
-              Prize: ₹${escapeHtml(tournament.prize??0)}<br>
-              Format: ${escapeHtml(teamSize)} &nbsp;|&nbsp;
-              Maximum Teams: ${escapeHtml(tournament.max_teams??"Unlimited")} &nbsp;|&nbsp;
-              Registration: ${escapeHtml(registration)}
-            </div>
-          </div>
-          <span class="status ${statusClass}">${escapeHtml(status)}</span>
-        </div>
-
-        <div class="item-actions">
-          <button class="secondary" type="button" onclick='editTournament(${JSON.stringify(tournament).replace(/'/g,"&#039;")})'>EDIT</button>
-          <button class="danger" type="button" onclick="deleteTournament('${escapeHtml(tournament.id)}','${escapeHtml(tournament.name||"Unnamed Tournament")}')">DELETE</button>
-        </div>
-      </div>
-    `;
-  }).join("");
+function availableColumn(possible){
+  return possible.find(c=>matchColumns.includes(c))||null;
 }
 
-document.getElementById("tournamentForm").addEventListener("submit",async(e)=>{
-  e.preventDefault();
+function buildPayload(){
+  const payload={};
 
-  const editingId=document.getElementById("editingId").value;
-
-  const payload={
-    name:document.getElementById("name").value.trim(),
-    game:document.getElementById("game").value.trim(),
-    description:document.getElementById("description").value.trim()||null,
-    start_date:toIso("start_date"),
-    registration_deadline:toIso("registration_deadline"),
-    entry_fee:Number(document.getElementById("entry_fee").value||0),
-    prize:Number(document.getElementById("prize").value||0),
-    team_size:Number(document.getElementById("team_size").value||5),
-    max_teams:document.getElementById("max_teams").value
-      ? Number(document.getElementById("max_teams").value)
-      : null,
-    status:document.getElementById("status").value,
-    registration_open:document.getElementById("registration_open").checked
+  const values={
+    tournament_id:$("tournament_id").value.trim(),
+    group_name:$("group_name").value.trim()||null,
+    round_name:$("round_name").value.trim()||null,
+    round:$("round_name").value.trim()||null,
+    match_number:$("match_number").value?Number($("match_number").value):null,
+    team1_id:$("team1_id").value.trim(),
+    team2_id:$("team2_id").value.trim(),
+    match_date:isoDate("match_date"),
+    scheduled_at:isoDate("match_date"),
+    start_time:isoDate("match_date"),
+    status:$("status").value,
+    team1_score:$("team1_score").value===""?null:Number($("team1_score").value),
+    score1:$("team1_score").value===""?null:Number($("team1_score").value),
+    team2_score:$("team2_score").value===""?null:Number($("team2_score").value),
+    score2:$("team2_score").value===""?null:Number($("team2_score").value),
+    winner_id:$("winner_id").value.trim()||null,
+    notes:$("notes").value.trim()||null
   };
 
-  if(!payload.name||!payload.game){
-    showMessage("Tournament name and game are required.","error");
-    return;
+  const aliases={
+    tournament_id:["tournament_id"],
+    group_name:["group_name","group"],
+    round_name:["round_name","round"],
+    match_number:["match_number"],
+    team1_id:["team1_id","team_a_id","team1"],
+    team2_id:["team2_id","team_b_id","team2"],
+    match_date:["match_date","scheduled_at","start_time"],
+    status:["status"],
+    team1_score:["team1_score","score1"],
+    team2_score:["team2_score","score2"],
+    winner_id:["winner_id"],
+    notes:["notes"]
+  };
+
+  for(const [key,candidates] of Object.entries(aliases)){
+    const col=availableColumn(candidates);
+    if(col)payload[col]=values[col]!==undefined?values[col]:values[key];
   }
 
-  const button=document.getElementById("submitBtn");
-  button.disabled=true;
-  button.textContent=editingId?"SAVING...":"CREATING...";
-
-  let result;
-
-  if(editingId){
-    result=await supabaseClient
-      .from("tournament")
-      .update(payload)
-      .eq("id",editingId);
-  }else{
-    result=await supabaseClient
-      .from("tournament")
-      .insert(payload);
-  }
-
-  button.disabled=false;
-
-  if(result.error){
-    console.error(result.error);
-    button.textContent=editingId?"SAVE CHANGES":"CREATE TOURNAMENT";
-    showMessage("Unable to save tournament: "+result.error.message,"error");
-    return;
-  }
-
-  showMessage(editingId?"Tournament updated successfully.":"Tournament created successfully.","success");
-  resetForm();
-  await loadTournaments();
-});
-
-async function deleteTournament(id,name){
-  const confirmed=confirm(
-    "Delete this tournament?\n\n"+
-    name+
-    "\n\nThis action cannot be undone."
-  );
-
-  if(!confirmed)return;
-
-  const {error}=await supabaseClient
-    .from("tournament")
-    .delete()
-    .eq("id",id);
-
-  if(error){
-    console.error(error);
-    showMessage("Unable to delete tournament: "+error.message,"error");
-    return;
-  }
-
-  showMessage("Tournament deleted successfully.","success");
-  resetForm();
-  await loadTournaments();
+  return payload;
 }
 
-document.getElementById("cancelEditBtn").addEventListener("click",()=>{
+async function loadMatches(){
+  const box=$("matchList");
+  box.textContent="Loading matches...";
+
+  const {data,error}=await db.from("matches").select("*").limit(200);
+
+  if(error){
+    console.error("Match loading error:",error);
+    box.innerHTML='<div class="empty">Could not load matches. Check the matches table, its columns, and Supabase SELECT permissions.</div>';
+    message("Unable to load matches: "+error.message);
+    return;
+  }
+
+  currentMatches=data||[];
+  matchColumns=currentMatches.length?Object.keys(currentMatches[0]):matchColumns;
+
+  if(!currentMatches.length){
+    box.innerHTML='<div class="empty">No matches found yet. Create your first match above. If the table is empty, the page may not yet be able to detect all available columns.</div>';
+    return;
+  }
+
+  box.innerHTML=currentMatches.map(m=>{
+    const teamA=m.team1_id??m.team_a_id??m.team1??"Not assigned";
+    const teamB=m.team2_id??m.team_b_id??m.team2??"Not assigned";
+    const date=m.match_date??m.scheduled_at??m.start_time;
+    const status=String(m.status??"scheduled").toLowerCase();
+    const statusClass=["scheduled","ongoing","completed","cancelled"].includes(status)?status:"scheduled";
+    const scoreA=m.team1_score??m.score1;
+    const scoreB=m.team2_score??m.score2;
+
+    return `<article class="match-item">
+      <div class="match-head">
+        <div>
+          <div class="match-name">Match ${esc(m.match_number??m.id??"")}</div>
+          <div class="meta">
+            Tournament: ${esc(m.tournament_id??"Not set")}<br>
+            Group: ${esc(m.group_name??m.group??"Not set")}<br>
+            Round: ${esc(m.round_name??m.round??"Not set")}<br>
+            Team 1 ID: ${esc(teamA)}<br>
+            Team 2 ID: ${esc(teamB)}<br>
+            Score: ${esc(scoreA??"—")} – ${esc(scoreB??"—")}<br>
+            Winner ID: ${esc(m.winner_id??"Not decided")}<br>
+            Date: ${esc(date?new Date(date).toLocaleString():"Not set")}
+          </div>
+        </div>
+        <span class="badge status-${statusClass}">${esc(status)}</span>
+      </div>
+      <div class="item-actions">
+        <button class="secondary" type="button" data-edit="${esc(m.id)}">EDIT</button>
+        <button class="danger" type="button" data-delete="${esc(m.id)}">DELETE</button>
+      </div>
+    </article>`;
+  }).join("");
+
+  box.querySelectorAll("[data-edit]").forEach(btn=>{
+    btn.addEventListener("click",()=>{
+      const match=currentMatches.find(m=>String(m.id)===btn.dataset.edit);
+      if(match)fillForm(match);
+    });
+  });
+
+  box.querySelectorAll("[data-delete]").forEach(btn=>{
+    btn.addEventListener("click",()=>deleteMatch(btn.dataset.delete));
+  });
+}
+
+$("matchForm").addEventListener("submit",async e=>{
+  e.preventDefault();
+  if(busy)return;
+  clearMessage();
+
+  const editingId=$("editingId").value;
+  if(!$("tournament_id").value.trim()||!$("team1_id").value.trim()||!$("team2_id").value.trim()){
+    message("Tournament ID, Team 1 ID, and Team 2 ID are required.");
+    return;
+  }
+  if($("team1_id").value.trim()===$("team2_id").value.trim()){
+    message("Team 1 and Team 2 must be different.");
+    return;
+  }
+
+  if(!matchColumns.length){
+    const {data,error}=await db.from("matches").select("*").limit(1);
+    if(error){
+      message("Cannot inspect the matches table: "+error.message);
+      return;
+    }
+    if(data?.length)matchColumns=Object.keys(data[0]);
+  }
+
+  if(!matchColumns.length){
+    message("The matches table has no rows, so this page cannot safely infer its column names yet. Please share the columns of your Supabase matches table.");
+    return;
+  }
+
+  const payload=buildPayload();
+  if(!payload.tournament_id||!payload.team1_id||!payload.team2_id){
+    message("Your matches table is missing one or more required columns: tournament_id, team1_id, or team2_id. The page needs to be adjusted to your database schema.");
+    return;
+  }
+
+  busy=true;
+  $("saveBtn").disabled=true;
+  $("saveBtn").textContent=editingId?"SAVING...":"CREATING...";
+
+  const result=editingId
+    ?await db.from("matches").update(payload).eq("id",editingId)
+    :await db.from("matches").insert(payload);
+
+  busy=false;
+  $("saveBtn").disabled=false;
+  $("saveBtn").textContent=editingId?"SAVE CHANGES":"CREATE MATCH";
+
+  if(result.error){
+    console.error("Save match error:",result.error);
+    message("Could not save match: "+result.error.message);
+    return;
+  }
+
+  message(editingId?"Match updated successfully.":"Match created successfully.","success");
   resetForm();
+  await loadMatches();
 });
 
-document.getElementById("refreshBtn").addEventListener("click",loadTournaments);
+async function deleteMatch(id){
+  const m=currentMatches.find(x=>String(x.id)===String(id));
+  if(!confirm("Delete this match?"+(m?"\nMatch ID: "+m.id:"")+"\nThis cannot be undone."))return;
 
-document.getElementById("logoutBtn").addEventListener("click",async()=>{
-  await supabaseClient.auth.signOut();
+  const {error}=await db.from("matches").delete().eq("id",id);
+  if(error){
+    console.error(error);
+    message("Could not delete match: "+error.message);
+    return;
+  }
+
+  message("Match deleted successfully.","success");
+  resetForm();
+  await loadMatches();
+}
+
+$("cancelBtn").addEventListener("click",resetForm);
+$("refreshBtn").addEventListener("click",loadMatches);
+$("logoutBtn").addEventListener("click",async()=>{
+  await db.auth.signOut();
   window.location.href="login.html";
 });
 
 (async()=>{
-  const ok=await checkAdmin();
-  if(!ok)return;
-  await loadTournaments();
+  if(await checkAdmin())await loadMatches();
 })();
 </script>
 </body>
