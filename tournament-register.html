@@ -191,11 +191,18 @@
     CURRENT_TOURNAMENT_ID = getTournamentIdFromUrl();
     const {data,error} = await supabaseClient.from("tournament")
       .select("id,name,game,description,entry_fee,registration_open,status,registration_deadline,max_teams,team_size,substitute_players")
-      .eq("id",CURRENT_TOURNAMENT_ID).single();
+      .eq("id",CURRENT_TOURNAMENT_ID).maybeSingle();
 
     if (error || !data) {
+      console.error("Tournament loading error:", error);
       document.getElementById("loading").classList.add("hidden");
-      showMessage("page-message","Unable to load tournament settings. Check the tournament ID and table columns. " + (error?.message || ""),"error");
+      showMessage(
+        "page-message",
+        error
+          ? "Unable to load tournament settings: " + error.message
+          : "Tournament not found. Check that the tournament ID in this page matches an ID in the Supabase tournament table.",
+        "error"
+      );
       return;
     }
     CURRENT_TOURNAMENT = data;
