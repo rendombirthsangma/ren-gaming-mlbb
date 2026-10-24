@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Ren Gaming — Tournament Management</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:Arial,sans-serif;background:#080808;color:#fff;min-height:100vh}
@@ -29,6 +30,7 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:#ff1e1e}
 .primary,.secondary,.danger{color:#fff;border:0;padding:11px 18px;border-radius:6px;font-weight:bold;cursor:pointer}
 .primary{background:#e31313}
 .primary:hover{background:#ff2424}
+.primary:disabled{opacity:.6;cursor:wait}
 .secondary{background:#242424;border:1px solid #444}
 .secondary:hover{border-color:#ff1e1e}
 .danger{background:#5b1616;border:1px solid #8b2525}
@@ -42,7 +44,7 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:#ff1e1e}
 .tournament-item{background:#0b0b0b;border:1px solid #292929;border-radius:8px;padding:18px}
 .tournament-header{display:flex;justify-content:space-between;gap:15px;align-items:flex-start}
 .tournament-name{font-size:19px;font-weight:bold}
-.tournament-meta{color:#999;font-size:13px;line-height:1.7;margin-top:7px}
+.tournament-meta{color:#999;font-size:13px;line-height:1.8;margin-top:7px;overflow-wrap:anywhere}
 .status{display:inline-block;padding:5px 9px;border-radius:5px;font-size:11px;font-weight:bold;text-transform:uppercase;white-space:nowrap}
 .status-upcoming{background:#3a2b00;color:#ffd666}
 .status-ongoing{background:#0d3518;color:#6ee7a0}
@@ -50,78 +52,96 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:#ff1e1e}
 .item-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:15px}
 .empty{color:#888;background:#0b0b0b;border:1px solid #292929;padding:18px;border-radius:8px}
 .hidden{display:none!important}
-@media(max-width:700px){.grid{grid-template-columns:1fr}.field.full{grid-column:auto}.tournament-header{flex-direction:column}.header-actions{display:flex;gap:8px;flex-wrap:wrap}.header-actions .back,.header-actions .logout{padding:9px 12px}}
+.small-note{color:#888;font-size:12px;line-height:1.5}
+@media(max-width:700px){
+  header{padding:15px 4%;gap:12px}
+  .logo{font-size:18px}
+  .container{margin:25px auto;padding:0 12px}
+  .card{padding:18px}
+  .grid{grid-template-columns:1fr}
+  .field.full{grid-column:auto}
+  .tournament-header{flex-direction:column}
+  .header-actions{display:flex;gap:8px;flex-wrap:wrap}
+  .header-actions .back,.header-actions .logout{padding:9px 12px;font-size:12px}
+}
 </style>
 </head>
-<body>
 
+<body>
 <header>
   <div class="logo">REN GAMING — ADMIN</div>
   <div class="header-actions">
     <a class="back" href="admin.html">← ADMIN PANEL</a>
-    <button class="logout" id="logoutBtn">LOGOUT</button>
+    <button class="logout" id="logoutBtn" type="button">LOGOUT</button>
   </div>
 </header>
 
 <div class="container">
   <h1>🏆 Tournament Management</h1>
 
-  <div id="message" class="message"></div>
+  <div id="message" class="message" role="status"></div>
 
   <div class="card">
     <h2 id="formTitle">Create New Tournament</h2>
 
     <form id="tournamentForm">
       <input type="hidden" id="editingId">
-      <div class="grid">
 
+      <div class="grid">
         <div class="field">
-          <label>Tournament Name *</label>
+          <label for="name">Tournament Name *</label>
           <input id="name" required placeholder="e.g. Ren Gaming Championship">
         </div>
 
         <div class="field">
-          <label>Game *</label>
+          <label for="game">Game *</label>
           <input id="game" required value="Moba Legends: 5v5!">
         </div>
 
         <div class="field full">
-          <label>Description</label>
+          <label for="description">Description</label>
           <textarea id="description" placeholder="Tournament description"></textarea>
         </div>
 
         <div class="field">
-          <label>Start Date & Time</label>
+          <label for="start_date">Start Date &amp; Time</label>
           <input id="start_date" type="datetime-local">
         </div>
 
         <div class="field">
-          <label>Registration Deadline</label>
+          <label for="registration_deadline">Registration Deadline</label>
           <input id="registration_deadline" type="datetime-local">
         </div>
 
         <div class="field">
-          <label>Entry Fee (₹)</label>
+          <label for="entry_fee">Entry Fee (₹)</label>
           <input id="entry_fee" type="number" min="0" step="1" value="0">
         </div>
 
         <div class="field">
-          <label>Prize (₹)</label>
+          <label for="prize">Prize (₹)</label>
           <input id="prize" type="number" min="0" step="1" value="1000">
         </div>
 
         <div class="field">
-          <label>Team Size</label>
-          <input id="team_size" type="number" min="1" value="5">
+          <label for="team_size">Main Players Per Team</label>
+          <input id="team_size" type="number" min="1" max="20" value="5" required>
+          <span class="small-note">Example: 5 players for a 5v5 tournament.</span>
         </div>
 
         <div class="field">
-          <label>Maximum Teams</label>
+          <label for="substitute_players">Substitute Players Per Team</label>
+          <input id="substitute_players" type="number" min="0" max="10" value="2" required>
+          <span class="small-note">Default: 2 substitutes. Set to 0 if substitutes are not allowed.</span>
+        </div>
+
+        <div class="field">
+          <label for="max_teams">Maximum Teams</label>
           <input id="max_teams" type="number" min="1" placeholder="e.g. 32">
         </div>
 
         <div class="field">
-          <label>Status</label>
+          <label for="status">Status</label>
           <select id="status">
             <option value="upcoming">Upcoming</option>
             <option value="ongoing">Ongoing</option>
@@ -136,22 +156,25 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:#ff1e1e}
             <span>Registration Open</span>
           </div>
         </div>
-
       </div>
 
       <div class="form-actions">
         <button class="primary" id="submitBtn" type="submit">CREATE TOURNAMENT</button>
         <button class="secondary hidden" id="cancelEditBtn" type="button">CANCEL EDIT</button>
       </div>
-      <p class="note" id="formNote">Create a new tournament. Existing tournaments can be edited or deleted from the list below.</p>
+
+      <p class="note" id="formNote">
+        Create a new tournament. Existing tournaments can be edited or deleted from the list below.
+      </p>
     </form>
   </div>
 
   <div class="card">
-    <div style="display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:20px;flex-wrap:wrap;">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:20px;flex-wrap:wrap">
       <h2 style="margin-bottom:0">📋 Existing Tournaments</h2>
       <button class="secondary" id="refreshBtn" type="button">REFRESH</button>
     </div>
+
     <div id="tournamentsContainer" class="tournament-list">
       Loading tournaments...
     </div>
@@ -159,242 +182,383 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:#ff1e1e}
 </div>
 
 <script>
-const SUPABASE_URL="https://bixpvxkpnaqdifmvkhvp.supabase.co";
-const SUPABASE_PUBLISHABLE_KEY="sb_publishable_XtzkrIFbBPTGUmoLHqHu5Q_XeznKoVI";
-const supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);
+const SUPABASE_URL = "https://bixpvxkpnaqdifmvkhvp.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_XtzkrIFbBPTGUmoLHqHu5Q_XeznKoVI";
 
-function showMessage(text,type){
-  const el=document.getElementById("message");
-  el.textContent=text;
-  el.className="message "+type;
-  setTimeout(()=>el.className="message",5000);
+const supabaseClient = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_PUBLISHABLE_KEY
+);
+
+let messageTimer;
+
+function showMessage(text, type) {
+  const el = document.getElementById("message");
+  clearTimeout(messageTimer);
+  el.textContent = text;
+  el.className = "message " + type;
+
+  messageTimer = setTimeout(() => {
+    el.className = "message";
+  }, 6000);
 }
 
-function escapeHtml(value){
-  if(value===null||value===undefined)return "";
+function escapeHtml(value) {
+  if (value === null || value === undefined) return "";
+
   return String(value)
-    .replace(/&/g,"&amp;")
-    .replace(/</g,"&lt;")
-    .replace(/>/g,"&gt;")
-    .replace(/"/g,"&quot;")
-    .replace(/'/g,"&#039;");
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
 }
 
-async function checkAdmin(){
-  const {data:{user}}=await supabaseClient.auth.getUser();
-  if(!user){window.location.href="login.html";return false}
+async function checkAdmin() {
+  const { data: { user }, error: userError } =
+    await supabaseClient.auth.getUser();
 
-  const {data:profile,error}=await supabaseClient
-    .from("profiles").select("role").eq("id",user.id).single();
-
-  if(error||!profile||profile.role!=="admin"){
-    alert("Admin access required.");
-    window.location.href="dashboard.html";
+  if (userError || !user) {
+    window.location.href = "login.html";
     return false;
   }
+
+  const { data: profile, error } = await supabaseClient
+    .from("profiles")
+    .select("role")
+    .eq("id", user.id)
+    .single();
+
+  if (error || !profile || profile.role !== "admin") {
+    alert("Admin access required.");
+    window.location.href = "dashboard.html";
+    return false;
+  }
+
   return true;
 }
 
-function toIso(id){
-  const value=document.getElementById(id).value;
+function toIso(id) {
+  const value = document.getElementById(id).value;
   return value ? new Date(value).toISOString() : null;
 }
 
-function toLocalDateTime(value){
-  if(!value)return "";
-  const date=new Date(value);
-  if(Number.isNaN(date.getTime()))return "";
-  const local=new Date(date.getTime()-date.getTimezoneOffset()*60000);
-  return local.toISOString().slice(0,16);
+function toLocalDateTime(value) {
+  if (!value) return "";
+
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "";
+
+  const local = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+  return local.toISOString().slice(0, 16);
 }
 
-function resetForm(){
+function resetForm() {
   document.getElementById("tournamentForm").reset();
-  document.getElementById("editingId").value="";
-  document.getElementById("game").value="Moba Legends: 5v5!";
-  document.getElementById("entry_fee").value="0";
-  document.getElementById("prize").value="1000";
-  document.getElementById("team_size").value="5";
-  document.getElementById("registration_open").checked=true;
-  document.getElementById("formTitle").textContent="Create New Tournament";
-  document.getElementById("submitBtn").textContent="CREATE TOURNAMENT";
+
+  document.getElementById("editingId").value = "";
+  document.getElementById("game").value = "Moba Legends: 5v5!";
+  document.getElementById("entry_fee").value = "0";
+  document.getElementById("prize").value = "1000";
+  document.getElementById("team_size").value = "5";
+  document.getElementById("substitute_players").value = "2";
+  document.getElementById("max_teams").value = "";
+  document.getElementById("status").value = "upcoming";
+  document.getElementById("registration_open").checked = true;
+
+  document.getElementById("formTitle").textContent = "Create New Tournament";
+  document.getElementById("submitBtn").textContent = "CREATE TOURNAMENT";
+  document.getElementById("submitBtn").disabled = false;
   document.getElementById("cancelEditBtn").classList.add("hidden");
-  document.getElementById("formNote").textContent="Create a new tournament. Existing tournaments can be edited or deleted from the list below.";
+
+  document.getElementById("formNote").textContent =
+    "Create a new tournament. Existing tournaments can be edited or deleted from the list below.";
 }
 
-function editTournament(tournament){
-  document.getElementById("editingId").value=tournament.id;
-  document.getElementById("name").value=tournament.name||"";
-  document.getElementById("game").value=tournament.game||"Moba Legends: 5v5!";
-  document.getElementById("description").value=tournament.description||"";
-  document.getElementById("start_date").value=toLocalDateTime(tournament.start_date);
-  document.getElementById("registration_deadline").value=toLocalDateTime(tournament.registration_deadline);
-  document.getElementById("entry_fee").value=tournament.entry_fee ?? 0;
-  document.getElementById("prize").value=tournament.prize ?? 0;
-  document.getElementById("team_size").value=tournament.team_size ?? 5;
-  document.getElementById("max_teams").value=tournament.max_teams ?? "";
-  document.getElementById("status").value=tournament.status||"upcoming";
-  document.getElementById("registration_open").checked=tournament.registration_open !== false;
+function editTournamentById(id) {
+  const tournament = tournamentCache.find(
+    item => String(item.id) === String(id)
+  );
 
-  document.getElementById("formTitle").textContent="Edit Tournament";
-  document.getElementById("submitBtn").textContent="SAVE CHANGES";
+  if (!tournament) {
+    showMessage("Tournament not found. Please refresh the list.", "error");
+    return;
+  }
+
+  editTournament(tournament);
+}
+
+let tournamentCache = [];
+
+function editTournament(tournament) {
+  document.getElementById("editingId").value = tournament.id;
+  document.getElementById("name").value = tournament.name || "";
+  document.getElementById("game").value = tournament.game || "Moba Legends: 5v5!";
+  document.getElementById("description").value = tournament.description || "";
+  document.getElementById("start_date").value = toLocalDateTime(tournament.start_date);
+  document.getElementById("registration_deadline").value = toLocalDateTime(tournament.registration_deadline);
+  document.getElementById("entry_fee").value = tournament.entry_fee ?? 0;
+  document.getElementById("prize").value = tournament.prize ?? 0;
+  document.getElementById("team_size").value = tournament.team_size ?? 5;
+  document.getElementById("substitute_players").value = tournament.substitute_players ?? 2;
+  document.getElementById("max_teams").value = tournament.max_teams ?? "";
+  document.getElementById("status").value = tournament.status || "upcoming";
+  document.getElementById("registration_open").checked = tournament.registration_open !== false;
+
+  document.getElementById("formTitle").textContent = "Edit Tournament";
+  document.getElementById("submitBtn").textContent = "SAVE CHANGES";
   document.getElementById("cancelEditBtn").classList.remove("hidden");
-  document.getElementById("formNote").textContent="You are editing this tournament. Save changes when finished.";
-  window.scrollTo({top:0,behavior:"smooth"});
+  document.getElementById("formNote").textContent =
+    "You are editing this tournament. Save changes when finished.";
+
+  window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
-async function loadTournaments(){
-  const container=document.getElementById("tournamentsContainer");
-  container.innerHTML="Loading tournaments...";
+function formatDate(value) {
+  if (!value) return "Not set";
 
-  const {data,error}=await supabaseClient
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "Not set";
+
+  return date.toLocaleString();
+}
+
+async function loadTournaments() {
+  const container = document.getElementById("tournamentsContainer");
+  container.textContent = "Loading tournaments...";
+
+  const { data, error } = await supabaseClient
     .from("tournament")
     .select("*")
-    .order("created_at",{ascending:false});
+    .order("created_at", { ascending: false });
 
-  if(error){
-    console.error(error);
-    container.innerHTML='<div class="empty">Unable to load tournaments.</div>';
+  if (error) {
+    console.error("Load tournaments error:", error);
+    container.innerHTML =
+      '<div class="empty">Unable to load tournaments: ' +
+      escapeHtml(error.message) +
+      '</div>';
     return;
   }
 
-  if(!data||data.length===0){
-    container.innerHTML='<div class="empty">No tournaments found.</div>';
+  tournamentCache = data || [];
+
+  if (tournamentCache.length === 0) {
+    container.innerHTML = '<div class="empty">No tournaments found.</div>';
     return;
   }
 
-  container.innerHTML=data.map(tournament=>{
-    const status=tournament.status||"upcoming";
-    const statusClass=status==="ongoing"?"status-ongoing":status==="completed"?"status-completed":"status-upcoming";
-    const start=tournament.start_date?new Date(tournament.start_date).toLocaleString():"Not set";
-    const deadline=tournament.registration_deadline?new Date(tournament.registration_deadline).toLocaleString():"Not set";
-    const registration=tournament.registration_open===false?"Closed":"Open";
-    const teamSize=tournament.team_size?String(tournament.team_size)+"v"+String(tournament.team_size):"5v5";
+  container.innerHTML = tournamentCache.map(tournament => {
+    const status = tournament.status || "upcoming";
+
+    const statusClass =
+      status === "ongoing" ? "status-ongoing" :
+      status === "completed" ? "status-completed" :
+      "status-upcoming";
+
+    const start = formatDate(tournament.start_date);
+    const deadline = formatDate(tournament.registration_deadline);
+    const registration = tournament.registration_open === false ? "Closed" : "Open";
+
+    const teamSize = Number(tournament.team_size ?? 5);
+    const substitutePlayers = Number(tournament.substitute_players ?? 2);
+    const format = teamSize + "v" + teamSize;
 
     return `
       <div class="tournament-item">
         <div class="tournament-header">
           <div>
-            <div class="tournament-name">${escapeHtml(tournament.name||"Unnamed Tournament")}</div>
+            <div class="tournament-name">
+              ${escapeHtml(tournament.name || "Unnamed Tournament")}
+            </div>
+
             <div class="tournament-meta">
-              Game: ${escapeHtml(tournament.game||"Not set")}<br>
+              Game: ${escapeHtml(tournament.game || "Not set")}<br>
               Start: ${escapeHtml(start)}<br>
               Registration Deadline: ${escapeHtml(deadline)}<br>
-              Entry Fee: ₹${escapeHtml(tournament.entry_fee??0)} &nbsp;|&nbsp;
-              Prize: ₹${escapeHtml(tournament.prize??0)}<br>
-              Format: ${escapeHtml(teamSize)} &nbsp;|&nbsp;
-              Maximum Teams: ${escapeHtml(tournament.max_teams??"Unlimited")} &nbsp;|&nbsp;
+              Entry Fee: ₹${escapeHtml(tournament.entry_fee ?? 0)} |
+              Prize: ₹${escapeHtml(tournament.prize ?? 0)}<br>
+              Format: ${escapeHtml(format)}<br>
+              Main Players Per Team: ${escapeHtml(teamSize)}<br>
+              Substitute Players Per Team: ${escapeHtml(substitutePlayers)}<br>
+              Maximum Teams: ${escapeHtml(tournament.max_teams ?? "Unlimited")}<br>
               Registration: ${escapeHtml(registration)}
             </div>
           </div>
-          <span class="status ${statusClass}">${escapeHtml(status)}</span>
+
+          <span class="status ${statusClass}">
+            ${escapeHtml(status)}
+          </span>
         </div>
 
         <div class="item-actions">
-          <button class="secondary" type="button" onclick='editTournament(${JSON.stringify(tournament).replace(/'/g,"&#039;")})'>EDIT</button>
-          <button class="danger" type="button" onclick="deleteTournament('${escapeHtml(tournament.id)}','${escapeHtml(tournament.name||"Unnamed Tournament")}')">DELETE</button>
+          <button
+            class="secondary"
+            type="button"
+            data-edit-id="${escapeHtml(tournament.id)}">
+            EDIT
+          </button>
+
+          <button
+            class="danger"
+            type="button"
+            data-delete-id="${escapeHtml(tournament.id)}">
+            DELETE
+          </button>
         </div>
       </div>
     `;
   }).join("");
+
+  container.querySelectorAll("[data-edit-id]").forEach(button => {
+    button.addEventListener("click", () => {
+      editTournamentById(button.dataset.editId);
+    });
+  });
+
+  container.querySelectorAll("[data-delete-id]").forEach(button => {
+    button.addEventListener("click", () => {
+      const tournament = tournamentCache.find(
+        item => String(item.id) === button.dataset.deleteId
+      );
+
+      if (tournament) {
+        deleteTournament(tournament.id, tournament.name || "Unnamed Tournament");
+      }
+    });
+  });
 }
 
-document.getElementById("tournamentForm").addEventListener("submit",async(e)=>{
-  e.preventDefault();
+document.getElementById("tournamentForm").addEventListener("submit", async event => {
+  event.preventDefault();
 
-  const editingId=document.getElementById("editingId").value;
+  const editingId = document.getElementById("editingId").value;
 
-  const payload={
-    name:document.getElementById("name").value.trim(),
-    game:document.getElementById("game").value.trim(),
-    description:document.getElementById("description").value.trim()||null,
-    start_date:toIso("start_date"),
-    registration_deadline:toIso("registration_deadline"),
-    entry_fee:Number(document.getElementById("entry_fee").value||0),
-    prize:Number(document.getElementById("prize").value||0),
-    team_size:Number(document.getElementById("team_size").value||5),
-    max_teams:document.getElementById("max_teams").value
-      ? Number(document.getElementById("max_teams").value)
-      : null,
-    status:document.getElementById("status").value,
-    registration_open:document.getElementById("registration_open").checked
-  };
+  const teamSize = Number(document.getElementById("team_size").value);
+  const substitutePlayers = Number(document.getElementById("substitute_players").value);
 
-  if(!payload.name||!payload.game){
-    showMessage("Tournament name and game are required.","error");
+  if (!Number.isInteger(teamSize) || teamSize < 1 || teamSize > 20) {
+    showMessage("Main players must be between 1 and 20.", "error");
     return;
   }
 
-  const button=document.getElementById("submitBtn");
-  button.disabled=true;
-  button.textContent=editingId?"SAVING...":"CREATING...";
+  if (!Number.isInteger(substitutePlayers) || substitutePlayers < 0 || substitutePlayers > 10) {
+    showMessage("Substitutes must be between 0 and 10.", "error");
+    return;
+  }
+
+  const payload = {
+    name: document.getElementById("name").value.trim(),
+    game: document.getElementById("game").value.trim(),
+    description: document.getElementById("description").value.trim() || null,
+    start_date: toIso("start_date"),
+    registration_deadline: toIso("registration_deadline"),
+    entry_fee: Number(document.getElementById("entry_fee").value || 0),
+    prize: Number(document.getElementById("prize").value || 0),
+    team_size: teamSize,
+    substitute_players: substitutePlayers,
+    max_teams: document.getElementById("max_teams").value
+      ? Number(document.getElementById("max_teams").value)
+      : null,
+    status: document.getElementById("status").value,
+    registration_open: document.getElementById("registration_open").checked
+  };
+
+  if (!payload.name || !payload.game) {
+    showMessage("Tournament name and game are required.", "error");
+    return;
+  }
+
+  if (payload.entry_fee < 0 || payload.prize < 0) {
+    showMessage("Entry fee and prize cannot be negative.", "error");
+    return;
+  }
+
+  if (payload.max_teams !== null &&
+      (!Number.isInteger(payload.max_teams) || payload.max_teams < 1)) {
+    showMessage("Maximum teams must be a positive whole number.", "error");
+    return;
+  }
+
+  const button = document.getElementById("submitBtn");
+  button.disabled = true;
+  button.textContent = editingId ? "SAVING..." : "CREATING...";
 
   let result;
 
-  if(editingId){
-    result=await supabaseClient
-      .from("tournament")
-      .update(payload)
-      .eq("id",editingId);
-  }else{
-    result=await supabaseClient
-      .from("tournament")
-      .insert(payload);
+  try {
+    if (editingId) {
+      result = await supabaseClient
+        .from("tournament")
+        .update(payload)
+        .eq("id", editingId);
+    } else {
+      result = await supabaseClient
+        .from("tournament")
+        .insert(payload);
+    }
+  } catch (error) {
+    result = { error };
   }
 
-  button.disabled=false;
+  button.disabled = false;
 
-  if(result.error){
-    console.error(result.error);
-    button.textContent=editingId?"SAVE CHANGES":"CREATE TOURNAMENT";
-    showMessage("Unable to save tournament: "+result.error.message,"error");
+  if (result.error) {
+    console.error("Save tournament error:", result.error);
+    button.textContent = editingId ? "SAVE CHANGES" : "CREATE TOURNAMENT";
+    showMessage("Unable to save tournament: " + result.error.message, "error");
     return;
   }
 
-  showMessage(editingId?"Tournament updated successfully.":"Tournament created successfully.","success");
+  showMessage(
+    editingId ? "Tournament updated successfully." : "Tournament created successfully.",
+    "success"
+  );
+
   resetForm();
   await loadTournaments();
 });
 
-async function deleteTournament(id,name){
-  const confirmed=confirm(
-    "Delete this tournament?\n\n"+
-    name+
+async function deleteTournament(id, name) {
+  const confirmed = confirm(
+    "Delete this tournament?\n\n" +
+    name +
     "\n\nThis action cannot be undone."
   );
 
-  if(!confirmed)return;
+  if (!confirmed) return;
 
-  const {error}=await supabaseClient
+  const { error } = await supabaseClient
     .from("tournament")
     .delete()
-    .eq("id",id);
+    .eq("id", id);
 
-  if(error){
-    console.error(error);
-    showMessage("Unable to delete tournament: "+error.message,"error");
+  if (error) {
+    console.error("Delete tournament error:", error);
+    showMessage("Unable to delete tournament: " + error.message, "error");
     return;
   }
 
-  showMessage("Tournament deleted successfully.","success");
+  showMessage("Tournament deleted successfully.", "success");
   resetForm();
   await loadTournaments();
 }
 
-document.getElementById("cancelEditBtn").addEventListener("click",()=>{
+document.getElementById("cancelEditBtn").addEventListener("click", () => {
   resetForm();
 });
 
-document.getElementById("refreshBtn").addEventListener("click",loadTournaments);
+document.getElementById("refreshBtn").addEventListener("click", loadTournaments);
 
-document.getElementById("logoutBtn").addEventListener("click",async()=>{
+document.getElementById("logoutBtn").addEventListener("click", async () => {
   await supabaseClient.auth.signOut();
-  window.location.href="login.html";
+  window.location.href = "login.html";
 });
 
-(async()=>{
-  const ok=await checkAdmin();
-  if(!ok)return;
+(async () => {
+  const ok = await checkAdmin();
+  if (!ok) return;
+
   await loadTournaments();
 })();
 </script>
