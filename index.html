@@ -26,9 +26,7 @@
             --border: rgba(255, 255, 255, 0.10);
         }
 
-        html {
-            scroll-behavior: smooth;
-        }
+        html { scroll-behavior: smooth; }
 
         body {
             background: var(--background);
@@ -37,16 +35,8 @@
             line-height: 1.6;
         }
 
-        a {
-            color: inherit;
-            text-decoration: none;
-        }
-
-        button {
-            font-family: inherit;
-        }
-
-        /* HEADER */
+        a { color: inherit; text-decoration: none; }
+        button { font-family: inherit; }
 
         header {
             width: 100%;
@@ -91,9 +81,7 @@
             box-shadow: 0 0 18px rgba(255, 37, 37, 0.25);
         }
 
-        .logo span {
-            color: var(--red);
-        }
+        .logo span { color: var(--red); }
 
         .nav-links {
             display: flex;
@@ -108,9 +96,7 @@
             transition: color 0.2s;
         }
 
-        .nav-links a:hover {
-            color: var(--red);
-        }
+        .nav-links a:hover { color: var(--red); }
 
         .account-button {
             display: inline-flex;
@@ -134,7 +120,23 @@
             transform: translateY(-2px);
         }
 
-        /* HERO */
+        .admin-button {
+            display: none;
+            background: #171717;
+            color: #ff5555 !important;
+            border: 1px solid var(--red);
+            padding: 11px 15px;
+            border-radius: 7px;
+            font-size: 13px;
+            font-weight: 900;
+            text-align: center;
+            transition: 0.2s;
+        }
+
+        .admin-button:hover {
+            background: var(--red);
+            color: white !important;
+        }
 
         .hero {
             min-height: 590px;
@@ -144,16 +146,8 @@
             position: relative;
             overflow: hidden;
             background:
-                radial-gradient(
-                    circle at 80% 40%,
-                    rgba(255, 0, 0, 0.15),
-                    transparent 35%
-                ),
-                radial-gradient(
-                    circle at 10% 90%,
-                    rgba(150, 0, 0, 0.12),
-                    transparent 30%
-                ),
+                radial-gradient(circle at 80% 40%, rgba(255, 0, 0, 0.15), transparent 35%),
+                radial-gradient(circle at 10% 90%, rgba(150, 0, 0, 0.12), transparent 30%),
                 #050505;
         }
 
@@ -199,9 +193,7 @@
             margin-bottom: 22px;
         }
 
-        .hero h1 span {
-            color: var(--red);
-        }
+        .hero h1 span { color: var(--red); }
 
         .hero p {
             max-width: 620px;
@@ -249,7 +241,17 @@
             color: #ff7777;
         }
 
-        /* STATS */
+        .button-admin {
+            display: none;
+            background: #171717;
+            border: 1px solid var(--red);
+            color: #ff5555;
+        }
+
+        .button-admin:hover {
+            background: var(--red);
+            color: white;
+        }
 
         .stats {
             max-width: 1100px;
@@ -274,9 +276,7 @@
             border-right: 1px solid var(--border);
         }
 
-        .stat:last-child {
-            border-right: none;
-        }
+        .stat:last-child { border-right: none; }
 
         .stat h2 {
             font-size: 27px;
@@ -284,12 +284,7 @@
             margin-bottom: 4px;
         }
 
-        .stat p {
-            color: var(--gray);
-            font-size: 13px;
-        }
-
-        /* SECTIONS */
+        .stat p { color: var(--gray); font-size: 13px; }
 
         .section {
             max-width: 1200px;
@@ -320,8 +315,6 @@
             color: var(--gray);
             font-size: 15px;
         }
-
-        /* FEATURES */
 
         .features-grid {
             display: grid;
@@ -354,26 +347,11 @@
             margin-bottom: 20px;
         }
 
-        .feature-card h3 {
-            font-size: 20px;
-            margin-bottom: 10px;
-        }
-
-        .feature-card p {
-            color: var(--gray);
-            font-size: 14px;
-        }
-
-        /* GAME SECTION */
+        .feature-card h3 { font-size: 20px; margin-bottom: 10px; }
+        .feature-card p { color: var(--gray); font-size: 14px; }
 
         .game-section {
-            background:
-                linear-gradient(
-                    135deg,
-                    rgba(255, 0, 0, 0.09),
-                    transparent 55%
-                ),
-                #0b0b0b;
+            background: linear-gradient(135deg, rgba(255, 0, 0, 0.09), transparent 55%), #0b0b0b;
             border-top: 1px solid var(--border);
             border-bottom: 1px solid var(--border);
         }
@@ -388,9 +366,7 @@
             gap: 35px;
         }
 
-        .game-text {
-            max-width: 700px;
-        }
+        .game-text { max-width: 700px; }
 
         .game-text h2 {
             font-size: clamp(29px, 5vw, 42px);
@@ -398,14 +374,8 @@
             margin-bottom: 18px;
         }
 
-        .game-text h2 span {
-            color: var(--red);
-        }
-
-        .game-text p {
-            color: var(--gray);
-            font-size: 15px;
-        }
+        .game-text h2 span { color: var(--red); }
+        .game-text p { color: var(--gray); font-size: 15px; }
 
         .game-badge {
             flex-shrink: 0;
@@ -428,36 +398,23 @@
             font-weight: bold;
         }
 
-        /* CTA */
-
         .cta {
             max-width: 1156px;
             margin: 70px auto;
             padding: 55px 25px;
             text-align: center;
-            background:
-                radial-gradient(
-                    circle at center,
-                    rgba(255, 37, 37, 0.16),
-                    transparent 70%
-                ),
-                #111111;
+            background: radial-gradient(circle at center, rgba(255, 37, 37, 0.16), transparent 70%), #111111;
             border: 1px solid var(--border);
             border-radius: 14px;
         }
 
-        .cta h2 {
-            font-size: clamp(28px, 5vw, 42px);
-            margin-bottom: 12px;
-        }
+        .cta h2 { font-size: clamp(28px, 5vw, 42px); margin-bottom: 12px; }
 
         .cta p {
             color: var(--gray);
             max-width: 600px;
             margin: 0 auto 25px;
         }
-
-        /* FOOTER */
 
         footer {
             border-top: 1px solid var(--border);
@@ -475,10 +432,7 @@
             flex-wrap: wrap;
         }
 
-        .footer-content p {
-            color: var(--gray);
-            font-size: 13px;
-        }
+        .footer-content p { color: var(--gray); font-size: 13px; }
 
         .footer-links {
             display: flex;
@@ -486,22 +440,11 @@
             flex-wrap: wrap;
         }
 
-        .footer-links a {
-            color: #cccccc;
-            font-size: 13px;
-        }
-
-        .footer-links a:hover {
-            color: var(--red);
-        }
-
-        /* MOBILE */
+        .footer-links a { color: #cccccc; font-size: 13px; }
+        .footer-links a:hover { color: var(--red); }
 
         @media (max-width: 800px) {
-            .navbar {
-                flex-wrap: wrap;
-            }
-
+            .navbar { flex-wrap: wrap; }
             .nav-links {
                 order: 3;
                 width: 100%;
@@ -510,390 +453,8 @@
                 padding-top: 8px;
             }
 
-            .account-button {
-                min-width: auto;
-                padding: 10px 12px;
-            }
-
-            .hero {
-                min-height: 510px;
-                padding-top: 70px;
-                padding-bottom: 75px;
-            }
-
-            .features-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .game-content {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
-            .game-badge {
-                width: 100%;
-            }
-
-            .cta {
-                margin: 45px 22px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .logo {
-                font-size: 20px;
-            }
-
-            .logo-icon {
-                width: 38px;
-                height: 38px;
-            }
-
-            .nav-links {
-                gap: 14px;
-            }
-
-            .nav-links a {
-                font-size: 12px;
-            }
-
-            .hero h1 {
-                font-size: 43px;
-            }
-
-            .hero p {
-                font-size: 15px;
-            }
-
-            .stats-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .stat {
-                border-right: none;
-                border-bottom: 1px solid var(--border);
-                padding: 20px;
-            }
-
-            .stat:last-child {
-                border-bottom: none;
-            }
-
-            .section {
-                padding-top: 70px;
-                padding-bottom: 70px;
-            }
-
-            .footer-content {
-                flex-direction: column;
-                text-align: center;
-            }
-        }
-    </style>
-</head>
-
-<body>
-
-    <!-- HEADER -->
-    <header>
-        <nav class="navbar">
-
-            <a href="index.html" class="logo">
-                <div class="logo-icon">RG</div>
-                <div>REN <span>GAMING</span></div>
-            </a>
-
-            <div class="nav-links">
-                <a href="index.html">Home</a>
-                <a href="#features">Features</a>
-                <a href="#game">Our Game</a>
-                <a href="tournament-register.html">Tournament</a>
-            </div>
-
-            <a href="login.html"
-               class="account-button"
-               id="accountButton">
-                LOGIN / REGISTER
-            </a>
-
-        </nav>
-    </header>
-
-
-    <!-- HERO -->
-    <main>
-        <section class="hero">
-            <div class="hero-content">
-
-                <div class="hero-label">
-                    WELCOME TO REN GAMING
-                </div>
-
-                <h1>
-                    PLAY TO WIN.<br>
-                    <span>RISE TO GLORY.</span>
-                </h1>
-
-                <p>
-                    Join the Ren Gaming community, compete in exciting
-                    tournaments, build your team, and show everyone
-                    what you are capable of.
-                </p>
-
-                <div class="hero-buttons">
-                    <a href="tournament-register.html"
-                       class="button button-primary">
-                        JOIN TOURNAMENT
-                    </a>
-
-                    <a href="dashboard.html"
-                       class="button button-secondary"
-                       id="heroDashboardButton">
-                        MY DASHBOARD
-                    </a>
-                </div>
-
-            </div>
-        </section>
-
-
-        <!-- STATS -->
-        <section class="stats">
-            <div class="stats-grid">
-
-                <div class="stat">
-                    <h2>5v5</h2>
-                    <p>Team Battles</p>
-                </div>
-
-                <div class="stat">
-                    <h2>RG</h2>
-                    <p>Ren Gaming Community</p>
-                </div>
-
-                <div class="stat">
-                    <h2>100%</h2>
-                    <p>Competitive Spirit</p>
-                </div>
-
-            </div>
-        </section>
-
-
-        <!-- FEATURES -->
-        <section class="section" id="features">
-
-            <div class="section-heading">
-                <span>WHY REN GAMING?</span>
-                <h2>YOUR GAMING JOURNEY STARTS HERE</h2>
-                <p>
-                    Everything you need to become part of our
-                    gaming community.
-                </p>
-            </div>
-
-            <div class="features-grid">
-
-                <div class="feature-card">
-                    <div class="feature-icon">🏆</div>
-                    <h3>Join Tournaments</h3>
-                    <p>
-                        Register for Ren Gaming tournaments and compete
-                        against other teams for exciting prizes.
-                    </p>
-                </div>
-
-                <div class="feature-card">
-                    <div class="feature-icon">⚔️</div>
-                    <h3>Build Your Team</h3>
-                    <p>
-                        Bring your teammates together, prepare your
-                        strategies, and fight for victory.
-                    </p>
-                </div>
-
-                <div class="feature-card">
-                    <div class="feature-icon">🎮</div>
-                    <h3>Gaming Community</h3>
-                    <p>
-                        Connect with players, follow tournament updates,
-                        and grow together with Ren Gaming.
-                    </p>
-                </div>
-
-            </div>
-        </section>
-
-
-        <!-- GAME -->
-        <section class="game-section" id="game">
-
-            <div class="game-content">
-
-                <div class="game-text">
-                    <h2>
-                        READY FOR THE BATTLE IN
-                        <span>MOBA LEGENDS 5v5?</span>
-                    </h2>
-
-                    <p>
-                        Gather your squad, sharpen your skills,
-                        and enter the battlefield. Represent your team
-                        and compete with the Ren Gaming community.
-                    </p>
-
-                    <div style="margin-top: 25px;">
-                        <a href="tournament-register.html"
-                           class="button button-primary">
-                            REGISTER NOW
-                        </a>
-                    </div>
-                </div>
-
-                <div class="game-badge">
-                    <strong>5 vs 5</strong>
-                    <span>TEAM BATTLE</span>
-                </div>
-
-            </div>
-        </section>
-
-
-        <!-- CALL TO ACTION -->
-        <section class="cta">
-
-            <h2>ARE YOU READY, PLAYER?</h2>
-
-            <p>
-                Become part of Ren Gaming and get ready for your next
-                tournament. Your journey to victory starts here.
-            </p>
-
-            <a href="login.html"
-               class="button button-primary"
-               id="ctaAccountButton">
-                CREATE YOUR ACCOUNT
-            </a>
-
-        </section>
-
-    </main>
-
-
-    <!-- FOOTER -->
-    <footer>
-        <div class="footer-content">
-
-            <a href="index.html" class="logo">
-                <div class="logo-icon">RG</div>
-                <div>REN <span>GAMING</span></div>
-            </a>
-
-            <p>
-                © <span id="currentYear"></span> Ren Gaming.
-                All rights reserved.
-            </p>
-
-            <div class="footer-links">
-                <a href="index.html">Home</a>
-                <a href="tournament-register.html">Tournament</a>
-                <a href="login.html">Login</a>
-            </div>
-
-        </div>
-    </footer>
-
-
-    <!-- SUPABASE -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-    <script>
-        /*
-         * Ren Gaming authentication.
-         * This uses the same Supabase project as the login page.
-         */
-
-        const SUPABASE_URL =
-            "https://bixpvxkpnaqdifmvkhvp.supabase.co";
-
-        const SUPABASE_PUBLISHABLE_KEY =
-            "sb_publishable_XtzkrIFbBPTGUmoLHqHu5Q_XeznKoVI";
-
-        const accountButton =
-            document.getElementById("accountButton");
-
-        const heroDashboardButton =
-            document.getElementById("heroDashboardButton");
-
-        const ctaAccountButton =
-            document.getElementById("ctaAccountButton");
-
-        document.getElementById("currentYear").textContent =
-            new Date().getFullYear();
-
-        let authClient = null;
-
-        function updateAccountLinks(user) {
-            if (user) {
-                accountButton.textContent = "DASHBOARD";
-                accountButton.href = "dashboard.html";
-
-                heroDashboardButton.textContent = "OPEN DASHBOARD";
-                heroDashboardButton.href = "dashboard.html";
-
-                ctaAccountButton.textContent = "GO TO DASHBOARD";
-                ctaAccountButton.href = "dashboard.html";
-            } else {
-                accountButton.textContent = "LOGIN / REGISTER";
-                accountButton.href = "login.html";
-
-                heroDashboardButton.textContent = "MY DASHBOARD";
-                heroDashboardButton.href = "login.html";
-
-                ctaAccountButton.textContent = "CREATE YOUR ACCOUNT";
-                ctaAccountButton.href = "login.html";
-            }
-        }
-
-        async function initializeRenGaming() {
-            updateAccountLinks(null);
-
-            if (!window.supabase) {
-                console.error(
-                    "Supabase library did not load. Check your internet connection."
-                );
-                return;
-            }
-
-            authClient = window.supabase.createClient(
-                SUPABASE_URL,
-                SUPABASE_PUBLISHABLE_KEY
-            );
-
-            const {
-                data,
-                error
-            } = await authClient.auth.getSession();
-
-            if (error) {
-                console.error(
-                    "Could not check login status:",
-                    error.message
-                );
-                return;
-            }
-
-            updateAccountLinks(data.session?.user || null);
-
-            authClient.auth.onAuthStateChange(
-                function (event, session) {
-                    updateAccountLinks(session?.user || null);
-                }
-            );
-        }
-
-        initializeRenGaming();
-    </script>
-
-</body>
-</html>
+            .account-button { min-width: auto; padding: 10px 12px; }
+            .admin-button { padding: 10px 12px; }
+
+            .hero { min-height: 510px; padding-top: 70px; padding-bottom: 75px; }
+            .
