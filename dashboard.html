@@ -5,7 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard | REN GAMING</title>
   <link rel="icon" type="image/png" href="ren-gaming-rg.png">
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
   <style>
     * {
@@ -50,7 +52,8 @@
       border: 1px solid #ff1e1e;
     }
 
-    .header-actions {
+    .header-actions,
+    .section-actions {
       display: flex;
       gap: 10px;
       flex-wrap: wrap;
@@ -140,15 +143,9 @@
       font-size: 22px;
     }
 
-    .section-actions {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
     .refresh-btn,
     .join-btn,
-    .view-btn {
+    .export-btn {
       cursor: pointer;
       border: 1px solid #333;
       background: #171717;
@@ -168,6 +165,15 @@
 
     .join-btn:hover {
       background: #ff1e1e;
+    }
+
+    .export-btn {
+      background: #116329;
+      border-color: #1d8b40;
+    }
+
+    .export-btn:hover {
+      background: #16843a;
     }
 
     .team-card,
@@ -334,6 +340,10 @@
           ↻ REFRESH
         </button>
 
+        <button class="export-btn" id="downloadExcelBtn">
+          ⬇ DOWNLOAD EXCEL
+        </button>
+
         <a href="tournament-register.html" class="join-btn">
           JOIN TOURNAMENT
         </a>
@@ -343,6 +353,10 @@
     <div id="teamsContainer">
       <div class="loading">Loading your teams...</div>
     </div>
+
+    <p class="small-note">
+      Download your team registration and available player details as an Excel file.
+    </p>
   </section>
 
   <section class="section">
@@ -374,9 +388,7 @@
 </main>
 
 <script>
-  // ==========================================
   // SUPABASE CONFIGURATION
-  // ==========================================
 
   const SUPABASE_URL =
     "https://bixpvxkpnaqdifmvkhvp.supabase.co";
@@ -391,10 +403,9 @@
 
   let currentUser = null;
   let currentTeams = [];
+  let currentPlayersByTeam = {};
 
-  // ==========================================
   // HTML ESCAPE
-  // ==========================================
 
   function escapeHtml(value) {
     if (value === null || value === undefined) {
@@ -409,9 +420,7 @@
       .replace(/'/g, "&#039;");
   }
 
-  // ==========================================
   // LOAD PROFILE
-  // ==========================================
 
   async function loadProfile(user) {
     const { data: profile, error } = await supabaseClient
@@ -448,12 +457,42 @@
     };
   }
 
-  // ==========================================
+  // LOAD PLAYER DETAILS FOR THE USER'S TEAMS
+
+  async function loadPlayersForTeams(teams) {
+    currentPlayersByTeam = {};
+
+    if (!teams.length) {
+      return;
+    }
+
+    const results = await Promise.all(
+      teams.map(async (team) => {
+        const { data, error } = await supabaseClient
+          .from("team_players")
+          .select("*")
+          .eq("team_id", team.id);
+
+        if (error) {
+          console.warn(
+            "Could not load player details:",
+            team.id,
+            error.message
+          );
+
+          return [team.id, []];
+        }
+
+        return [team.id, data || []];
+      })
+    );
+
+    results.forEach(([teamId, players]) => {
+      currentPlayersByTeam[teamId] = players;
+    });
+  }
+
   // LOAD TEAMS
-  // IMPORTANT:
-  // Do not filter by tournament ID here.
-  // This displays all teams owned by this user.
-  // ==========================================
 
   async function loadTeams(user) {
     const container = document.getElementById("teamsContainer");
@@ -477,20 +516,18 @@
             ${escapeHtml(error.message)}
           </div>
         `;
+
         return;
       }
 
       currentTeams = teams || [];
 
+      await loadPlayersForTeams(currentTeams);
+
       if (currentTeams.length === 0) {
         container.innerHTML = `
           <div class="empty">
             You have not registered any team yet.
-
-            <p class="small-note">
-              Your account is logged in, but no team was returned
-              for this user ID.
-            </p>
 
             <p class="small-note">
               User ID: ${escapeHtml(user.id)}
@@ -502,11 +539,14 @@
             </p>
           </div>
         `;
+
         return;
       }
 
       container.innerHTML = currentTeams.map(team => {
-        const rawStatus = String(team.status || "pending").toLowerCase();
+        const rawStatus = String(
+          team.status || "pending"
+        ).toLowerCase();
 
         let statusClass = "status";
 
@@ -519,6 +559,8 @@
         const createdAt = team.created_at
           ? new Date(team.created_at).toLocaleString()
           : "Not available";
+
+        const players = currentPlayersByTeam[team.id] || [];
 
         return `
           <article class="team-card">
@@ -533,7 +575,8 @@
                   Registered: ${escapeHtml(createdAt)}<br>
                   Team ID: ${escapeHtml(team.id)}<br>
                   Tournament ID:
-                  ${escapeHtml(team.tournament_id || "Not available")}
+                  ${escapeHtml(team.tournament_id || "Not available")}<br>
+                  Players found: ${players.length}
                 </div>
               </div>
 
@@ -563,9 +606,112 @@
     }
   }
 
-  // ==========================================
+  // DOWNLOAD TEAMS AND PLAYERS TO EXCEL
+
+  function downloadTeamsExcel() {
+    if (typeof XLSX === "undefined") {
+      alert(
+        "Excel library could not load. Check your internet connection and refresh the page."
+      );
+      return;
+    }
+
+    if (!currentTeams.length) {
+      alert("No teams are available to export.");
+      return;
+    }
+
+    // Worksheet 1: Team information
+
+    const teamRows = currentTeams.map(team => ({
+      "Team Name": team.team_name || "",
+      "Team ID": team.id || "",
+      "Tournament ID": team.tournament_id || "",
+      "Registration Status": team.status || "pending",
+      "Registration Date": team.created_at
+        ? new Date(team.created_at).toLocaleString()
+        : "",
+      "Team Leader User ID": team.user_id || ""
+    }));
+
+    // Worksheet 2: Player information
+
+    const playerRows = [];
+
+    currentTeams.forEach(team => {
+      const players = currentPlayersByTeam[team.id] || [];
+
+      if (players.length === 0) {
+        playerRows.push({
+          "Team Name": team.team_name || "",
+          "Team ID": team.id || "",
+          "Player Type": "",
+          "Player Number": "",
+          "Username": "",
+          "Game User ID": "",
+          "Server ID": "",
+          "Role": "",
+          "Note": "No player records found or player records could not be read"
+        });
+
+        return;
+      }
+
+      players.forEach(player => {
+        playerRows.push({
+          "Team Name": team.team_name || "",
+          "Team ID": team.id || "",
+          "Player Type": player.player_type || "",
+          "Player Number": player.player_number ?? "",
+          "Username":
+            player.username ||
+            player.in_game_name ||
+            player.ign ||
+            "",
+          "Game User ID":
+            player.game_user_id ||
+            player.user_id_game ||
+            player.game_id ||
+            "",
+          "Server ID":
+            player.server_id ||
+            player.game_server_id ||
+            "",
+          "Role":
+            player.role ||
+            player.player_role ||
+            "",
+          "Note": ""
+        });
+      });
+    });
+
+    // Create Excel workbook
+
+    const workbook = XLSX.utils.book_new();
+
+    const teamSheet = XLSX.utils.json_to_sheet(teamRows);
+    const playerSheet = XLSX.utils.json_to_sheet(playerRows);
+
+    XLSX.utils.book_append_sheet(
+      workbook,
+      teamSheet,
+      "Teams"
+    );
+
+    XLSX.utils.book_append_sheet(
+      workbook,
+      playerSheet,
+      "Players"
+    );
+
+    XLSX.writeFile(
+      workbook,
+      "REN_GAMING_Team_Details.xlsx"
+    );
+  }
+
   // LOAD MATCHES
-  // ==========================================
 
   async function loadMatches(user) {
     const container = document.getElementById("matchesContainer");
@@ -574,7 +720,6 @@
       '<div class="loading">Loading your matches...</div>';
 
     try {
-      // Get this user's teams first.
       const { data: teams, error: teamsError } = await supabaseClient
         .from("teams")
         .select("id, team_name")
@@ -589,6 +734,7 @@
             ${escapeHtml(teamsError.message)}
           </div>
         `;
+
         return;
       }
 
@@ -599,18 +745,20 @@
             and matches are assigned.
           </div>
         `;
+
         return;
       }
 
       const teamIds = teams.map(team => team.id);
 
-      // Matches may not be configured in the database yet.
+      const filters = teamIds
+        .map(id => `team1_id.eq.${id},team2_id.eq.${id}`)
+        .join(",");
+
       const { data: matches, error: matchError } = await supabaseClient
         .from("matches")
         .select("*")
-        .or(
-          teamIds.map(id => `team1_id.eq.${id},team2_id.eq.${id}`).join(",")
-        )
+        .or(filters)
         .order("created_at", { ascending: false });
 
       if (matchError) {
@@ -622,6 +770,7 @@
             when matches are assigned.
           </div>
         `;
+
         return;
       }
 
@@ -631,20 +780,26 @@
             No matches have been assigned to your team yet.
           </div>
         `;
+
         return;
       }
 
       const teamNames = {};
+
       teams.forEach(team => {
         teamNames[team.id] = team.team_name;
       });
 
       container.innerHTML = matches.map(match => {
         const team1 =
-          teamNames[match.team1_id] || match.team1_name || "Team 1";
+          teamNames[match.team1_id] ||
+          match.team1_name ||
+          "Team 1";
 
         const team2 =
-          teamNames[match.team2_id] || match.team2_name || "Team 2";
+          teamNames[match.team2_id] ||
+          match.team2_name ||
+          "Team 2";
 
         return `
           <article class="match-card">
@@ -654,8 +809,10 @@
 
             <div class="meta">
               Status: ${escapeHtml(match.status || "Scheduled")}<br>
+
               ${match.scheduled_at
-                ? "Scheduled: " + escapeHtml(
+                ? "Scheduled: " +
+                  escapeHtml(
                     new Date(match.scheduled_at).toLocaleString()
                   )
                 : ""}
@@ -675,9 +832,7 @@
     }
   }
 
-  // ==========================================
   // REFRESH BUTTONS
-  // ==========================================
 
   document.getElementById("refreshTeamsBtn").addEventListener(
     "click",
@@ -697,9 +852,14 @@
     }
   );
 
-  // ==========================================
+  // EXCEL DOWNLOAD BUTTON
+
+  document.getElementById("downloadExcelBtn").addEventListener(
+    "click",
+    downloadTeamsExcel
+  );
+
   // LOGOUT
-  // ==========================================
 
   document.getElementById("logoutBtn").addEventListener(
     "click",
@@ -715,9 +875,7 @@
     }
   );
 
-  // ==========================================
   // INITIALIZE DASHBOARD
-  // ==========================================
 
   async function initializeDashboard() {
     const { data, error } = await supabaseClient.auth.getUser();
