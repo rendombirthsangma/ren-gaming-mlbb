@@ -3,12 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Dashboard | REN GAMING</title>
     <link rel="icon" type="image/png" href="ren-gaming-rg.png">
+
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
         body {
             font-family: Arial, sans-serif;
@@ -24,8 +30,6 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            flex-wrap: wrap;
-            gap: 12px;
         }
 
         .logo {
@@ -38,7 +42,6 @@
             text-decoration: none;
             letter-spacing: .5px;
         }
-
         .logo img {
             width: 44px;
             height: 44px;
@@ -47,13 +50,11 @@
             border: 1px solid #ff1e1e;
             box-shadow: 0 0 12px #ff1e1e55;
         }
-
         .logo span { color: #ff1e1e; }
 
         .header-actions {
             display: flex;
             gap: 10px;
-            flex-wrap: wrap;
         }
 
         .header-btn {
@@ -63,13 +64,15 @@
             border: 1px solid #333;
             padding: 10px 16px;
             border-radius: 6px;
-            cursor: pointer;
-            font-size: 13px;
         }
 
         .header-btn:hover {
             border-color: #ff1e1e;
             color: #ff1e1e;
+        }
+
+        .logout {
+            cursor: pointer;
         }
 
         .container {
@@ -78,11 +81,21 @@
             padding: 0 20px;
         }
 
-        .welcome { margin-bottom: 25px; }
-        .welcome h1 { font-size: 30px; margin-bottom: 8px; }
-        .welcome p { color: #999; line-height: 1.6; }
+        .welcome {
+            margin-bottom: 25px;
+        }
 
-        .profile-card, .section {
+        .welcome h1 {
+            font-size: 30px;
+            margin-bottom: 8px;
+        }
+
+        .welcome p {
+            color: #999;
+        }
+
+        .profile-card,
+        .section {
             background: #111;
             border: 1px solid #292929;
             border-radius: 10px;
@@ -94,7 +107,6 @@
             display: flex;
             align-items: center;
             gap: 18px;
-            overflow-wrap: anywhere;
         }
 
         .avatar {
@@ -104,44 +116,51 @@
             object-fit: cover;
             border: 2px solid #ff1e1e;
             background: #222;
-            flex-shrink: 0;
         }
 
-        .profile-info h2 { margin-bottom: 5px; }
-        .profile-info p { color: #999; font-size: 14px; }
+        .profile-info h2 {
+            margin-bottom: 5px;
+        }
+
+        .profile-info p {
+            color: #999;
+            font-size: 14px;
+        }
 
         .section-title {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            gap: 12px;
-            flex-wrap: wrap;
             margin-bottom: 20px;
         }
 
-        .section-title h2 { font-size: 22px; }
+        .section-title h2 {
+            font-size: 22px;
+        }
 
-        .topup-link, .refresh-btn {
+        .topup-link {
             text-decoration: none;
+            background: #e50914;
+            color: white;
             padding: 9px 14px;
             border-radius: 6px;
             font-weight: bold;
             font-size: 13px;
-            cursor: pointer;
         }
 
-        .topup-link {
-            background: #e50914;
-            color: white;
-            border: 1px solid #e50914;
+        .topup-link:hover {
+            background: #ff1e1e;
         }
-
-        .topup-link:hover { background: #ff1e1e; }
 
         .refresh-btn {
+            cursor: pointer;
             border: 1px solid #333;
             background: #171717;
             color: white;
+            padding: 9px 14px;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 13px;
         }
 
         .refresh-btn:hover {
@@ -149,7 +168,7 @@
             color: #ff1e1e;
         }
 
-        .team-card, .match-card {
+        .team-card {
             background: #181818;
             border: 1px solid #333;
             border-radius: 8px;
@@ -157,24 +176,25 @@
             margin-bottom: 15px;
         }
 
-        .team-header, .match-header {
+        .team-header {
             display: flex;
             justify-content: space-between;
             gap: 15px;
-            flex-wrap: wrap;
         }
 
-        .team-name { font-size: 20px; font-weight: bold; }
+        .team-name {
+            font-size: 20px;
+            font-weight: bold;
+        }
 
         .meta {
             color: #999;
             font-size: 14px;
             margin-top: 7px;
             line-height: 1.6;
-            overflow-wrap: anywhere;
         }
 
-        .status, .match-status {
+        .status {
             padding: 6px 10px;
             border-radius: 5px;
             font-size: 12px;
@@ -183,12 +203,14 @@
             text-transform: uppercase;
         }
 
-        .pending, .match-status.scheduled {
+        .pending {
             background: #3a2b00;
             color: #ffd666;
         }
 
-        .approved, .completed, .live {
+        .approved,
+        .completed,
+        .live {
             background: #0d3518;
             color: #6ee7a0;
         }
@@ -198,10 +220,16 @@
             color: #ff7777;
         }
 
-        .team-actions { margin-top: 15px; }
+        .team-actions {
+            margin-top: 15px;
+        }
 
-        .view-btn, .edit-btn, .remove-btn, .replace-btn,
-        .save-btn, .cancel-btn, .resubmit-btn {
+        .view-btn,
+        .edit-btn,
+        .remove-btn,
+        .replace-btn,
+        .save-btn,
+        .cancel-btn {
             border: 1px solid #444;
             color: white;
             padding: 8px 12px;
@@ -213,19 +241,47 @@
             margin-top: 8px;
         }
 
-        .view-btn, .cancel-btn { background: #222; }
+        .view-btn {
+            background: #222;
+        }
 
-        .edit-btn, .replace-btn, .remove-btn {
+        .edit-btn,
+        .replace-btn {
             background: #351313;
             border-color: #7a2020;
         }
 
-        .save-btn, .resubmit-btn {
+        .remove-btn {
+            background: #351313;
+            border-color: #6b2424;
+        }
+
+        .save-btn {
             background: #e50914;
             border-color: #e50914;
         }
 
-        .edit-panel, .team-name-edit {
+        .cancel-btn {
+            background: #222;
+        }
+
+        .view-btn:hover,
+        .edit-btn:hover,
+        .replace-btn:hover {
+            border-color: #ff1e1e;
+        }
+
+        .remove-btn:hover {
+            border-color: #ff1e1e;
+            color: #ff7777;
+        }
+
+        .save-btn:hover {
+            background: #ff1e1e;
+        }
+
+        .edit-panel,
+        .team-name-edit {
             display: none;
             margin-top: 12px;
             padding: 15px;
@@ -234,14 +290,16 @@
             border-radius: 8px;
         }
 
-        .edit-panel label, .team-name-edit label {
+        .edit-panel label,
+        .team-name-edit label {
             display: block;
             color: #aaa;
             font-size: 12px;
             margin: 10px 0 5px;
         }
 
-        .edit-panel input, .edit-panel select,
+        .edit-panel input,
+        .edit-panel select,
         .team-name-edit input {
             width: 100%;
             padding: 10px;
@@ -250,6 +308,12 @@
             border: 1px solid #444;
             border-radius: 6px;
             outline: none;
+        }
+
+        .edit-panel input:focus,
+        .edit-panel select:focus,
+        .team-name-edit input:focus {
+            border-color: #ff1e1e;
         }
 
         .players {
@@ -266,16 +330,20 @@
             margin-bottom: 8px;
             line-height: 1.7;
             font-size: 14px;
-            overflow-wrap: anywhere;
         }
 
-        .player strong { color: #ff4a4a; }
+        .player strong {
+            color: #ff4a4a;
+        }
 
-        .team-note, .replace-note, .status-note {
+        .team-note,
+        .replace-note,
+        .status-note,
+        .edit-note {
             margin-top: 9px;
             color: #888;
             font-size: 12px;
-            line-height: 1.6;
+            line-height: 1.5;
         }
 
         .status-note {
@@ -292,6 +360,21 @@
             background: #2b1010;
             border: 1px solid #5a2222;
             color: #ff9999;
+        }
+
+        .resubmit-btn {
+            background: #6b1010;
+            border: 1px solid #ff1e1e;
+            color: white;
+            padding: 9px 13px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 8px;
+        }
+
+        .resubmit-btn:hover {
+            background: #e50914;
         }
 
         .inline-message {
@@ -314,11 +397,55 @@
             color: #ff7777;
         }
 
-        .match-header strong { font-size: 17px; color: #ff4a4a; }
-        .match-number { color: #888; font-size: 13px; margin-top: 5px; }
+        /* MATCHES */
 
-        .match-status.live { background: #0d3518; color: #6ee7a0; }
-        .match-status.completed { background: #222; color: #aaa; }
+        .match-card {
+            background: #181818;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 18px;
+            margin-bottom: 15px;
+        }
+
+        .match-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 15px;
+        }
+
+        .match-header strong {
+            font-size: 17px;
+            color: #ff4a4a;
+        }
+
+        .match-number {
+            color: #888;
+            font-size: 13px;
+            margin-top: 5px;
+        }
+
+        .match-status {
+            padding: 6px 10px;
+            border-radius: 5px;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        .match-status.scheduled {
+            background: #3a2b00;
+            color: #ffd666;
+        }
+
+        .match-status.live {
+            background: #0d3518;
+            color: #6ee7a0;
+        }
+
+        .match-status.completed {
+            background: #222;
+            color: #aaa;
+        }
 
         .match-teams {
             display: grid;
@@ -335,7 +462,6 @@
             text-align: center;
             border-radius: 6px;
             font-weight: bold;
-            overflow-wrap: anywhere;
         }
 
         .match-vs {
@@ -354,7 +480,6 @@
             background: #111;
             padding: 12px;
             border-radius: 6px;
-            overflow-wrap: anywhere;
         }
 
         .match-info-box span {
@@ -364,7 +489,10 @@
             margin-bottom: 6px;
         }
 
-        .match-info-box strong { font-size: 13px; }
+        .match-info-box strong {
+            font-size: 13px;
+            word-break: break-word;
+        }
 
         .match-result {
             margin-top: 15px;
@@ -375,110 +503,304 @@
             color: #6ee7a0;
         }
 
-        .empty, .loading { color: #888; padding: 15px 0; }
+        /* TOP-UP */
+
+        .topup-card {
+            background: #181818;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 18px;
+            margin-bottom: 12px;
+        }
+
+        .topup-header {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+        }
+
+        .topup-name {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .topup-info {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .info-box {
+            background: #111;
+            padding: 12px;
+            border-radius: 6px;
+        }
+
+        .info-box span {
+            display: block;
+            color: #777;
+            font-size: 11px;
+            margin-bottom: 5px;
+        }
+
+        .info-box strong {
+            font-size: 14px;
+            word-break: break-word;
+        }
+
+        .empty,
+        .loading {
+            color: #888;
+            padding: 15px 0;
+        }
 
         @media (max-width: 800px) {
-            .match-info-grid { grid-template-columns: repeat(2, 1fr); }
+
+            .topup-info,
+            .match-info-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
         }
 
         @media (max-width: 600px) {
-            header { padding: 15px 4%; }
-            .header-actions { gap: 5px; }
-            .header-btn { padding: 8px 10px; font-size: 12px; }
-            .match-teams { grid-template-columns: 1fr; }
-            .match-vs { padding: 5px; }
-            .match-info-grid { grid-template-columns: 1fr; }
-            .section-title { align-items: flex-start; }
-            .welcome h1 { font-size: 25px; }
-            .profile-card, .section { padding: 18px; }
+
+            header {
+                padding: 15px 4%;
+            }
+
+            .header-actions {
+                gap: 5px;
+            }
+
+            .header-btn {
+                padding: 8px 10px;
+                font-size: 12px;
+            }
+
+            .team-header,
+            .topup-header,
+            .match-header {
+                flex-direction: column;
+            }
+
+            .topup-info,
+            .match-info-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .match-teams {
+                grid-template-columns: 1fr;
+            }
+
+            .match-vs {
+                padding: 5px;
+            }
+
+            .section-title {
+                align-items: flex-start;
+                gap: 10px;
+                flex-direction: column;
+            }
         }
     </style>
 </head>
 
 <body>
+
 <header>
+
     <a class="logo" href="index.html" aria-label="REN GAMING home">
         <img src="ren-gaming-rg.png" alt="RG logo">
         <span>REN GAMING</span>
     </a>
 
     <div class="header-actions">
-        <a href="index.html" class="header-btn">HOME</a>
-        <span class="header-btn" style="opacity:.75;cursor:not-allowed;">
+
+        <a href="index.html" class="header-btn">
+            HOME
+        </a>
+
+        <span class="header-btn" aria-disabled="true"
+              style="opacity:.75;cursor:not-allowed;">
             💎 TOP-UP — COMING SOON
         </span>
-        <button class="header-btn" id="logoutBtn">LOGOUT</button>
+
+        <button class="header-btn logout" id="logoutBtn">
+            LOGOUT
+        </button>
+
     </div>
+
 </header>
 
+
 <div class="container">
+
     <div class="welcome">
-        <h1>Welcome to your Dashboard</h1>
-        <p>Manage your teams and matches. Diamond Top-Up is coming soon.</p>
+
+        <h1>
+            Welcome to your Dashboard
+        </h1>
+
+        <p>
+            Manage your teams and matches. Diamond Top-Up is coming soon.
+        </p>
+
     </div>
+
+
+    <!-- PROFILE -->
 
     <div class="profile-card">
+
         <div class="profile">
-            <img id="avatar" class="avatar"
-                 src="https://via.placeholder.com/65"
-                 alt="Profile" referrerpolicy="no-referrer">
+
+            <img
+                id="avatar"
+                class="avatar"
+                src="https://via.placeholder.com/65"
+                alt="Profile"
+                referrerpolicy="no-referrer"
+            >
+
             <div class="profile-info">
-                <h2 id="fullName">Loading...</h2>
-                <p id="email">Loading...</p>
+
+                <h2 id="fullName">
+                    Loading...
+                </h2>
+
+                <p id="email">
+                    Loading...
+                </p>
+
             </div>
+
         </div>
+
     </div>
 
+
+    <!-- TEAMS -->
+
     <div class="section">
+
         <div class="section-title">
-            <h2>🏆 My Teams</h2>
+
+            <h2>
+                🏆 My Teams
+            </h2>
+
             <div style="display:flex;gap:8px;flex-wrap:wrap;">
-                <button class="refresh-btn" id="refreshTeamsBtn">↻ REFRESH</button>
-                <a href="tournament-register.html" class="topup-link">JOIN TOURNAMENT</a>
+
+                <button
+                    class="refresh-btn"
+                    id="refreshTeamsBtn">
+                    ↻ REFRESH
+                </button>
+
+                <a
+                    href="tournament-register.html"
+                    class="topup-link">
+                    JOIN TOURNAMENT
+                </a>
+
             </div>
+
         </div>
+
         <div id="teamsContainer">
-            <div class="loading">Loading your teams...</div>
+
+            <div class="loading">
+                Loading your teams...
+            </div>
+
         </div>
+
     </div>
 
+
+    <!-- MATCHES -->
+
     <div class="section">
+
         <div class="section-title">
-            <h2>🎮 My Matches</h2>
-            <button class="refresh-btn" id="refreshMatchesBtn">↻ REFRESH</button>
+
+            <h2>
+                🎮 My Matches
+            </h2>
+
+            <button
+                class="refresh-btn"
+                id="refreshMatchesBtn">
+                ↻ REFRESH
+            </button>
+
         </div>
+
         <div id="matchesContainer">
-            <div class="loading">Loading your matches...</div>
+
+            <div class="loading">
+                Loading your matches...
+            </div>
+
         </div>
+
     </div>
+
+
+    <!-- DIAMOND TOP-UP COMING SOON -->
 
     <div class="section" id="topupComingSoon">
+
         <div class="section-title">
             <h2>💎 Diamond Top-Up</h2>
             <span class="status pending">COMING SOON</span>
         </div>
+
         <p style="color:#aaa;line-height:1.7;">
-            Diamond Top-Up is not available yet. We will announce it here when the service is ready.
+            Diamond Top-Up is not available yet. We will announce it here
+            when the service is ready.
         </p>
+
     </div>
+
 </div>
 
+
 <script>
-"use strict";
 
-const SUPABASE_URL = "https://bixpvxkpnaqdifmvkhvp.supabase.co";
-const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_XtzkrIFbBPTGUmoLHqHu5Q_XeznKoVI";
+const SUPABASE_URL =
+    "https://bixpvxkpnaqdifmvkhvp.supabase.co";
 
-const supabaseClient = window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_PUBLISHABLE_KEY
-);
+const SUPABASE_PUBLISHABLE_KEY =
+    "sb_publishable_XtzkrIFbBPTGUmoLHqHu5Q_XeznKoVI";
 
-const TOURNAMENT_ID = "642cb68f-9702-483c-b1b7-f2c35f89dd09";
+const supabaseClient =
+    window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_PUBLISHABLE_KEY
+    );
+
+const TOURNAMENT_ID =
+    "8b5997f8-194a-4998-9915-6528dfbbcb44";
+
 let currentTeams = [];
 
+
+/* =========================
+   SECURITY / HTML ESCAPE
+========================= */
+
 function escapeHtml(value) {
-    if (value === null || value === undefined) return "";
+
+    if (
+        value === null ||
+        value === undefined
+    ) {
+        return "";
+    }
+
     return String(value)
         .replace(/&/g, "&amp;")
         .replace(/</g, "&lt;")
@@ -487,22 +809,28 @@ function escapeHtml(value) {
         .replace(/'/g, "&#039;");
 }
 
-function showInlineMessage(id, type, message) {
-    const element = document.getElementById(id);
-    if (!element) return;
-    element.className = "inline-message " + type;
-    element.textContent = message;
-}
 
-/* PROFILE */
+/* =========================
+   PROFILE
+========================= */
+
 async function loadProfile(user) {
-    const { data: profile, error } = await supabaseClient
-        .from("profiles")
-        .select("full_name, avatar_url")
-        .eq("id", user.id)
-        .maybeSingle();
 
-    if (error) console.error("Profile loading error:", error);
+    const {
+        data: profile,
+        error
+    } = await supabaseClient
+        .from("profiles")
+        .select("*")
+        .eq("id", user.id)
+        .single();
+
+    if (error) {
+        console.error(
+            "Profile loading error:",
+            error
+        );
+    }
 
     const fullName =
         profile?.full_name ||
@@ -510,7 +838,14 @@ async function loadProfile(user) {
         user.user_metadata?.name ||
         "Ren Gaming User";
 
-    const email = user.email || "";
+    const email =
+        user.email || "";
+
+    /*
+       Google normally provides the
+       profile picture through one of
+       these metadata fields.
+    */
 
     const googleAvatar =
         user.user_metadata?.avatar_url ||
@@ -518,123 +853,359 @@ async function loadProfile(user) {
         profile?.avatar_url ||
         "https://via.placeholder.com/65";
 
-    document.getElementById("fullName").textContent = fullName;
-    document.getElementById("email").textContent = email;
+    document.getElementById(
+        "fullName"
+    ).textContent = fullName;
 
-    const avatar = document.getElementById("avatar");
+    document.getElementById(
+        "email"
+    ).textContent = email;
+
+    const avatar =
+        document.getElementById("avatar");
+
     avatar.src = googleAvatar;
+
     avatar.onerror = function () {
+
         this.onerror = null;
-        this.src = "https://via.placeholder.com/65";
+
+        this.src =
+            "https://via.placeholder.com/65";
+
     };
 }
 
-/* LOAD TEAMS */
-async function loadTeams(user) {
-    const container = document.getElementById("teamsContainer");
-    container.innerHTML = '<div class="loading">Loading your teams...</div>';
 
-    const { data, error } = await supabaseClient
+/* =========================
+   LOAD TEAMS
+========================= */
+
+async function loadTeams(user) {
+
+    const container =
+        document.getElementById(
+            "teamsContainer"
+        );
+
+    const {
+        data,
+        error
+    } = await supabaseClient
         .from("teams")
         .select("*")
         .eq("user_id", user.id)
         .eq("tournament_id", TOURNAMENT_ID)
-        .order("created_at", { ascending: false });
+        .order("created_at", {
+            ascending: false
+        });
 
     if (error) {
-        console.error("Teams loading error:", error);
-        container.innerHTML = '<div class="empty">Unable to load your teams. Please try again later.</div>';
-        return;
-    }
 
-    currentTeams = data || [];
+        console.error(error);
 
-    if (currentTeams.length === 0) {
-        container.innerHTML = '<div class="empty">You have not registered any team yet.</div>';
-        return;
-    }
-
-    container.innerHTML = currentTeams.map(team => {
-        const status = String(team.status || "pending").toLowerCase();
-        const statusClass = status === "approved" ? "approved" :
-            status === "rejected" ? "rejected" : "pending";
-
-        let statusMessage = "";
-        if (status === "rejected") {
-            statusMessage = `
-                <div class="rejection">
-                    <strong>Rejection Reason:</strong><br>
-                    ${escapeHtml(team.rejection_reason || "No rejection reason was provided by the admin.")}
-                </div>
-                <div class="status-note">Correct the team or player details below, then submit the team again for admin review.</div>`;
-        } else if (status === "approved") {
-            statusMessage = `<div class="status-note">🟢 Your team has been approved. Team and player changes are locked.</div>`;
-        } else {
-            statusMessage = `<div class="status-note">🟡 Your team is pending admin review.</div>`;
-        }
-
-        return `
-            <div class="team-card">
-                <div class="team-header">
-                    <div>
-                        <div class="team-name">${escapeHtml(team.team_name)}</div>
-                        <div class="meta">Registered: ${team.created_at ? new Date(team.created_at).toLocaleString() : "Unknown"}</div>
-                    </div>
-                    <div class="status ${statusClass}">${escapeHtml(status.toUpperCase())}</div>
-                </div>
-
-                ${statusMessage}
-
-                <div class="team-actions">
-                    <button class="view-btn" onclick="togglePlayers('${escapeHtml(team.id)}')">VIEW PLAYERS</button>
-                    ${status !== "approved" ? `<button class="edit-btn" onclick="toggleTeamNameEdit('${escapeHtml(team.id)}')">✏️ EDIT TEAM NAME</button>` : ""}
-                    ${status === "rejected" ? `<button class="resubmit-btn" onclick="resubmitTeam('${escapeHtml(team.id)}')">🔄 RESUBMIT TEAM</button>` : ""}
-                </div>
-
-                ${status === "rejected" ? `<div id="resubmit-message-${escapeHtml(team.id)}" class="inline-message"></div>` : ""}
-
-                ${status !== "approved" ? `
-                    <div class="team-name-edit" id="team-name-edit-${escapeHtml(team.id)}">
-                        <label for="team-name-input-${escapeHtml(team.id)}">TEAM NAME</label>
-                        <input id="team-name-input-${escapeHtml(team.id)}" type="text" maxlength="50" value="${escapeHtml(team.team_name)}">
-                        <button class="save-btn" onclick="saveTeamName('${escapeHtml(team.id)}')">SAVE TEAM NAME</button>
-                        <button class="cancel-btn" onclick="toggleTeamNameEdit('${escapeHtml(team.id)}')">CANCEL</button>
-                        <div class="team-note">Team name changes are locked after admin approval.</div>
-                        <div id="team-name-message-${escapeHtml(team.id)}" class="inline-message"></div>
-                    </div>` : `<div class="team-note">🔒 Team name changes are locked because this team is approved.</div>`}
-
-                <div class="players" id="players-${escapeHtml(team.id)}"></div>
+        container.innerHTML =
+            `<div class="empty">
+                Unable to load your teams.
             </div>`;
-    }).join("");
+
+        return;
+    }
+
+    currentTeams =
+        data || [];
+
+    if (
+        !data ||
+        data.length === 0
+    ) {
+
+        container.innerHTML =
+            `<div class="empty">
+                You have not registered any team yet.
+            </div>`;
+
+        return;
+    }
+
+    container.innerHTML =
+        data.map(team => {
+
+            const statusClass =
+                team.status === "approved"
+                    ? "approved"
+                    : team.status === "rejected"
+                        ? "rejected"
+                        : "pending";
+
+            return `
+
+                <div class="team-card">
+
+                    <div class="team-header">
+
+                        <div>
+
+                            <div class="team-name">
+                                ${escapeHtml(
+                                    team.team_name
+                                )}
+                            </div>
+
+                            <div class="meta">
+                                Registered:
+                                ${new Date(
+                                    team.created_at
+                                ).toLocaleString()}
+                            </div>
+
+                        </div>
+
+                        <div class="status ${statusClass}">
+                            ${
+                                team.status === "approved"
+                                    ? "APPROVED"
+                                    : team.status === "rejected"
+                                        ? "REJECTED"
+                                        : "PENDING"
+                            }
+                        </div>
+
+                    </div>
+
+
+                    ${
+                        team.status === "rejected"
+                        ? `
+
+                            <div class="rejection">
+
+                                <strong>
+                                    Rejection Reason:
+                                </strong>
+
+                                <br>
+
+                                ${
+                                    escapeHtml(
+                                        team.rejection_reason ||
+                                        "No rejection reason was provided by the admin."
+                                    )
+                                }
+
+                            </div>
+
+                            <div class="status-note">
+
+                                Correct the team or player details below,
+                                then submit the team again for admin review.
+
+                            </div>
+
+                        `
+                        : team.status === "approved"
+                            ? `
+
+                                <div class="status-note">
+
+                                    🟢 Your team has been approved.
+                                    Team and player changes are locked.
+
+                                </div>
+
+                            `
+                            : `
+
+                                <div class="status-note">
+
+                                    🟡 Your team is pending admin review.
+
+                                </div>
+
+                            `
+                    }
+
+
+                    <div class="team-actions">
+
+                        <button
+                            class="view-btn"
+                            onclick="togglePlayers('${team.id}')">
+
+                            VIEW PLAYERS
+
+                        </button>
+
+
+                        ${
+                            team.status !== "approved"
+                            ? `
+
+                                <button
+                                    class="edit-btn"
+                                    onclick="toggleTeamNameEdit('${team.id}')">
+
+                                    ✏️ EDIT TEAM NAME
+
+                                </button>
+
+                            `
+                            : ""
+                        }
+
+
+                        ${
+                            team.status === "rejected"
+                            ? `
+
+                                <button
+                                    class="resubmit-btn"
+                                    onclick="resubmitTeam('${team.id}')">
+
+                                    🔄 RESUBMIT TEAM
+
+                                </button>
+
+                            `
+                            : ""
+                        }
+
+                    </div>
+
+
+                    ${
+                        team.status === "rejected"
+                        ? `
+
+                            <div
+                                id="resubmit-message-${team.id}"
+                                class="inline-message">
+                            </div>
+
+                        `
+                        : ""
+                    }
+
+
+                    ${
+                        team.status !== "approved"
+                        ? `
+
+                            <div
+                                class="team-name-edit"
+                                id="team-name-edit-${team.id}">
+
+                                <label>
+                                    TEAM NAME
+                                </label>
+
+                                <input
+                                    id="team-name-input-${team.id}"
+                                    type="text"
+                                    maxlength="50"
+                                    value="${escapeHtml(
+                                        team.team_name
+                                    )}">
+
+                                <button
+                                    class="save-btn"
+                                    onclick="saveTeamName('${team.id}')">
+
+                                    SAVE TEAM NAME
+
+                                </button>
+
+                                <button
+                                    class="cancel-btn"
+                                    onclick="toggleTeamNameEdit('${team.id}')">
+
+                                    CANCEL
+
+                                </button>
+
+                                <div class="team-note">
+
+                                    Team name changes are locked
+                                    after admin approval.
+
+                                </div>
+
+                                <div
+                                    id="team-name-message-${team.id}"
+                                    class="inline-message">
+                                </div>
+
+                            </div>
+
+                        `
+                        : `
+
+                            <div class="team-note">
+
+                                🔒 Team name changes are locked
+                                because this team is approved.
+
+                            </div>
+
+                        `
+                    }
+
+
+                    <div
+                        class="players"
+                        id="players-${team.id}">
+                    </div>
+
+                </div>
+
+            `;
+
+        }).join("");
 }
 
-function toggleTeamNameEdit(teamId) {
-    const panel = document.getElementById("team-name-edit-" + teamId);
-    if (panel) panel.style.display = panel.style.display === "block" ? "none" : "block";
-}
 
-/* VIEW PLAYERS */
+/* =========================
+   VIEW PLAYERS
+========================= */
+
 async function togglePlayers(teamId) {
-    const container = document.getElementById("players-" + teamId);
+
+    const container =
+        document.getElementById(
+            "players-" + teamId
+        );
+
     if (!container) return;
 
-    if (container.style.display === "block") {
-        container.style.display = "none";
+    if (
+        container.style.display === "block"
+    ) {
+
+        container.style.display =
+            "none";
+
         return;
     }
 
-    container.style.display = "block";
-    container.innerHTML = '<div class="loading">Loading players...</div>';
+    container.style.display =
+        "block";
 
-    const team = currentTeams.find(item => item.id === teamId);
-    if (!team) {
-        container.innerHTML = '<div class="empty">Team not found.</div>';
-        return;
-    }
+    container.innerHTML =
+        '<div class="loading">Loading players...</div>';
 
-    const canEdit = String(team.status || "").toLowerCase() !== "approved";
+    const team =
+        currentTeams.find(
+            t => t.id === teamId
+        );
 
-    const { data, error } = await supabaseClient
+    const canEdit =
+        team &&
+        team.status !== "approved";
+
+    const {
+        data,
+        error
+    } = await supabaseClient
         .from("team_players")
         .select("*")
         .eq("team_id", teamId)
@@ -642,497 +1213,1926 @@ async function togglePlayers(teamId) {
         .order("player_number");
 
     if (error) {
-        console.error("Player loading error:", error);
-        container.innerHTML = '<div class="empty">Unable to load players.</div>';
+
+        console.error(error);
+
+        container.innerHTML =
+            "Unable to load players.";
+
         return;
     }
 
-    const players = data || [];
-    const mainCount = players.filter(p => String(p.player_type).toLowerCase() === "main").length;
-    const subCount = players.filter(p => String(p.player_type).toLowerCase() === "substitute").length;
-    const verifiedCount = players.filter(p => p.verification_status === "verified").length;
+    const players =
+        data || [];
+
+    const mainCount =
+        players.filter(
+            p =>
+                String(
+                    p.player_type
+                ).toLowerCase() === "main"
+        ).length;
+
+    const subCount =
+        players.filter(
+            p =>
+                String(
+                    p.player_type
+                ).toLowerCase() === "substitute"
+        ).length;
+
+    const verifiedCount =
+        players.filter(
+            p =>
+                p.verification_status ===
+                "verified"
+        ).length;
 
     container.innerHTML = `
-        <div class="team-note">Main Players: ${mainCount}/5 | Substitutes: ${subCount}/2 | Verified: ${verifiedCount}/${players.length}</div>
-        <div class="replace-note">${canEdit ? "You can edit, remove, or replace players while this team is not approved. Changed players must be verified again." : "🔒 Player changes are locked because this team is approved."}</div>
 
-        ${players.length ? players.map(player => `
-            <div class="player">
-                <strong>${escapeHtml(player.player_type)} ${escapeHtml(player.player_number)}</strong><br>
-                Username: ${escapeHtml(player.username || "Not verified yet")}<br>
-                Game User ID: ${escapeHtml(player.game_user_id)}<br>
-                Server ID: ${escapeHtml(player.server_id)}<br>
-                Role: ${escapeHtml(player.role || "Not selected")}<br>
-                Verification: ${escapeHtml(player.verification_status || "unverified")}
-                ${player.verification_message ? `<br>Message: ${escapeHtml(player.verification_message)}` : ""}
+        <div class="team-note">
 
-                ${canEdit ? `
-                    <div>
-                        <button class="replace-btn" onclick="toggleEditPlayer('${escapeHtml(player.id)}')">✏️ EDIT / REPLACE</button>
-                        <button class="remove-btn" onclick="removePlayer('${escapeHtml(player.id)}','${escapeHtml(teamId)}')">🗑 REMOVE PLAYER</button>
-                    </div>
-                    <div class="edit-panel" id="edit-player-${escapeHtml(player.id)}">
-                        <label>USERNAME</label>
-                        <input id="edit-username-${escapeHtml(player.id)}" value="${escapeHtml(player.username || "")}" maxlength="100">
-                        <label>GAME USER ID</label>
-                        <input id="edit-game-user-id-${escapeHtml(player.id)}" value="${escapeHtml(player.game_user_id || "")}" maxlength="100">
-                        <label>SERVER ID</label>
-                        <input id="edit-server-id-${escapeHtml(player.id)}" value="${escapeHtml(player.server_id || "")}" maxlength="100">
-                        <label>ROLE</label>
-                        <select id="edit-role-${escapeHtml(player.id)}">
-                            <option value="">Select Role</option>
-                            ${["Jungler","Mid Lane","Exp Lane","Gold Lane","Roam","All rounder"].map(role => `<option value="${role}" ${player.role === role ? "selected" : ""}>${role}</option>`).join("")}
-                        </select>
-                        <div class="team-note">Saving changes resets verification. Admin verification is required again.</div>
-                        <button class="save-btn" onclick="savePlayerEdit('${escapeHtml(player.id)}','${escapeHtml(teamId)}')">SAVE CHANGES</button>
-                        <button class="cancel-btn" onclick="toggleEditPlayer('${escapeHtml(player.id)}')">CANCEL</button>
-                        <div id="player-edit-message-${escapeHtml(player.id)}" class="inline-message"></div>
-                    </div>` : ""}
-            </div>`).join("") : '<div class="empty">No players found.</div>'}
+            Main Players:
+            ${mainCount}/5
 
-        ${canEdit ? renderReplacementSlots(teamId, players) : ""}
+            |
+
+            Substitutes:
+            ${subCount}/2
+
+            |
+
+            Verified:
+            ${verifiedCount}/${players.length}
+
+        </div>
+
+
+        ${
+            canEdit
+            ? `
+
+                <div class="replace-note">
+
+                    You can edit, remove, or replace players
+                    while this team is not approved.
+                    Any changed/replacement player becomes unverified.
+
+                </div>
+
+            `
+            : `
+
+                <div class="team-note">
+
+                    🔒 Player changes are locked
+                    because this team is approved.
+
+                </div>
+
+            `
+        }
+
+
+        ${
+            players.length
+            ? players.map(player => `
+
+                <div class="player">
+
+                    <strong>
+                        ${escapeHtml(
+                            player.player_type
+                        )}
+                        ${escapeHtml(
+                            player.player_number
+                        )}
+                    </strong>
+
+                    <br>
+
+                    Username:
+                    ${escapeHtml(
+                        player.username ||
+                        "Not verified yet"
+                    )}
+
+                    <br>
+
+                    Game User ID:
+                    ${escapeHtml(
+                        player.game_user_id
+                    )}
+
+                    <br>
+
+                    Server ID:
+                    ${escapeHtml(
+                        player.server_id
+                    )}
+
+                    <br>
+
+                    Role:
+                    ${escapeHtml(
+                        player.role ||
+                        "Not selected"
+                    )}
+
+                    <br>
+
+                    Verification:
+                    ${escapeHtml(
+                        player.verification_status ||
+                        "unverified"
+                    )}
+
+                    ${
+                        player.verification_message
+                        ? `
+
+                            <br>
+
+                            Message:
+                            ${escapeHtml(
+                                player.verification_message
+                            )}
+
+                        `
+                        : ""
+                    }
+
+
+                    ${
+                        canEdit
+                        ? `
+
+                            <div>
+
+                                <button
+                                    class="replace-btn"
+                                    onclick="toggleEditPlayer('${player.id}')">
+
+                                    ✏️ EDIT / REPLACE
+
+                                </button>
+
+                                <button
+                                    class="remove-btn"
+                                    onclick="removePlayer('${player.id}','${teamId}')">
+
+                                    🗑 REMOVE PLAYER
+
+                                </button>
+
+                            </div>
+
+
+                            <div
+                                class="edit-panel"
+                                id="edit-player-${player.id}">
+
+                                <label>
+                                    USERNAME
+                                </label>
+
+                                <input
+                                    id="edit-username-${player.id}"
+                                    value="${escapeHtml(
+                                        player.username || ""
+                                    )}"
+                                    maxlength="100">
+
+
+                                <label>
+                                    GAME USER ID
+                                </label>
+
+                                <input
+                                    id="edit-game-user-id-${player.id}"
+                                    value="${escapeHtml(
+                                        player.game_user_id || ""
+                                    )}"
+                                    maxlength="100">
+
+
+                                <label>
+                                    SERVER ID
+                                </label>
+
+                                <input
+                                    id="edit-server-id-${player.id}"
+                                    value="${escapeHtml(
+                                        player.server_id || ""
+                                    )}"
+                                    maxlength="100">
+
+
+                                <label>
+                                    ROLE
+                                </label>
+
+                                <select
+                                    id="edit-role-${player.id}">
+
+                                    <option value="">
+                                        Select Role
+                                    </option>
+
+                                    <option
+                                        value="Jungler"
+                                        ${
+                                            player.role ===
+                                            "Jungler"
+                                            ? "selected"
+                                            : ""
+                                        }>
+                                        Jungler
+                                    </option>
+
+                                    <option
+                                        value="Mid Lane"
+                                        ${
+                                            player.role ===
+                                            "Mid Lane"
+                                            ? "selected"
+                                            : ""
+                                        }>
+                                        Mid Lane
+                                    </option>
+
+                                    <option
+                                        value="Exp Lane"
+                                        ${
+                                            player.role ===
+                                            "Exp Lane"
+                                            ? "selected"
+                                            : ""
+                                        }>
+                                        Exp Lane
+                                    </option>
+
+                                    <option
+                                        value="Gold Lane"
+                                        ${
+                                            player.role ===
+                                            "Gold Lane"
+                                            ? "selected"
+                                            : ""
+                                        }>
+                                        Gold Lane
+                                    </option>
+
+                                    <option
+                                        value="Roam"
+                                        ${
+                                            player.role ===
+                                            "Roam"
+                                            ? "selected"
+                                            : ""
+                                        }>
+                                        Roam
+                                    </option>
+
+                                </select>
+
+
+                                <div class="team-note">
+
+                                    Saving changes resets verification.
+                                    Admin verification is required again.
+
+                                </div>
+
+
+                                <button
+                                    class="save-btn"
+                                    onclick="savePlayerEdit('${player.id}','${teamId}')">
+
+                                    SAVE CHANGES
+
+                                </button>
+
+
+                                <button
+                                    class="cancel-btn"
+                                    onclick="toggleEditPlayer('${player.id}')">
+
+                                    CANCEL
+
+                                </button>
+
+
+                                <div
+                                    id="player-edit-message-${player.id}"
+                                    class="inline-message">
+                                </div>
+
+                            </div>
+
+                        `
+                        : ""
+                    }
+
+                </div>
+
+            `).join("")
+            : `
+
+                <div class="empty">
+                    No players found.
+                </div>
+
+            `
+        }
+
+
+        ${
+            canEdit
+            ? renderReplacementSlots(
+                teamId,
+                players
+            )
+            : ""
+        }
+
     `;
 }
 
+
+/* =========================
+   EDIT PLAYER
+========================= */
+
 function toggleEditPlayer(playerId) {
-    const panel = document.getElementById("edit-player-" + playerId);
-    if (panel) panel.style.display = panel.style.display === "block" ? "none" : "block";
+
+    const panel =
+        document.getElementById(
+            "edit-player-" + playerId
+        );
+
+    if (!panel) return;
+
+    panel.style.display =
+        panel.style.display === "block"
+            ? "none"
+            : "block";
 }
 
-/* RESUBMIT TEAM */
+
+/* =========================
+   EDIT TEAM NAME
+========================= */
+
+function toggleTeamNameEdit(teamId) {
+
+    const panel =
+        document.getElementById(
+            "team-name-edit-" + teamId
+        );
+
+    if (!panel) return;
+
+    panel.style.display =
+        panel.style.display === "block"
+            ? "none"
+            : "block";
+}
+
+
+/* =========================
+   INLINE MESSAGE
+========================= */
+
+function showInlineMessage(
+    id,
+    type,
+    message
+) {
+
+    const el =
+        document.getElementById(id);
+
+    if (!el) return;
+
+    el.className =
+        "inline-message " + type;
+
+    el.textContent =
+        message;
+}
+
+
+/* =========================
+   RESUBMIT TEAM
+========================= */
+
 async function resubmitTeam(teamId) {
-    const team = currentTeams.find(item => item.id === teamId);
-    const messageId = "resubmit-message-" + teamId;
 
-    if (!team || String(team.status).toLowerCase() !== "rejected") return;
+    const team =
+        currentTeams.find(
+            t => t.id === teamId
+        );
 
-    const { data: players, error: playersError } = await supabaseClient
+    if (
+        !team ||
+        team.status !== "rejected"
+    ) {
+        return;
+    }
+
+    const messageId =
+        "resubmit-message-" +
+        teamId;
+
+    const {
+        data: players,
+        error: playersError
+    } = await supabaseClient
         .from("team_players")
         .select("*")
         .eq("team_id", teamId);
 
     if (playersError) {
-        showInlineMessage(messageId, "error", "Could not check players: " + playersError.message);
+
+        showInlineMessage(
+            messageId,
+            "error",
+            "Could not check your players: " +
+            playersError.message
+        );
+
         return;
     }
 
-    const list = players || [];
-    const mainPlayers = list.filter(p => String(p.player_type).toLowerCase() === "main");
-    const substitutePlayers = list.filter(p => String(p.player_type).toLowerCase() === "substitute");
-    const unverified = list.filter(p => p.verification_status !== "verified");
+    const list =
+        players || [];
 
-    if (mainPlayers.length !== 5 || substitutePlayers.length !== 2) {
-        showInlineMessage(messageId, "error", "Your team must have exactly 5 main players and 2 substitutes.");
+    const mainPlayers =
+        list.filter(
+            p =>
+                String(
+                    p.player_type
+                ).toLowerCase() === "main"
+        );
+
+    const substitutePlayers =
+        list.filter(
+            p =>
+                String(
+                    p.player_type
+                ).toLowerCase() ===
+                "substitute"
+        );
+
+    const unverified =
+        list.filter(
+            p =>
+                p.verification_status !==
+                "verified"
+        );
+
+    if (
+        mainPlayers.length !== 5 ||
+        substitutePlayers.length !== 2
+    ) {
+
+        showInlineMessage(
+            messageId,
+            "error",
+            "Your team must have exactly 5 Main Players and 2 Substitutes before resubmitting."
+        );
+
         return;
     }
 
-    if (unverified.length > 0) {
-        showInlineMessage(messageId, "error", "All 7 players must be verified before resubmitting.");
+    if (
+        unverified.length > 0
+    ) {
+
+        showInlineMessage(
+            messageId,
+            "error",
+            "All 7 players must be verified before the team can be resubmitted."
+        );
+
         return;
     }
 
-    const { error } = await supabaseClient
+    const {
+        error
+    } = await supabaseClient
         .from("teams")
-        .update({ status: "pending", rejection_reason: null })
+        .update({
+            status: "pending",
+            rejection_reason: null
+        })
         .eq("id", teamId)
         .eq("user_id", team.user_id);
 
     if (error) {
-        showInlineMessage(messageId, "error", "Could not resubmit: " + error.message);
+
+        showInlineMessage(
+            messageId,
+            "error",
+            "Could not resubmit the team: " +
+            error.message
+        );
+
         return;
     }
 
-    await loadTeams(await getCurrentUser());
+    const {
+        data: authData
+    } = await supabaseClient.auth.getUser();
+
+    if (authData.user) {
+
+        await loadTeams(
+            authData.user
+        );
+
+    }
 }
 
-/* SAVE TEAM NAME */
-async function saveTeamName(teamId) {
-    const team = currentTeams.find(item => item.id === teamId);
-    const input = document.getElementById("team-name-input-" + teamId);
-    const name = input ? input.value.trim() : "";
-    const messageId = "team-name-message-" + teamId;
 
-    if (!team || String(team.status).toLowerCase() === "approved") {
-        showInlineMessage(messageId, "error", "Team name changes are locked after approval.");
+/* =========================
+   SAVE TEAM NAME
+========================= */
+
+async function saveTeamName(teamId) {
+
+    const team =
+        currentTeams.find(
+            t => t.id === teamId
+        );
+
+    const input =
+        document.getElementById(
+            "team-name-input-" +
+            teamId
+        );
+
+    const name =
+        input
+            ? input.value.trim()
+            : "";
+
+    if (
+        !team ||
+        team.status === "approved"
+    ) {
+
+        showInlineMessage(
+            "team-name-message-" +
+            teamId,
+            "error",
+            "Team name changes are locked after approval."
+        );
+
         return;
     }
 
     if (!name) {
-        showInlineMessage(messageId, "error", "Team name is required.");
+
+        showInlineMessage(
+            "team-name-message-" +
+            teamId,
+            "error",
+            "Team name is required."
+        );
+
         return;
     }
 
-    const { error } = await supabaseClient
+    const {
+        error
+    } = await supabaseClient
         .from("teams")
-        .update({ team_name: name })
+        .update({
+            team_name: name
+        })
         .eq("id", teamId)
         .eq("user_id", team.user_id)
         .neq("status", "approved");
 
     if (error) {
-        showInlineMessage(messageId, "error", "Could not update team name: " + error.message);
+
+        showInlineMessage(
+            "team-name-message-" +
+            teamId,
+            "error",
+            "Could not update team name: " +
+            error.message
+        );
+
         return;
     }
 
-    showInlineMessage(messageId, "success", "Team name updated successfully.");
-    await loadTeams(await getCurrentUser());
+    showInlineMessage(
+        "team-name-message-" +
+        teamId,
+        "success",
+        "Team name updated successfully."
+    );
+
+    const {
+        data: authData
+    } = await supabaseClient.auth.getUser();
+
+    if (authData.user) {
+
+        await loadTeams(
+            authData.user
+        );
+
+    }
 }
 
-/* SAVE PLAYER EDIT */
-async function savePlayerEdit(playerId, teamId) {
-    const team = currentTeams.find(item => item.id === teamId);
-    if (!team || String(team.status).toLowerCase() === "approved") return;
 
-    const username = document.getElementById("edit-username-" + playerId)?.value.trim() || "";
-    const gameUserId = document.getElementById("edit-game-user-id-" + playerId)?.value.trim() || "";
-    const serverId = document.getElementById("edit-server-id-" + playerId)?.value.trim() || "";
-    const role = document.getElementById("edit-role-" + playerId)?.value || "";
+/* =========================
+   SAVE PLAYER EDIT
+========================= */
 
-    if (!gameUserId || !serverId) {
-        showInlineMessage("player-edit-message-" + playerId, "error", "Game User ID and Server ID are required.");
+async function savePlayerEdit(
+    playerId,
+    teamId
+) {
+
+    const team =
+        currentTeams.find(
+            t => t.id === teamId
+        );
+
+    if (
+        !team ||
+        team.status === "approved"
+    ) {
         return;
     }
 
-    const { error } = await supabaseClient
+    const username =
+        document.getElementById(
+            "edit-username-" +
+            playerId
+        )?.value.trim() || "";
+
+    const gameUserId =
+        document.getElementById(
+            "edit-game-user-id-" +
+            playerId
+        )?.value.trim() || "";
+
+    const serverId =
+        document.getElementById(
+            "edit-server-id-" +
+            playerId
+        )?.value.trim() || "";
+
+    const role =
+        document.getElementById(
+            "edit-role-" +
+            playerId
+        )?.value || "";
+
+    if (
+        !gameUserId ||
+        !serverId
+    ) {
+
+        showInlineMessage(
+            "player-edit-message-" +
+            playerId,
+            "error",
+            "Game User ID and Server ID are required."
+        );
+
+        return;
+    }
+
+    const {
+        error
+    } = await supabaseClient
         .from("team_players")
         .update({
-            username: username || null,
-            game_user_id: gameUserId,
-            server_id: serverId,
-            role: role || null,
-            verification_status: "unverified",
-            verified_at: null,
-            verification_message: "Player details changed. Admin verification is required again."
+
+            username:
+                username || null,
+
+            game_user_id:
+                gameUserId,
+
+            server_id:
+                serverId,
+
+            role:
+                role || null,
+
+            verification_status:
+                "unverified",
+
+            verified_at:
+                null,
+
+            verification_message:
+                "Player details changed. Admin verification is required again."
+
         })
         .eq("id", playerId)
         .eq("team_id", teamId);
 
     if (error) {
-        showInlineMessage("player-edit-message-" + playerId, "error", "Could not save changes: " + error.message);
+
+        showInlineMessage(
+            "player-edit-message-" +
+            playerId,
+            "error",
+            "Could not save player changes: " +
+            error.message
+        );
+
         return;
     }
 
-    await refreshPlayers(teamId);
+    await refreshPlayers(
+        teamId
+    );
 }
 
-/* REMOVE PLAYER */
-async function removePlayer(playerId, teamId) {
-    const team = currentTeams.find(item => item.id === teamId);
-    if (!team || String(team.status).toLowerCase() === "approved") return;
 
-    if (!confirm("Remove this player?")) return;
+/* =========================
+   REMOVE PLAYER
+========================= */
 
-    const { error } = await supabaseClient
+async function removePlayer(
+    playerId,
+    teamId
+) {
+
+    const team =
+        currentTeams.find(
+            t => t.id === teamId
+        );
+
+    if (
+        !team ||
+        team.status === "approved"
+    ) {
+        return;
+    }
+
+    const {
+        error
+    } = await supabaseClient
         .from("team_players")
         .delete()
         .eq("id", playerId)
         .eq("team_id", teamId);
 
     if (error) {
-        alert("Could not remove player: " + error.message);
+
+        alert(
+            "Could not remove player: " +
+            error.message
+        );
+
         return;
     }
 
-    await refreshPlayers(teamId);
+    await refreshPlayers(
+        teamId
+    );
 }
 
-/* REFRESH PLAYERS */
+
+/* =========================
+   REFRESH PLAYERS
+========================= */
+
 async function refreshPlayers(teamId) {
-    const container = document.getElementById("players-" + teamId);
+
+    const container =
+        document.getElementById(
+            "players-" + teamId
+        );
+
     if (!container) return;
 
-    container.style.display = "block";
-    container.innerHTML = '<div class="loading">Refreshing players...</div>';
+    container.style.display =
+        "block";
 
-    // Force the next click handler to reload the list.
-    container.dataset.loaded = "false";
-    await togglePlayers(teamId);
+    container.innerHTML =
+        '<div class="loading">Refreshing players...</div>';
+
+    const team =
+        currentTeams.find(
+            t => t.id === teamId
+        );
+
+    if (!team) return;
+
+    await togglePlayers(
+        teamId
+    );
+
+    await togglePlayers(
+        teamId
+    );
 }
 
-/* REPLACEMENT SLOTS */
-function renderReplacementSlots(teamId, players) {
+
+/* =========================
+   REPLACEMENT SLOTS
+========================= */
+
+function renderReplacementSlots(
+    teamId,
+    players
+) {
+
     const mainSlots = [];
     const subSlots = [];
 
-    for (let i = 1; i <= 5; i++) {
-        if (!players.some(p => String(p.player_type).toLowerCase() === "main" && Number(p.player_number) === i)) {
+    for (
+        let i = 1;
+        i <= 5;
+        i++
+    ) {
+
+        if (
+            !players.some(
+                p =>
+                    String(
+                        p.player_type
+                    ).toLowerCase() ===
+                    "main" &&
+                    Number(
+                        p.player_number
+                    ) === i
+            )
+        ) {
+
             mainSlots.push(i);
+
         }
     }
 
-    for (let i = 1; i <= 2; i++) {
-        if (!players.some(p => String(p.player_type).toLowerCase() === "substitute" && Number(p.player_number) === i)) {
+    for (
+        let i = 1;
+        i <= 2;
+        i++
+    ) {
+
+        if (
+            !players.some(
+                p =>
+                    String(
+                        p.player_type
+                    ).toLowerCase() ===
+                    "substitute" &&
+                    Number(
+                        p.player_number
+                    ) === i
+            )
+        ) {
+
             subSlots.push(i);
+
         }
     }
 
-    if (!mainSlots.length && !subSlots.length) return "";
+    if (
+        !mainSlots.length &&
+        !subSlots.length
+    ) {
+
+        return "";
+
+    }
 
     return `
+
         <div class="team-note">
+
             Empty replacement slots:
-            ${mainSlots.length ? "Main " + mainSlots.join(", ") : ""}
-            ${mainSlots.length && subSlots.length ? " | " : ""}
-            ${subSlots.length ? "Substitute " + subSlots.join(", ") : ""}
+
+            ${
+                mainSlots.length
+                    ? "Main " +
+                      mainSlots.join(", ")
+                    : ""
+            }
+
+            ${
+                mainSlots.length &&
+                subSlots.length
+                    ? " | "
+                    : ""
+            }
+
+            ${
+                subSlots.length
+                    ? "Substitute " +
+                      subSlots.join(", ")
+                    : ""
+            }
+
         </div>
-        ${mainSlots.map(n => replacementForm(teamId, "Main", n)).join("")}
-        ${subSlots.map(n => replacementForm(teamId, "Substitute", n)).join("")}
+
+
+        ${
+            mainSlots
+                .map(
+                    n =>
+                        replacementForm(
+                            teamId,
+                            "Main",
+                            n
+                        )
+                )
+                .join("")
+        }
+
+
+        ${
+            subSlots
+                .map(
+                    n =>
+                        replacementForm(
+                            teamId,
+                            "Substitute",
+                            n
+                        )
+                )
+                .join("")
+        }
+
     `;
 }
 
-function replacementForm(teamId, playerType, playerNumber) {
-    const safeId = teamId + "-" + playerType.toLowerCase() + "-" + playerNumber;
+
+/* =========================
+   REPLACEMENT FORM
+========================= */
+
+function replacementForm(
+    teamId,
+    playerType,
+    playerNumber
+) {
+
+    const safeId =
+        teamId +
+        "-" +
+        playerType.toLowerCase() +
+        "-" +
+        playerNumber;
 
     return `
-        <div class="edit-panel" style="display:block;margin-top:10px;">
-            <strong>ADD ${playerType.toUpperCase()} ${playerNumber}</strong>
-            <label>USERNAME</label>
-            <input id="new-username-${safeId}" maxlength="100">
-            <label>GAME USER ID</label>
-            <input id="new-game-user-id-${safeId}" maxlength="100">
-            <label>SERVER ID</label>
-            <input id="new-server-id-${safeId}" maxlength="100">
-            <label>ROLE</label>
-            <select id="new-role-${safeId}">
-                <option value="">Select Role</option>
-                ${["Jungler","Mid Lane","Exp Lane","Gold Lane","Roam","All rounder"].map(role => `<option value="${role}">${role}</option>`).join("")}
+
+        <div
+            class="edit-panel"
+            style="display:block;margin-top:10px;">
+
+            <strong>
+                ADD
+                ${escapeHtml(
+                    playerType.toUpperCase()
+                )}
+                ${playerNumber}
+            </strong>
+
+
+            <label>
+                USERNAME
+            </label>
+
+            <input
+                id="new-username-${safeId}"
+                maxlength="100">
+
+
+            <label>
+                GAME USER ID
+            </label>
+
+            <input
+                id="new-game-user-id-${safeId}"
+                maxlength="100">
+
+
+            <label>
+                SERVER ID
+            </label>
+
+            <input
+                id="new-server-id-${safeId}"
+                maxlength="100">
+
+
+            <label>
+                ROLE
+            </label>
+
+            <select
+                id="new-role-${safeId}">
+
+                <option value="">
+                    Select Role
+                </option>
+
+                <option>
+                    Jungler
+                </option>
+
+                <option>
+                    Mid Lane
+                </option>
+
+                <option>
+                    Exp Lane
+                </option>
+
+                <option>
+                    Gold Lane
+                </option>
+
+                <option>
+                    Roam
+                </option>
+
             </select>
-            <div class="team-note">Replacement players start unverified and must be verified again.</div>
-            <button class="save-btn" onclick="addReplacement('${escapeHtml(teamId)}','${playerType}',${playerNumber})">ADD REPLACEMENT</button>
-            <div id="replacement-message-${safeId}" class="inline-message"></div>
+
+
+            <div class="team-note">
+
+                Replacement players start as
+                unverified and must be verified again.
+
+            </div>
+
+
+            <button
+                class="save-btn"
+                onclick="addReplacement('${teamId}','${playerType}',${playerNumber})">
+
+                ADD REPLACEMENT
+
+            </button>
+
+
+            <div
+                id="replacement-message-${safeId}"
+                class="inline-message">
+            </div>
+
         </div>
+
     `;
 }
 
-/* ADD REPLACEMENT */
-async function addReplacement(teamId, playerType, playerNumber) {
-    const team = currentTeams.find(item => item.id === teamId);
-    if (!team || String(team.status).toLowerCase() === "approved") return;
 
-    const safeId = teamId + "-" + playerType.toLowerCase() + "-" + playerNumber;
-    const username = document.getElementById("new-username-" + safeId)?.value.trim() || "";
-    const gameUserId = document.getElementById("new-game-user-id-" + safeId)?.value.trim() || "";
-    const serverId = document.getElementById("new-server-id-" + safeId)?.value.trim() || "";
-    const role = document.getElementById("new-role-" + safeId)?.value || "";
+/* =========================
+   ADD REPLACEMENT
+========================= */
 
-    if (!gameUserId || !serverId) {
-        showInlineMessage("replacement-message-" + safeId, "error", "Game User ID and Server ID are required.");
+async function addReplacement(
+    teamId,
+    playerType,
+    playerNumber
+) {
+
+    const team =
+        currentTeams.find(
+            t => t.id === teamId
+        );
+
+    if (
+        !team ||
+        team.status === "approved"
+    ) {
         return;
     }
 
-    const { error } = await supabaseClient
+    const safeId =
+        teamId +
+        "-" +
+        playerType.toLowerCase() +
+        "-" +
+        playerNumber;
+
+    const username =
+        document.getElementById(
+            "new-username-" +
+            safeId
+        )?.value.trim() || "";
+
+    const gameUserId =
+        document.getElementById(
+            "new-game-user-id-" +
+            safeId
+        )?.value.trim() || "";
+
+    const serverId =
+        document.getElementById(
+            "new-server-id-" +
+            safeId
+        )?.value.trim() || "";
+
+    const role =
+        document.getElementById(
+            "new-role-" +
+            safeId
+        )?.value || "";
+
+    if (
+        !gameUserId ||
+        !serverId
+    ) {
+
+        showInlineMessage(
+            "replacement-message-" +
+            safeId,
+            "error",
+            "Game User ID and Server ID are required."
+        );
+
+        return;
+    }
+
+    const {
+        error
+    } = await supabaseClient
         .from("team_players")
         .insert({
-            team_id: teamId,
-            player_type: playerType,
-            player_number: playerNumber,
-            game_user_id: gameUserId,
-            server_id: serverId,
-            username: username || null,
-            role: role || null,
-            verification_status: "unverified",
-            verified_at: null,
-            verification_message: "Replacement player added. Admin verification is required."
+
+            team_id:
+                teamId,
+
+            player_type:
+                playerType,
+
+            player_number:
+                playerNumber,
+
+            game_user_id:
+                gameUserId,
+
+            server_id:
+                serverId,
+
+            username:
+                username || null,
+
+            role:
+                role || null,
+
+            verification_status:
+                "unverified",
+
+            verified_at:
+                null,
+
+            verification_message:
+                "Replacement player added. Admin verification is required."
+
         });
 
     if (error) {
-        showInlineMessage("replacement-message-" + safeId, "error", "Could not add replacement: " + error.message);
+
+        showInlineMessage(
+            "replacement-message-" +
+            safeId,
+            "error",
+            "Could not add replacement: " +
+            error.message
+        );
+
         return;
     }
 
-    await refreshPlayers(teamId);
+    await refreshPlayers(
+        teamId
+    );
 }
 
-/* MATCHES */
-async function loadMatches(user) {
-    const container = document.getElementById("matchesContainer");
-    container.innerHTML = '<div class="loading">Loading your matches...</div>';
 
-    const { data: teams, error: teamError } = await supabaseClient
+/* =========================
+   TOP-UP ORDERS
+========================= */
+
+async function loadTopups(user) {
+
+    const container =
+        document.getElementById(
+            "topupsContainer"
+        );
+
+    const {
+        data,
+        error
+    } = await supabaseClient
+        .from("topup_orders")
+        .select("*")
+        .eq("user_id", user.id)
+        .order("created_at", {
+            ascending: false
+        });
+
+    if (error) {
+
+        console.error(error);
+
+        container.innerHTML =
+            `<div class="empty">
+                Unable to load your top-up orders.
+            </div>`;
+
+        return;
+    }
+
+    if (
+        !data ||
+        data.length === 0
+    ) {
+
+        container.innerHTML =
+            `<div class="empty">
+                You have not placed any Diamond Top-Up orders yet.
+            </div>`;
+
+        return;
+    }
+
+    container.innerHTML =
+        data.map(order => {
+
+            const statusClass =
+                order.status === "completed"
+                    ? "completed"
+                    : order.status === "rejected"
+                        ? "rejected"
+                        : "pending";
+
+            return `
+
+                <div class="topup-card">
+
+                    <div class="topup-header">
+
+                        <div>
+
+                            <div class="topup-name">
+
+                                💎
+                                ${escapeHtml(
+                                    order.package_name
+                                )}
+
+                            </div>
+
+                            <div class="meta">
+
+                                Order ID:
+                                ${escapeHtml(
+                                    order.id
+                                )}
+
+                                <br>
+
+                                ${new Date(
+                                    order.created_at
+                                ).toLocaleString()}
+
+                            </div>
+
+                        </div>
+
+                        <div
+                            class="status ${statusClass}">
+
+                            ${escapeHtml(
+                                order.status
+                            )}
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="topup-info">
+
+                        <div class="info-box">
+
+                            <span>
+                                DIAMONDS
+                            </span>
+
+                            <strong>
+                                ${escapeHtml(
+                                    order.diamonds
+                                )}
+                            </strong>
+
+                        </div>
+
+
+                        <div class="info-box">
+
+                            <span>
+                                AMOUNT
+                            </span>
+
+                            <strong>
+                                ₹${escapeHtml(
+                                    order.amount
+                                )}
+                            </strong>
+
+                        </div>
+
+
+                        <div class="info-box">
+
+                            <span>
+                                GAME USER ID
+                            </span>
+
+                            <strong>
+                                ${escapeHtml(
+                                    order.game_user_id
+                                )}
+                            </strong>
+
+                        </div>
+
+
+                        <div class="info-box">
+
+                            <span>
+                                SERVER ID
+                            </span>
+
+                            <strong>
+                                ${escapeHtml(
+                                    order.server_id
+                                )}
+                            </strong>
+
+                        </div>
+
+
+                        <div class="info-box">
+
+                            <span>
+                                PAYMENT METHOD
+                            </span>
+
+                            <strong>
+                                ${escapeHtml(
+                                    order.payment_method ||
+                                    "Not provided"
+                                )}
+                            </strong>
+
+                        </div>
+
+
+                        <div class="info-box">
+
+                            <span>
+                                STATUS
+                            </span>
+
+                            <strong>
+                                ${escapeHtml(
+                                    order.status
+                                )}
+                            </strong>
+
+                        </div>
+
+
+                        ${
+                            order.admin_note
+                            ? `
+
+                                <div
+                                    class="info-box"
+                                    style="grid-column:1/-1;">
+
+                                    <span>
+                                        ADMIN NOTE
+                                    </span>
+
+                                    <strong>
+                                        ${escapeHtml(
+                                            order.admin_note
+                                        )}
+                                    </strong>
+
+                                </div>
+
+                            `
+                            : ""
+                        }
+
+                    </div>
+
+                </div>
+
+            `;
+
+        }).join("");
+}
+
+
+/* =========================
+   MATCHES
+========================= */
+
+async function loadMatches(user) {
+
+    const container =
+        document.getElementById(
+            "matchesContainer"
+        );
+
+    if (!container) return;
+
+    container.innerHTML =
+        `<div class="loading">
+            Loading your matches...
+        </div>`;
+
+
+    const {
+        data: teams,
+        error: teamError
+    } = await supabaseClient
         .from("teams")
         .select("id, team_name")
         .eq("user_id", user.id)
         .eq("tournament_id", TOURNAMENT_ID);
 
+
     if (teamError) {
-        console.error("Match team loading error:", teamError);
-        container.innerHTML = '<div class="empty">Unable to load your matches.</div>';
+
+        console.error(
+            teamError
+        );
+
+        container.innerHTML =
+            `<div class="empty">
+                Unable to load your matches.
+            </div>`;
+
         return;
     }
 
-    if (!teams || teams.length === 0) {
-        container.innerHTML = '<div class="empty">You don’t have a registered team yet.</div>';
+
+    if (
+        !teams ||
+        teams.length === 0
+    ) {
+
+        container.innerHTML =
+            `<div class="empty">
+                You don't have a registered team yet.
+            </div>`;
+
         return;
     }
 
-    const teamIds = teams.map(team => team.id);
-    const ids = teamIds.join(",");
 
-    const { data: matches, error: matchError } = await supabaseClient
+    const teamIds =
+        teams.map(
+            team => team.id
+        );
+
+
+    const {
+        data: matches,
+        error: matchError
+    } = await supabaseClient
         .from("matches")
         .select("*")
-        .eq("tournament_id", TOURNAMENT_ID)
-        .or(`team_a_id.in.(${ids}),team_b_id.in.(${ids})`)
-        .order("scheduled_at", { ascending: true });
+        .eq(
+            "tournament_id",
+            TOURNAMENT_ID
+        )
+        .or(
+            `team_a_id.in.(${teamIds.join(",")}),team_b_id.in.(${teamIds.join(",")})`
+        )
+        .order(
+            "scheduled_at",
+            {
+                ascending: true
+            }
+        );
+
 
     if (matchError) {
-        console.error("Matches loading error:", matchError);
-        container.innerHTML = '<div class="empty">Unable to load matches.</div>';
+
+        console.error(
+            matchError
+        );
+
+        container.innerHTML =
+            `<div class="empty">
+                Unable to load matches.
+            </div>`;
+
         return;
     }
 
-    if (!matches || matches.length === 0) {
-        container.innerHTML = '<div class="empty">No matches assigned yet.</div>';
+
+    if (
+        !matches ||
+        matches.length === 0
+    ) {
+
+        container.innerHTML =
+            `<div class="empty">
+                No matches assigned yet.
+            </div>`;
+
         return;
     }
 
-    const otherTeamIds = [...new Set(
-        matches.flatMap(match => [match.team_a_id, match.team_b_id]).filter(Boolean)
-    )];
 
-    const { data: matchTeams, error: matchTeamsError } = await supabaseClient
+    const matchTeamIds = [
+        ...new Set(
+            matches
+                .flatMap(
+                    match => [
+                        match.team_a_id,
+                        match.team_b_id
+                    ]
+                )
+                .filter(Boolean)
+        )
+    ];
+
+
+    const {
+        data: matchTeams
+    } = await supabaseClient
         .from("teams")
-        .select("id, team_name")
-        .in("id", otherTeamIds);
+        .select(
+            "id, team_name"
+        )
+        .in(
+            "id",
+            matchTeamIds
+        );
 
-    if (matchTeamsError) console.error("Match team names loading error:", matchTeamsError);
 
     const teamMap = {};
-    (matchTeams || []).forEach(team => { teamMap[team.id] = team.team_name; });
 
-    container.innerHTML = matches.map(match => {
-        const status = String(match.status || "scheduled").toLowerCase();
-        const teamA = teamMap[match.team_a_id] || "TBD";
-        const teamB = teamMap[match.team_b_id] || "TBD";
-        const dateTime = match.scheduled_at ? new Date(match.scheduled_at).toLocaleString() : "Not scheduled";
-        const winner = match.winner_team_id ? (teamMap[match.winner_team_id] || "Unknown") : null;
+    (
+        matchTeams || []
+    ).forEach(team => {
 
-        return `
-            <div class="match-card">
-                <div class="match-header">
-                    <div>
-                        <strong>${escapeHtml(match.round_name || "MATCH")}</strong>
-                        <div class="match-number">Match #${escapeHtml(match.match_number ?? "")}</div>
+        teamMap[team.id] =
+            team.team_name;
+
+    });
+
+
+    container.innerHTML =
+        matches.map(match => {
+
+            const teamA =
+                teamMap[
+                    match.team_a_id
+                ] ||
+                "TBD";
+
+            const teamB =
+                teamMap[
+                    match.team_b_id
+                ] ||
+                "TBD";
+
+
+            const status =
+                String(
+                    match.status ||
+                    "scheduled"
+                ).toLowerCase();
+
+
+            const dateTime =
+                match.scheduled_at
+                    ? new Date(
+                        match.scheduled_at
+                    ).toLocaleString()
+                    : "Not scheduled";
+
+
+            const winner =
+                match.winner_team_id
+                    ? teamMap[
+                        match.winner_team_id
+                    ] ||
+                    "Unknown"
+                    : null;
+
+
+            return `
+
+                <div class="match-card">
+
+                    <div class="match-header">
+
+                        <div>
+
+                            <strong>
+                                ${escapeHtml(
+                                    match.round_name ||
+                                    "MATCH"
+                                )}
+                            </strong>
+
+                            <div class="match-number">
+
+                                Match #
+                                ${escapeHtml(
+                                    match.match_number ??
+                                    ""
+                                )}
+
+                            </div>
+
+                        </div>
+
+
+                        <div
+                            class="match-status ${escapeHtml(
+                                status
+                            )}">
+
+                            ${escapeHtml(
+                                status.toUpperCase()
+                            )}
+
+                        </div>
+
                     </div>
-                    <div class="match-status ${escapeHtml(status)}">${escapeHtml(status.toUpperCase())}</div>
+
+
+                    <div class="match-teams">
+
+                        <div class="match-team">
+
+                            ${escapeHtml(
+                                teamA
+                            )}
+
+                        </div>
+
+                        <div class="match-vs">
+                            VS
+                        </div>
+
+                        <div class="match-team">
+
+                            ${escapeHtml(
+                                teamB
+                            )}
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="match-info-grid">
+
+                        <div class="match-info-box">
+
+                            <span>
+                                DATE & TIME
+                            </span>
+
+                            <strong>
+                                ${escapeHtml(
+                                    dateTime
+                                )}
+                            </strong>
+
+                        </div>
+
+
+                        <div class="match-info-box">
+
+                            <span>
+                                ROOM ID
+                            </span>
+
+                            <strong>
+                                ${escapeHtml(
+                                    match.room_id ||
+                                    "Not available"
+                                )}
+                            </strong>
+
+                        </div>
+
+
+                        <div class="match-info-box">
+
+                            <span>
+                                ROOM PASSWORD
+                            </span>
+
+                            <strong>
+                                ${escapeHtml(
+                                    match.room_password ||
+                                    "Not available"
+                                )}
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+
+                    ${
+                        status === "completed"
+                        ? `
+
+                            <div class="match-result">
+
+                                <strong>
+                                    WINNER:
+                                </strong>
+
+                                ${escapeHtml(
+                                    winner ||
+                                    "Not specified"
+                                )}
+
+                                ${
+                                    match.result_note
+                                    ? `<br>${escapeHtml(
+                                        match.result_note
+                                    )}`
+                                    : ""
+                                }
+
+                            </div>
+
+                        `
+                        : ""
+                    }
+
                 </div>
 
-                <div class="match-teams">
-                    <div class="match-team">${escapeHtml(teamA)}</div>
-                    <div class="match-vs">VS</div>
-                    <div class="match-team">${escapeHtml(teamB)}</div>
-                </div>
+            `;
 
-                <div class="match-info-grid">
-                    <div class="match-info-box">
-                        <span>DATE &amp; TIME</span>
-                        <strong>${escapeHtml(dateTime)}</strong>
-                    </div>
-                    <div class="match-info-box">
-                        <span>ROOM ID</span>
-                        <strong>${escapeHtml(match.room_id || "Not available")}</strong>
-                    </div>
-                    <div class="match-info-box">
-                        <span>ROOM PASSWORD</span>
-                        <strong>${escapeHtml(match.room_password || "Not available")}</strong>
-                    </div>
-                </div>
-
-                ${status === "completed" ? `
-                    <div class="match-result">
-                        <strong>WINNER:</strong> ${escapeHtml(winner || "Not specified")}
-                        ${match.result_note ? `<br>${escapeHtml(match.result_note)}` : ""}
-                    </div>` : ""}
-            </div>`;
-    }).join("");
+        }).join("");
 }
 
-/* CURRENT USER */
-async function getCurrentUser() {
-    const { data, error } = await supabaseClient.auth.getUser();
-    if (error) {
-        console.error("Could not get current user:", error);
-        return null;
-    }
-    return data.user || null;
-}
 
-/* REFRESH BUTTONS */
-document.getElementById("refreshTeamsBtn").addEventListener("click", async () => {
-    const user = await getCurrentUser();
-    if (!user) {
-        window.location.replace("login.html");
-        return;
-    }
-    await loadTeams(user);
-});
+/* =========================
+   REFRESH TEAMS
+========================= */
 
-document.getElementById("refreshMatchesBtn").addEventListener("click", async () => {
-    const user = await getCurrentUser();
-    if (!user) {
-        window.location.replace("login.html");
-        return;
-    }
-    await loadMatches(user);
-});
+document
+    .getElementById(
+        "refreshTeamsBtn"
+    )
+    .addEventListener(
+        "click",
+        async () => {
 
-/* LOGOUT */
-document.getElementById("logoutBtn").addEventListener("click", async () => {
-    const { error } = await supabaseClient.auth.signOut();
-    if (error) console.error("Logout error:", error);
-    window.location.replace("login.html");
-});
+            const {
+                data: authData
+            } =
+                await supabaseClient
+                    .auth
+                    .getUser();
 
-/* INITIALIZE: ADMIN ROLE CHECK */
+            if (!authData.user) {
+
+                window.location.href =
+                    "login.html";
+
+                return;
+            }
+
+            await loadTeams(
+                authData.user
+            );
+
+        }
+    );
+
+
+/* =========================
+   REFRESH MATCHES
+========================= */
+
+document
+    .getElementById(
+        "refreshMatchesBtn"
+    )
+    .addEventListener(
+        "click",
+        async () => {
+
+            const {
+                data: authData
+            } =
+                await supabaseClient
+                    .auth
+                    .getUser();
+
+            if (!authData.user) {
+
+                window.location.href =
+                    "login.html";
+
+                return;
+            }
+
+            await loadMatches(
+                authData.user
+            );
+
+        }
+    );
+
+
+/* =========================
+   LOGOUT
+========================= */
+
+document
+    .getElementById(
+        "logoutBtn"
+    )
+    .addEventListener(
+        "click",
+        async () => {
+
+            await supabaseClient
+                .auth
+                .signOut();
+
+            window.location.href =
+                "login.html";
+
+        }
+    );
+
+
+/* =========================
+   INITIALIZE DASHBOARD
+========================= */
+
 async function init() {
-    try {
-        const { data: authData, error: authError } = await supabaseClient.auth.getUser();
 
-        if (authError || !authData.user) {
-            window.location.replace("login.html");
-            return;
-        }
+    const {
+        data: authData
+    } =
+        await supabaseClient
+            .auth
+            .getUser();
 
-        const user = authData.user;
+    const user =
+        authData.user;
 
-        const { data: profile, error: profileError } = await supabaseClient
-            .from("profiles")
-            .select("role")
-            .eq("id", user.id)
-            .maybeSingle();
 
-        if (profileError) {
-            console.error("Role check error:", profileError);
-            document.querySelector(".container").innerHTML =
-                '<div class="section"><h2>Could not verify your account role</h2><p style="color:#aaa;margin-top:10px;">Please refresh the page. If the problem continues, check the profiles table and its Row Level Security policies in Supabase.</p></div>';
-            return;
-        }
+    if (!user) {
 
-        if (!profile) {
-            document.querySelector(".container").innerHTML =
-                '<div class="section"><h2>Your profile was not found</h2><p style="color:#aaa;margin-top:10px;">Please sign out and sign in again. If this continues, your profile may need to be created in Supabase.</p></div>';
-            return;
-        }
+        window.location.href =
+            "login.html";
 
-        const role = String(profile.role || "").trim().toLowerCase();
-
-        if (role === "admin") {
-            window.location.replace("admin.html");
-            return;
-        }
-
-        await loadProfile(user);
-        await loadTeams(user);
-        await loadMatches(user);
-
-    } catch (error) {
-        console.error("Dashboard initialization error:", error);
-        document.querySelector(".container").innerHTML =
-            '<div class="section"><h2>Unable to load dashboard</h2><p style="color:#aaa;margin-top:10px;">Please refresh the page and try again.</p></div>';
+        return;
     }
+
+
+    await loadProfile(
+        user
+    );
+
+    await loadTeams(
+        user
+    );
+
+    await loadMatches(
+        user
+    );
+
+    // Diamond Top-Up is coming soon; top-up orders are temporarily disabled.
 }
+
 
 init();
+
 </script>
+
 </body>
 </html>
