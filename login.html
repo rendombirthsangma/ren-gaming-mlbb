@@ -103,7 +103,6 @@
 <body>
     <main class="login-page">
         <section class="login-card">
-
             <div class="login-logo">RG</div>
 
             <h1>Welcome to Ren Gaming</h1>
@@ -130,16 +129,13 @@
             <a href="index.html" class="back-home">
                 ← Back to Ren Gaming
             </a>
-
         </section>
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <script>
-        // ========================================
         // SUPABASE CONFIGURATION
-        // ========================================
 
         const SUPABASE_URL =
             "https://bixpvxkpnaqdifmvkhvp.supabase.co";
@@ -166,98 +162,76 @@
         const loginMessage =
             document.getElementById("loginMessage");
 
+        let redirecting = false;
 
-        // ========================================
-        // GOOGLE LOGIN REDIRECT URL
-        // ========================================
+        // GOOGLE LOGIN CALLBACK URL
 
         const redirectUrl =
             new URL("login.html", window.location.href).href;
 
+        // SEND USER TO THE CORRECT PAGE
 
-        // ========================================
-        // CHECK USER AND PROFILE ROLE
-        // ========================================
+        async function redirectUser(user) {
+            if (!user || redirecting) {
+                return;
+            }
 
-        async function finishLogin() {
+            redirecting = true;
+            googleLogin.disabled = true;
+
+            loginMessage.textContent =
+                "Checking your account...";
+
             try {
-                loginMessage.textContent =
-                    "Checking your account...";
-
-                const { data, error } =
-                    await supabaseClient.auth.getUser();
-
-                if (error) {
-                    throw error;
-                }
-
-                const user = data.user;
-
-                if (!user) {
-                    loginMessage.textContent =
-                        "Please sign in with Google to continue.";
-
-                    googleLogin.disabled = false;
-                    return;
-                }
-
-                // Check the existing profile.
-                // Do not overwrite the user's role.
-
-                const { data: profile, error: profileError } =
+                const { data: profile, error } =
                     await supabaseClient
                         .from("profiles")
                         .select("role")
                         .eq("id", user.id)
                         .maybeSingle();
 
-                if (profileError) {
+                if (error) {
                     throw new Error(
-                        "Unable to check your account role. " +
-                        profileError.message
+                        "Unable to check your account role: " +
+                        error.message
                     );
                 }
 
-                // A missing profile needs to be handled separately.
                 if (!profile) {
-                    loginMessage.textContent =
-                        "Your profile was not found. Please contact the administrator.";
-
-                    googleLogin.disabled = false;
-                    return;
+                    throw new Error(
+                        "Your profile was not found. Please contact the administrator."
+                    );
                 }
 
                 loginMessage.textContent =
-                    "Login successful! Opening your page...";
+                    "Login successful! Redirecting...";
 
-                // Administrators go to the admin panel.
-                if (profile.role === "admin") {
+                // Admin goes to admin panel.
+                // All other users go to user dashboard.
+
+                if (
+                    String(profile.role || "")
+                        .trim()
+                        .toLowerCase() === "admin"
+                ) {
                     window.location.replace("admin.html");
                 } else {
-                    // Regular users go to the general dashboard.
                     window.location.replace("dashboard.html");
                 }
 
             } catch (error) {
-                console.error(
-                    "Login completion error:",
-                    error
-                );
+                console.error("Account redirect error:", error);
 
                 loginMessage.textContent =
                     error.message ||
-                    "Unable to complete login. Please try again.";
+                    "Unable to open your dashboard. Please try again.";
 
                 googleLogin.disabled = false;
-                googleLogin.textContent =
-                    "Continue with Google";
+                redirecting = false;
             }
         }
 
-
-        // ========================================
         // GOOGLE SIGN-IN BUTTON
-        // ========================================
 
         googleLogin.addEventListener("click", async function () {
             googleLogin.disabled = true;
@@ -279,10 +253,7 @@
                 }
 
             } catch (error) {
-                console.error(
-                    "Google sign-in error:",
-                    error
-                );
+                console.error("Google sign-in error:", error);
 
                 loginMessage.textContent =
                     error.message ||
@@ -292,10 +263,7 @@
             }
         });
 
-
-        // ========================================
-        // HANDLE GOOGLE LOGIN RETURN
-        // ========================================
+        // HANDLE RETURN FROM GOOGLE
 
         async function initializeLogin() {
             const url = new URL(window.location.href);
@@ -312,11 +280,42 @@
                 return;
             }
 
-            await finishLogin();
+            // Wait for Supabase to finish restoring the session.
+            const { data, error } =
+                await supabaseClient.auth.getSession();
+
+            if (error) {
+                console.error("Session check error:", error);
+                loginMessage.textContent =
+                    "Unable to check your login session.";
+                return;
+            }
+
+            if (data.session?.user) {
+                await redirectUser(data.session.user);
+            } else {
+                loginMessage.textContent =
+                    "Sign in with Google to continue.";
+            }
         }
 
-        initializeLogin();
+        // ALSO HANDLE SESSION CHANGES
 
+        supabaseClient.auth.onAuthStateChange(
+            (event, session) => {
+                if (
+                    event === "SIGNED_IN" &&
+                    session?.user
+                ) {
+                    // Run after the auth callback finishes.
+                    setTimeout(() => {
+                        redirectUser(session.user);
+                    }, 0);
+                }
+            }
+        );
+
+        initializeLogin();
     </script>
 </body>
 </html>
