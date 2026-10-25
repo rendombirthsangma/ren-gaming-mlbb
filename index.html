@@ -457,4 +457,301 @@
             .admin-button { padding: 10px 12px; }
 
             .hero { min-height: 510px; padding-top: 70px; padding-bottom: 75px; }
-            .
+            .features-grid { grid-template-columns: 1fr; }
+            .game-content { flex-direction: column; align-items: flex-start; }
+            .game-badge { width: 100%; }
+            .cta { margin: 45px 22px; }
+        }
+
+        @media (max-width: 480px) {
+            .logo { font-size: 20px; }
+            .logo-icon { width: 38px; height: 38px; }
+            .nav-links { gap: 14px; }
+            .nav-links a { font-size: 12px; }
+            .hero h1 { font-size: 43px; }
+            .hero p { font-size: 15px; }
+            .stats-grid { grid-template-columns: 1fr; }
+            .stat {
+                border-right: none;
+                border-bottom: 1px solid var(--border);
+                padding: 20px;
+            }
+            .stat:last-child { border-bottom: none; }
+            .section { padding-top: 70px; padding-bottom: 70px; }
+            .footer-content { flex-direction: column; text-align: center; }
+        }
+    </style>
+</head>
+
+<body>
+<header>
+    <nav class="navbar">
+        <a href="index.html" class="logo">
+            <div class="logo-icon">RG</div>
+            <div>REN <span>GAMING</span></div>
+        </a>
+
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="#features">Features</a>
+            <a href="#game">Our Game</a>
+            <a href="tournament-register.html">Tournament</a>
+        </div>
+
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+            <a href="admin.html" class="admin-button" id="adminPanelButton">
+                ADMIN PANEL
+            </a>
+
+            <a href="login.html" class="account-button" id="accountButton">
+                LOGIN / REGISTER
+            </a>
+        </div>
+    </nav>
+</header>
+
+<main>
+    <section class="hero">
+        <div class="hero-content">
+            <div class="hero-label">WELCOME TO REN GAMING</div>
+
+            <h1>
+                PLAY TO WIN.<br>
+                <span>RISE TO GLORY.</span>
+            </h1>
+
+            <p>
+                Join the Ren Gaming community, compete in exciting
+                tournaments, build your team, and show everyone
+                what you are capable of.
+            </p>
+
+            <div class="hero-buttons">
+                <a href="tournament-register.html" class="button button-primary">
+                    JOIN TOURNAMENT
+                </a>
+
+                <a href="login.html" class="button button-secondary" id="heroDashboardButton">
+                    MY DASHBOARD
+                </a>
+
+                <a href="admin.html" class="button button-admin" id="heroAdminButton">
+                    OPEN ADMIN PANEL
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section class="stats">
+        <div class="stats-grid">
+            <div class="stat">
+                <h2>5v5</h2>
+                <p>Team Battles</p>
+            </div>
+            <div class="stat">
+                <h2>RG</h2>
+                <p>Ren Gaming Community</p>
+            </div>
+            <div class="stat">
+                <h2>100%</h2>
+                <p>Competitive Spirit</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" id="features">
+        <div class="section-heading">
+            <span>WHY REN GAMING?</span>
+            <h2>YOUR GAMING JOURNEY STARTS HERE</h2>
+            <p>Everything you need to become part of our gaming community.</p>
+        </div>
+
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">🏆</div>
+                <h3>Join Tournaments</h3>
+                <p>Register for Ren Gaming tournaments and compete against other teams for exciting prizes.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">⚔️</div>
+                <h3>Build Your Team</h3>
+                <p>Bring your teammates together, prepare your strategies, and fight for victory.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">🎮</div>
+                <h3>Gaming Community</h3>
+                <p>Connect with players, follow tournament updates, and grow together with Ren Gaming.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="game-section" id="game">
+        <div class="game-content">
+            <div class="game-text">
+                <h2>READY FOR THE BATTLE IN <span>MOBA LEGENDS 5v5?</span></h2>
+                <p>
+                    Gather your squad, sharpen your skills, and enter the battlefield.
+                    Represent your team and compete with the Ren Gaming community.
+                </p>
+
+                <div style="margin-top:25px;">
+                    <a href="tournament-register.html" class="button button-primary">
+                        REGISTER NOW
+                    </a>
+                </div>
+            </div>
+
+            <div class="game-badge">
+                <strong>5 vs 5</strong>
+                <span>TEAM BATTLE</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta">
+        <h2>ARE YOU READY, PLAYER?</h2>
+        <p>
+            Become part of Ren Gaming and get ready for your next tournament.
+            Your journey to victory starts here.
+        </p>
+
+        <a href="login.html" class="button button-primary" id="ctaAccountButton">
+            CREATE YOUR ACCOUNT
+        </a>
+    </section>
+</main>
+
+<footer>
+    <div class="footer-content">
+        <a href="index.html" class="logo">
+            <div class="logo-icon">RG</div>
+            <div>REN <span>GAMING</span></div>
+        </a>
+
+        <p>© <span id="currentYear"></span> Ren Gaming. All rights reserved.</p>
+
+        <div class="footer-links">
+            <a href="index.html">Home</a>
+            <a href="tournament-register.html">Tournament</a>
+            <a href="login.html">Login</a>
+        </div>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+    const SUPABASE_URL =
+        "https://bixpvxkpnaqdifmvkhvp.supabase.co";
+
+    const SUPABASE_PUBLISHABLE_KEY =
+        "sb_publishable_XtzkrIFbBPTGUmoLHqHu5Q_XeznKoVI";
+
+    const accountButton = document.getElementById("accountButton");
+    const heroDashboardButton = document.getElementById("heroDashboardButton");
+    const ctaAccountButton = document.getElementById("ctaAccountButton");
+    const adminPanelButton = document.getElementById("adminPanelButton");
+    const heroAdminButton = document.getElementById("heroAdminButton");
+
+    document.getElementById("currentYear").textContent =
+        new Date().getFullYear();
+
+    const authClient = window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_PUBLISHABLE_KEY
+    );
+
+    function showLoggedOut() {
+        accountButton.textContent = "LOGIN / REGISTER";
+        accountButton.href = "login.html";
+
+        heroDashboardButton.textContent = "MY DASHBOARD";
+        heroDashboardButton.href = "login.html";
+
+        ctaAccountButton.textContent = "CREATE YOUR ACCOUNT";
+        ctaAccountButton.href = "login.html";
+
+        adminPanelButton.style.display = "none";
+        heroAdminButton.style.display = "none";
+    }
+
+    async function updateAccountLinks(user) {
+        showLoggedOut();
+
+        if (!user) return;
+
+        accountButton.textContent = "DASHBOARD";
+        heroDashboardButton.textContent = "MY DASHBOARD";
+        ctaAccountButton.textContent = "GO TO DASHBOARD";
+
+        try {
+            const { data: profile, error } = await authClient
+                .from("profiles")
+                .select("role")
+                .eq("id", user.id)
+                .maybeSingle();
+
+            if (error) {
+                console.error("Unable to check user role:", error.message);
+                accountButton.href = "dashboard.html";
+                heroDashboardButton.href = "dashboard.html";
+                ctaAccountButton.href = "dashboard.html";
+                return;
+            }
+
+            const isAdmin =
+                String(profile?.role || "").trim().toLowerCase() === "admin";
+
+            if (isAdmin) {
+                accountButton.href = "admin.html";
+                accountButton.textContent = "ADMIN DASHBOARD";
+
+                heroDashboardButton.href = "admin.html";
+                heroDashboardButton.textContent = "OPEN ADMIN PANEL";
+
+                ctaAccountButton.href = "admin.html";
+                ctaAccountButton.textContent = "OPEN ADMIN PANEL";
+
+                adminPanelButton.style.display = "inline-flex";
+                heroAdminButton.style.display = "inline-flex";
+            } else {
+                accountButton.href = "dashboard.html";
+                heroDashboardButton.href = "dashboard.html";
+                ctaAccountButton.href = "dashboard.html";
+
+                adminPanelButton.style.display = "none";
+                heroAdminButton.style.display = "none";
+            }
+        } catch (error) {
+            console.error("Account display error:", error);
+            adminPanelButton.style.display = "none";
+            heroAdminButton.style.display = "none";
+        }
+    }
+
+    async function initializeRenGaming() {
+        showLoggedOut();
+
+        const { data, error } = await authClient.auth.getSession();
+
+        if (error) {
+            console.error("Could not check login status:", error.message);
+            return;
+        }
+
+        await updateAccountLinks(data.session?.user || null);
+
+        authClient.auth.onAuthStateChange((event, session) => {
+            setTimeout(() => {
+                updateAccountLinks(session?.user || null);
+            }, 0);
+        });
+    }
+
+    initializeRenGaming();
+</script>
+
+</body>
+</html>
