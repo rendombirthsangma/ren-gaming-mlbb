@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ren Gaming | Admin Dashboard</title>
-
     <meta name="theme-color" content="#090909">
+    <title>Ren Gaming | Admin Dashboard</title>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
@@ -16,12 +15,10 @@
             --card: #151515;
             --card2: #1c1c1c;
             --red: #e50914;
-            --red-dark: #a80710;
-            --text: #ffffff;
-            --muted: #a6a6a6;
+            --text: #fff;
+            --muted: #aaa;
             --border: #303030;
             --green: #18a558;
-            --yellow: #e5a000;
         }
 
         * {
@@ -72,7 +69,7 @@
             color: white;
         }
 
-        .top-actions {
+        .top-actions, .actions, .toolbar {
             display: flex;
             align-items: center;
             gap: 10px;
@@ -94,7 +91,7 @@
             margin-bottom: 8px;
         }
 
-        .page-heading p {
+        .page-heading p, .section-header p {
             color: var(--muted);
             line-height: 1.6;
         }
@@ -112,13 +109,7 @@
             padding: 11px 15px;
             font-weight: 700;
             font-size: 13px;
-            transition: 0.2s;
             gap: 7px;
-        }
-
-        .button:hover {
-            transform: translateY(-1px);
-            filter: brightness(1.12);
         }
 
         .button-red {
@@ -137,11 +128,6 @@
             color: white;
         }
 
-        .button-yellow {
-            background: #745200;
-            color: white;
-        }
-
         .button-danger {
             background: #701018;
             color: white;
@@ -153,9 +139,8 @@
         }
 
         .button:disabled {
-            opacity: 0.5;
+            opacity: .5;
             cursor: not-allowed;
-            transform: none;
         }
 
         .notice {
@@ -237,7 +222,6 @@
         }
 
         .section-header p {
-            color: var(--muted);
             font-size: 12px;
             margin-top: 6px;
         }
@@ -247,9 +231,6 @@
         }
 
         .toolbar {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
             margin-bottom: 16px;
         }
 
@@ -261,11 +242,6 @@
             padding: 11px 12px;
             min-width: 180px;
             max-width: 100%;
-        }
-
-        .field:focus {
-            outline: 1px solid var(--red);
-            border-color: var(--red);
         }
 
         .table-wrap {
@@ -296,16 +272,6 @@
 
         td {
             color: #eee;
-        }
-
-        tr:last-child td {
-            border-bottom: none;
-        }
-
-        .actions {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 7px;
         }
 
         .badge {
@@ -354,12 +320,11 @@
             border: 1px solid var(--border);
             border-radius: 10px;
             padding: 20px;
-            transition: 0.2s;
+            transition: .2s;
         }
 
         .quick-link:hover {
             border-color: var(--red);
-            transform: translateY(-2px);
         }
 
         .quick-link h3 {
@@ -385,7 +350,7 @@
             position: fixed;
             inset: 0;
             z-index: 1000;
-            background: rgba(0, 0, 0, 0.82);
+            background: rgba(0, 0, 0, .82);
             display: none;
             align-items: center;
             justify-content: center;
@@ -413,10 +378,6 @@
             align-items: center;
             gap: 10px;
             margin-bottom: 18px;
-        }
-
-        .modal-title h2 {
-            font-size: 20px;
         }
 
         .modal-close {
@@ -481,8 +442,7 @@
                 font-size: 24px;
             }
 
-            .section-header,
-            .section-content {
+            .section-header, .section-content {
                 padding: 15px;
             }
 
@@ -500,7 +460,6 @@
 
     <div class="top-actions">
         <span id="adminEmail" style="color:#aaa;font-size:12px;"></span>
-        <a class="button button-dark" href="dashboard.html">User Dashboard</a>
         <button class="button button-red" id="logoutButton" type="button">
             Logout
         </button>
@@ -527,17 +486,14 @@
                 <p>Total Teams Loaded</p>
                 <h2 id="totalTeams">0</h2>
             </div>
-
             <div class="stat-card">
                 <p>Pending Teams</p>
                 <h2 id="pendingTeams">0</h2>
             </div>
-
             <div class="stat-card">
                 <p>Approved Teams</p>
                 <h2 id="approvedTeams">0</h2>
             </div>
-
             <div class="stat-card">
                 <p>Top-up Orders Loaded</p>
                 <h2 id="totalTopups">0</h2>
@@ -548,9 +504,8 @@
             <div class="section-header">
                 <div>
                     <h2>Team Management</h2>
-                    <p>Review registrations and export team information.</p>
+                    <p>Review registrations and export teams and player details.</p>
                 </div>
-
                 <div class="actions">
                     <button class="button button-green" id="exportButton" type="button">
                         Download Excel
@@ -563,13 +518,8 @@
 
             <div class="section-content">
                 <div class="toolbar">
-                    <input
-                        id="teamSearch"
-                        class="field"
-                        type="search"
-                        placeholder="Search team name..."
-                    >
-
+                    <input id="teamSearch" class="field" type="search"
+                           placeholder="Search team name...">
                     <select id="teamStatusFilter" class="field">
                         <option value="all">All statuses</option>
                         <option value="pending">Pending</option>
@@ -590,9 +540,7 @@
                             </tr>
                         </thead>
                         <tbody id="teamsTableBody">
-                            <tr>
-                                <td colspan="5" class="empty">Loading teams...</td>
-                            </tr>
+                            <tr><td colspan="5" class="empty">Loading teams...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -606,7 +554,6 @@
                     <p>View available top-up orders from your database.</p>
                 </div>
             </div>
-
             <div class="section-content">
                 <div class="table-wrap">
                     <table>
@@ -621,9 +568,7 @@
                             </tr>
                         </thead>
                         <tbody id="topupsTableBody">
-                            <tr>
-                                <td colspan="6" class="empty">Loading top-up orders...</td>
-                            </tr>
+                            <tr><td colspan="6" class="empty">Loading top-up orders...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -634,7 +579,7 @@
             <div class="section-header">
                 <div>
                     <h2>Player Verification</h2>
-                    <p>Open the player verification page to review submitted details.</p>
+                    <p>Review submitted player details.</p>
                 </div>
                 <a class="button button-red" href="admin-player-verification.html">
                     Open Verification
@@ -649,28 +594,23 @@
                     <p>Open the other management pages.</p>
                 </div>
             </div>
-
             <div class="section-content">
                 <div class="quick-links">
-
                     <a class="quick-link" href="admin-tournament-management.html">
                         <h3>Tournament Management</h3>
                         <p>Add, edit and manage tournament information.</p>
                         <span class="button button-red">Open Page →</span>
                     </a>
-
                     <a class="quick-link" href="admin-match-management.html">
                         <h3>Match Management</h3>
-                        <p>Manage match information and tournament progress.</p>
+                        <p>Manage matches and tournament progress.</p>
                         <span class="button button-red">Open Page →</span>
                     </a>
-
                     <a class="quick-link" href="admin-player-verification.html">
                         <h3>Player Verification</h3>
                         <p>Review player verification submissions.</p>
                         <span class="button button-red">Open Page →</span>
                     </a>
-
                 </div>
             </div>
         </section>
@@ -683,14 +623,9 @@
     <div class="modal-box">
         <div class="modal-title">
             <h2 id="playersModalTitle">Team Players</h2>
-            <button class="modal-close" id="closePlayersModal" type="button">
-                Close
-            </button>
+            <button class="modal-close" id="closePlayersModal" type="button">Close</button>
         </div>
-
-        <div id="playersModalContent" class="player-list">
-            Loading players...
-        </div>
+        <div id="playersModalContent" class="player-list">Loading players...</div>
     </div>
 </div>
 
@@ -701,39 +636,30 @@
 <script>
 "use strict";
 
-/* =========================================================
-   SUPABASE CONFIGURATION
-   ========================================================= */
-
 const SUPABASE_URL = "https://bixpvxkpnaqdifmvkhvp.supabase.co";
-
-/*
-  This is the publishable/anon key for the browser.
-  Never put a Supabase service_role or secret key in this file.
-*/
 const SUPABASE_KEY = "sb_publishable_XtzkrIFbBPTGUmoLHqHu5Q_XeznKoVI";
-
 const TOURNAMENT_ID = "642cb68f-9702-483c-b1b7-f2c35f89dd09";
 
 const supabaseClient = window.supabase.createClient(
     SUPABASE_URL,
-    SUPABASE_KEY
+    SUPABASE_KEY,
+    {
+        auth: {
+            persistSession: true,
+            autoRefreshToken: true,
+            detectSessionInUrl: true
+        }
+    }
 );
 
 let allTeams = [];
 let allTopups = [];
-let currentAdmin = null;
 
-/* =========================================================
-   COMMON HELPERS
-   ========================================================= */
-
-const $ = (id) => document.getElementById(id);
+const $ = id => document.getElementById(id);
 
 function showNotice(message, type = "info") {
-    const notice = $("notice");
-    notice.textContent = message;
-    notice.className = "notice " + type;
+    $("notice").textContent = message;
+    $("notice").className = "notice " + type;
 }
 
 function clearNotice() {
@@ -742,7 +668,7 @@ function clearNotice() {
 }
 
 function escapeHTML(value) {
-    return String(value ?? "").replace(/[&<>"']/g, (char) => ({
+    return String(value ?? "").replace(/[&<>"']/g, char => ({
         "&": "&amp;",
         "<": "&lt;",
         ">": "&gt;",
@@ -753,14 +679,8 @@ function escapeHTML(value) {
 
 function formatDate(value) {
     if (!value) return "—";
-
     const date = new Date(value);
-
-    if (Number.isNaN(date.getTime())) {
-        return String(value);
-    }
-
-    return date.toLocaleString();
+    return Number.isNaN(date.getTime()) ? String(value) : date.toLocaleString();
 }
 
 function normalizeStatus(value) {
@@ -769,7 +689,6 @@ function normalizeStatus(value) {
 
 function statusBadge(status) {
     const normalized = normalizeStatus(status);
-
     let css = "badge-pending";
 
     if (normalized === "approved" || normalized === "accepted") {
@@ -786,30 +705,20 @@ function setLoadingRow(tbodyId, colspan, message) {
         `<tr><td colspan="${colspan}" class="empty">${escapeHTML(message)}</td></tr>`;
 }
 
-/* =========================================================
-   ADMIN ACCOUNT VERIFICATION
-   ========================================================= */
+/* ADMIN VERIFICATION */
 
 async function checkAdmin() {
     try {
         const { data: authData, error: authError } =
             await supabaseClient.auth.getUser();
 
-        if (authError) {
-            console.error("Supabase authentication error:", authError);
+        if (authError || !authData.user) {
             window.location.replace("login.html");
             return false;
         }
 
-        const user = authData?.user;
-
-        if (!user) {
-            window.location.replace("login.html");
-            return false;
-        }
-
-        currentAdmin = user;
-        $("adminEmail").textContent = user.email || "Signed-in admin";
+        const user = authData.user;
+        $("adminEmail").textContent = user.email || "Administrator";
 
         const { data: profile, error: profileError } =
             await supabaseClient
@@ -819,73 +728,33 @@ async function checkAdmin() {
                 .maybeSingle();
 
         if (profileError) {
-            console.error("Admin profile lookup failed:", profileError);
-
-            showNotice(
-                "We could not verify your admin role. Check the profiles table and its Row Level Security (RLS) policies. Error: " +
-                profileError.message,
-                "error"
-            );
-
-            $("loadingMessage").classList.add("hidden");
-            return false;
+            throw new Error("Could not check admin role: " + profileError.message);
         }
 
-        if (!profile) {
-            showNotice(
-                "No profile was found for this account. In Supabase, check that profiles.id matches this user's Authentication UID.",
-                "error"
-            );
-
-            $("loadingMessage").classList.add("hidden");
-            return false;
-        }
-
-        const role = String(profile.role || "").trim().toLowerCase();
-
-        if (role !== "admin") {
-            showNotice(
-                "Access denied. Your current role is '" +
-                (profile.role || "not set") +
-                "'. The required role is 'admin'.",
-                "error"
-            );
-
+        if (!profile || String(profile.role || "").trim().toLowerCase() !== "admin") {
+            showNotice("Access denied. This account does not have the admin role.", "error");
             $("loadingMessage").classList.add("hidden");
             return false;
         }
 
         $("loadingMessage").classList.add("hidden");
         $("adminContent").classList.remove("hidden");
-
         return true;
 
     } catch (error) {
-        console.error("Unexpected admin verification error:", error);
-
+        console.error(error);
         $("loadingMessage").classList.add("hidden");
-
-        showNotice(
-            "Admin verification failed: " + (error.message || "Unknown error"),
-            "error"
-        );
-
+        showNotice("Admin verification failed: " + error.message, "error");
         return false;
     }
 }
 
-/* =========================================================
-   LOAD TEAMS
-   ========================================================= */
+/* LOAD TEAMS */
 
 async function loadTeams() {
     setLoadingRow("teamsTableBody", 5, "Loading teams...");
 
     try {
-        /*
-          This query loads teams belonging to the selected tournament.
-          The database must allow this admin account to read these rows.
-        */
         const { data, error } = await supabaseClient
             .from("teams")
             .select("*")
@@ -895,24 +764,13 @@ async function loadTeams() {
         if (error) throw error;
 
         allTeams = data || [];
-
         renderTeams();
         updateStats();
 
     } catch (error) {
-        console.error("Could not load teams:", error);
-
-        setLoadingRow(
-            "teamsTableBody",
-            5,
-            "Could not load teams: " + error.message
-        );
-
-        showNotice(
-            "Unable to load teams. Check the teams table, column names, and admin SELECT permissions. " +
-            error.message,
-            "error"
-        );
+        console.error(error);
+        setLoadingRow("teamsTableBody", 5, "Could not load teams: " + error.message);
+        showNotice("Could not load teams. Check Supabase permissions and table columns. " + error.message, "error");
     }
 }
 
@@ -920,15 +778,12 @@ function renderTeams() {
     const search = $("teamSearch").value.trim().toLowerCase();
     const statusFilter = $("teamStatusFilter").value;
 
-    const filtered = allTeams.filter((team) => {
-        const teamName = String(team.team_name || team.name || "").toLowerCase();
+    const filtered = allTeams.filter(team => {
+        const name = String(team.team_name || team.name || "").toLowerCase();
         const status = normalizeStatus(team.status);
 
-        const matchesSearch = teamName.includes(search);
-        const matchesStatus =
-            statusFilter === "all" || status === statusFilter;
-
-        return matchesSearch && matchesStatus;
+        return name.includes(search) &&
+            (statusFilter === "all" || status === statusFilter);
     });
 
     if (!filtered.length) {
@@ -937,45 +792,32 @@ function renderTeams() {
         return;
     }
 
-    $("teamsTableBody").innerHTML = filtered.map((team) => {
-        const teamName = team.team_name || team.name || "Unnamed team";
+    $("teamsTableBody").innerHTML = filtered.map(team => {
+        const name = team.team_name || team.name || "Unnamed team";
         const status = normalizeStatus(team.status);
 
         return `
             <tr>
-                <td><strong>${escapeHTML(teamName)}</strong></td>
+                <td><strong>${escapeHTML(name)}</strong></td>
                 <td>${escapeHTML(team.tournament_id || "—")}</td>
                 <td>${statusBadge(status)}</td>
                 <td>${escapeHTML(formatDate(team.created_at))}</td>
                 <td>
                     <div class="actions">
-                        <button
-                            class="button button-dark button-small"
-                            data-action="players"
-                            data-id="${escapeHTML(team.id)}"
-                            type="button">
+                        <button class="button button-dark button-small"
+                            data-action="players" data-id="${escapeHTML(team.id)}">
                             Players
                         </button>
-
-                        ${
-                            status !== "approved"
-                            ? `<button
-                                class="button button-green button-small"
-                                data-action="approve"
-                                data-id="${escapeHTML(team.id)}"
-                                type="button">Approve</button>`
-                            : ""
-                        }
-
-                        ${
-                            status !== "rejected"
-                            ? `<button
-                                class="button button-danger button-small"
-                                data-action="reject"
-                                data-id="${escapeHTML(team.id)}"
-                                type="button">Reject</button>`
-                            : ""
-                        }
+                        ${status !== "approved" ? `
+                            <button class="button button-green button-small"
+                                data-action="approve" data-id="${escapeHTML(team.id)}">
+                                Approve
+                            </button>` : ""}
+                        ${status !== "rejected" ? `
+                            <button class="button button-danger button-small"
+                                data-action="reject" data-id="${escapeHTML(team.id)}">
+                                Reject
+                            </button>` : ""}
                     </div>
                 </td>
             </tr>
@@ -985,16 +827,10 @@ function renderTeams() {
     updateStats();
 }
 
-/* =========================================================
-   APPROVE / REJECT TEAMS
-   ========================================================= */
+/* APPROVE OR REJECT */
 
 async function updateTeamStatus(teamId, newStatus) {
-    const actionText = newStatus === "approved" ? "approve" : "reject";
-
-    if (!confirm(`Are you sure you want to ${actionText} this team?`)) {
-        return;
-    }
+    if (!confirm(`Are you sure you want to ${newStatus} this team?`)) return;
 
     try {
         const { data, error } = await supabaseClient
@@ -1005,30 +841,19 @@ async function updateTeamStatus(teamId, newStatus) {
             .select();
 
         if (error) throw error;
-
-        if (!data || data.length === 0) {
-            throw new Error(
-                "No team was updated. Check your admin UPDATE policy and the team ID."
-            );
+        if (!data || !data.length) {
+            throw new Error("No team updated. Check your database UPDATE policy.");
         }
 
-        showNotice(`Team ${newStatus} successfully.`, "success");
+        showNotice("Team " + newStatus + " successfully.", "success");
         await loadTeams();
 
     } catch (error) {
-        console.error("Team status update failed:", error);
-
-        showNotice(
-            "Could not update team status. Check your Supabase UPDATE policy. " +
-            error.message,
-            "error"
-        );
+        showNotice("Could not update team: " + error.message, "error");
     }
 }
 
-/* =========================================================
-   VIEW TEAM PLAYERS
-   ========================================================= */
+/* VIEW PLAYERS */
 
 async function viewTeamPlayers(teamId) {
     $("playersModalTitle").textContent = "Team Players";
@@ -1036,49 +861,35 @@ async function viewTeamPlayers(teamId) {
     $("playersModal").classList.add("open");
 
     try {
-        const { data: players, error } = await supabaseClient
+        const { data, error } = await supabaseClient
             .from("team_players")
             .select("*")
             .eq("team_id", teamId);
 
         if (error) throw error;
 
-        if (!players || players.length === 0) {
-            $("playersModalContent").innerHTML =
-                '<p class="empty">No player records found for this team.</p>';
+        if (!data || !data.length) {
+            $("playersModalContent").textContent = "No player records found.";
             return;
         }
 
-        $("playersModalContent").innerHTML = players.map((player, index) => {
-            const playerName =
-                player.username ||
-                player.player_name ||
-                player.name ||
-                "Unnamed player";
-
-            return `
-                <div class="player-card">
-                    <strong>${escapeHTML(playerName)}</strong><br>
-                    Player type: ${escapeHTML(player.player_type || "—")}<br>
-                    Player number: ${escapeHTML(player.player_number ?? index + 1)}<br>
-                    Game User ID: ${escapeHTML(player.game_user_id || "—")}<br>
-                    Server ID: ${escapeHTML(player.server_id || "—")}<br>
-                    Verification: ${escapeHTML(player.verification_status || "—")}
-                </div>
-            `;
-        }).join("");
+        $("playersModalContent").innerHTML = data.map((player, index) => `
+            <div class="player-card">
+                <strong>${escapeHTML(player.username || player.player_name || player.name || "Unnamed player")}</strong><br>
+                Player Type: ${escapeHTML(player.player_type || "—")}<br>
+                Player Number: ${escapeHTML(player.player_number ?? index + 1)}<br>
+                Game User ID: ${escapeHTML(player.game_user_id || "—")}<br>
+                Server ID: ${escapeHTML(player.server_id || "—")}<br>
+                Verification Status: ${escapeHTML(player.verification_status || "—")}
+            </div>
+        `).join("");
 
     } catch (error) {
-        console.error("Could not load players:", error);
-
-        $("playersModalContent").innerHTML =
-            `<p class="empty">Could not load players: ${escapeHTML(error.message)}</p>`;
+        $("playersModalContent").textContent = "Could not load players: " + error.message;
     }
 }
 
-/* =========================================================
-   LOAD TOP-UP ORDERS
-   ========================================================= */
+/* LOAD TOP-UP ORDERS */
 
 async function loadTopups() {
     setLoadingRow("topupsTableBody", 6, "Loading top-up orders...");
@@ -1093,21 +904,13 @@ async function loadTopups() {
         if (error) throw error;
 
         allTopups = data || [];
-
         renderTopups();
         updateStats();
 
     } catch (error) {
-        console.error("Could not load top-up orders:", error);
-
+        console.error("Top-up orders error:", error);
         allTopups = [];
-
-        setLoadingRow(
-            "topupsTableBody",
-            6,
-            "Top-up orders unavailable: " + error.message
-        );
-
+        setLoadingRow("topupsTableBody", 6, "Top-up orders unavailable: " + error.message);
         updateStats();
     }
 }
@@ -1118,37 +921,19 @@ function renderTopups() {
         return;
     }
 
-    $("topupsTableBody").innerHTML = allTopups.map((order) => {
-        const orderId = order.id ?? order.order_id ?? "—";
-        const userId = order.user_id ?? "—";
-        const packageName =
-            order.package_name ||
-            order.package ||
-            order.product_name ||
-            "—";
-        const amount =
-            order.amount ??
-            order.price ??
-            order.total_amount ??
-            "—";
-        const status = order.status || "pending";
-
-        return `
-            <tr>
-                <td>${escapeHTML(orderId)}</td>
-                <td>${escapeHTML(userId)}</td>
-                <td>${escapeHTML(packageName)}</td>
-                <td>${escapeHTML(amount)}</td>
-                <td>${statusBadge(status)}</td>
-                <td>${escapeHTML(formatDate(order.created_at))}</td>
-            </tr>
-        `;
-    }).join("");
+    $("topupsTableBody").innerHTML = allTopups.map(order => `
+        <tr>
+            <td>${escapeHTML(order.id ?? order.order_id ?? "—")}</td>
+            <td>${escapeHTML(order.user_id ?? "—")}</td>
+            <td>${escapeHTML(order.package_name || order.package || order.product_name || "—")}</td>
+            <td>${escapeHTML(order.amount ?? order.price ?? order.total_amount ?? "—")}</td>
+            <td>${statusBadge(order.status || "pending")}</td>
+            <td>${escapeHTML(formatDate(order.created_at))}</td>
+        </tr>
+    `).join("");
 }
 
-/* =========================================================
-   DASHBOARD COUNTS
-   ========================================================= */
+/* UPDATE COUNTS */
 
 function updateStats() {
     $("totalTeams").textContent = allTeams.length;
@@ -1164,16 +949,11 @@ function updateStats() {
     $("totalTopups").textContent = allTopups.length;
 }
 
-/* =========================================================
-   EXCEL EXPORT
-   ========================================================= */
+/* EXCEL EXPORT: TEAMS + PLAYER DETAILS */
 
 async function exportTeamsToExcel() {
     if (!window.XLSX) {
-        showNotice(
-            "The Excel library did not load. Check your internet connection and reload the page.",
-            "error"
-        );
+        showNotice("Excel library failed to load. Refresh the page and try again.", "error");
         return;
     }
 
@@ -1182,79 +962,91 @@ async function exportTeamsToExcel() {
     button.textContent = "Preparing Excel...";
 
     try {
-        /*
-          Export all teams loaded for the selected tournament.
-          Player details are fetched from team_players.
-        */
-        const teamRows = allTeams.map((team) => ({
-            "Team ID": team.id ?? "",
-            "Team Name": team.team_name || team.name || "",
-            "Tournament ID": team.tournament_id || "",
-            "User ID": team.user_id || "",
-            "Status": team.status || "pending",
-            "Created At": team.created_at || ""
-        }));
+        // Fetch fresh team records for this tournament.
+        const { data: teams, error: teamsError } = await supabaseClient
+            .from("teams")
+            .select("*")
+            .eq("tournament_id", TOURNAMENT_ID)
+            .order("created_at", { ascending: true });
 
-        let playerRows = [];
+        if (teamsError) throw new Error("Teams query failed: " + teamsError.message);
 
-        if (allTeams.length > 0) {
-            const teamIds = allTeams
-                .map(team => team.id)
-                .filter(Boolean);
+        const teamList = teams || [];
+        const playerRows = [];
+        const teamIds = teamList.map(team => team.id).filter(Boolean);
 
-            for (let i = 0; i < teamIds.length; i += 100) {
-                const batch = teamIds.slice(i, i + 100);
+        // Fetch player records in batches.
+        for (let i = 0; i < teamIds.length; i += 100) {
+            const batch = teamIds.slice(i, i + 100);
 
-                const { data: players, error } = await supabaseClient
-                    .from("team_players")
-                    .select("*")
-                    .in("team_id", batch);
+            const { data: players, error: playersError } = await supabaseClient
+                .from("team_players")
+                .select("*")
+                .in("team_id", batch);
 
-                if (error) throw error;
+            if (playersError) {
+                throw new Error("Player query failed: " + playersError.message);
+            }
 
-                (players || []).forEach((player) => {
-                    const team = allTeams.find(
-                        item => String(item.id) === String(player.team_id)
-                    );
+            for (const player of (players || [])) {
+                const team = teamList.find(
+                    item => String(item.id) === String(player.team_id)
+                );
 
-                    playerRows.push({
-                        "Team ID": player.team_id || "",
-                        "Team Name": team
-                            ? (team.team_name || team.name || "")
-                            : "",
-                        "Player Name": player.username ||
-                            player.player_name ||
-                            player.name ||
-                            "",
-                        "Player Type": player.player_type || "",
-                        "Player Number": player.player_number ?? "",
-                        "Game User ID": player.game_user_id || "",
-                        "Server ID": player.server_id || "",
-                        "Verification Status": player.verification_status || ""
-                    });
+                playerRows.push({
+                    "Team Name": team ? (team.team_name || team.name || "") : "",
+                    "Team ID": player.team_id || "",
+                    "Tournament ID": team ? (team.tournament_id || "") : "",
+                    "Team Status": team ? (team.status || "pending") : "",
+                    "Player Number": player.player_number ?? "",
+                    "Player Type": player.player_type || "",
+                    "Player Name": player.username || player.player_name || player.name || "",
+                    "Game User ID": player.game_user_id || "",
+                    "Server ID": player.server_id || "",
+                    "Verification Status": player.verification_status || ""
                 });
             }
         }
 
+        const teamRows = teamList.map(team => ({
+            "Team Name": team.team_name || team.name || "",
+            "Team ID": team.id || "",
+            "Tournament ID": team.tournament_id || "",
+            "User ID": team.user_id || "",
+            "Status": team.status || "pending",
+            "Registered At": team.created_at || ""
+        }));
+
         const workbook = XLSX.utils.book_new();
 
         const teamsSheet = XLSX.utils.json_to_sheet(
-            teamRows.length ? teamRows : [{ Message: "No teams found" }]
+            teamRows.length ? teamRows : [{ Message: "No teams found for this tournament." }]
         );
 
         const playersSheet = XLSX.utils.json_to_sheet(
-            playerRows.length ? playerRows : [{ Message: "No players found" }]
+            playerRows.length ? playerRows : [{ Message: "No player records found." }]
         );
 
+        teamsSheet["!cols"] = [
+            { wch: 28 }, { wch: 38 }, { wch: 38 },
+            { wch: 38 }, { wch: 16 }, { wch: 24 }
+        ];
+
+        playersSheet["!cols"] = [
+            { wch: 28 }, { wch: 38 }, { wch: 38 },
+            { wch: 16 }, { wch: 18 }, { wch: 18 },
+            { wch: 28 }, { wch: 20 }, { wch: 16 }, { wch: 22 }
+        ];
+
         XLSX.utils.book_append_sheet(workbook, teamsSheet, "Teams");
-        XLSX.utils.book_append_sheet(workbook, playersSheet, "Players");
+        XLSX.utils.book_append_sheet(workbook, playersSheet, "Player Details");
 
         if (allTopups.length) {
-            const topupRows = allTopups.map((order) => ({
+            const topupRows = allTopups.map(order => ({
                 "Order ID": order.id ?? order.order_id ?? "",
                 "User ID": order.user_id ?? "",
-                "Package": order.package_name || order.package || "",
-                "Amount": order.amount ?? order.price ?? "",
+                "Package": order.package_name || order.package || order.product_name || "",
+                "Amount": order.amount ?? order.price ?? order.total_amount ?? "",
                 "Status": order.status || "",
                 "Created At": order.created_at || ""
             }));
@@ -1270,15 +1062,11 @@ async function exportTeamsToExcel() {
 
         XLSX.writeFile(
             workbook,
-            `Ren_Gaming_Admin_Export_${date}.xlsx`
+            `Ren_Gaming_Teams_Players_${date}.xlsx`
         );
 
         showNotice(
-            "Excel file downloaded. Teams exported: " +
-            teamRows.length +
-            "; players exported: " +
-            playerRows.length +
-            ".",
+            `Excel downloaded. Teams: ${teamRows.length}; player records: ${playerRows.length}.`,
             "success"
         );
 
@@ -1286,8 +1074,8 @@ async function exportTeamsToExcel() {
         console.error("Excel export failed:", error);
 
         showNotice(
-            "Excel export failed. Check database read permissions for teams and team_players. " +
-            error.message,
+            "Excel export failed: " + error.message +
+            ". Check database SELECT permissions for teams and team_players.",
             "error"
         );
 
@@ -1297,53 +1085,29 @@ async function exportTeamsToExcel() {
     }
 }
 
-/* =========================================================
-   REFRESH DATA
-   ========================================================= */
+/* REFRESH */
 
 async function refreshData() {
     clearNotice();
-
-    await Promise.all([
-        loadTeams(),
-        loadTopups()
-    ]);
+    await Promise.all([loadTeams(), loadTopups()]);
 }
 
-/* =========================================================
-   LOG OUT
-   ========================================================= */
+/* LOGOUT */
 
 async function logout() {
     $("logoutButton").disabled = true;
 
     try {
         const { error } = await supabaseClient.auth.signOut();
-
-        if (error) {
-            console.error("Logout failed:", error);
-            showNotice("Logout failed: " + error.message, "error");
-            $("logoutButton").disabled = false;
-            return;
-        }
-
+        if (error) throw error;
         window.location.replace("login.html");
-
     } catch (error) {
-        console.error("Unexpected logout error:", error);
-
-        showNotice(
-            "Logout failed: " + (error.message || "Unknown error"),
-            "error"
-        );
-
+        showNotice("Logout failed: " + error.message, "error");
         $("logoutButton").disabled = false;
     }
 }
 
-/* =========================================================
-   EVENT LISTENERS
-   ========================================================= */
+/* EVENT LISTENERS */
 
 $("teamSearch").addEventListener("input", renderTeams);
 $("teamStatusFilter").addEventListener("change", renderTeams);
@@ -1351,9 +1115,8 @@ $("refreshButton").addEventListener("click", refreshData);
 $("exportButton").addEventListener("click", exportTeamsToExcel);
 $("logoutButton").addEventListener("click", logout);
 
-$("teamsTableBody").addEventListener("click", async (event) => {
+$("teamsTableBody").addEventListener("click", async event => {
     const button = event.target.closest("button[data-action]");
-
     if (!button) return;
 
     const teamId = button.dataset.id;
@@ -1372,27 +1135,24 @@ $("closePlayersModal").addEventListener("click", () => {
     $("playersModal").classList.remove("open");
 });
 
-$("playersModal").addEventListener("click", (event) => {
+$("playersModal").addEventListener("click", event => {
     if (event.target === $("playersModal")) {
         $("playersModal").classList.remove("open");
     }
 });
 
-document.addEventListener("keydown", (event) => {
+document.addEventListener("keydown", event => {
     if (event.key === "Escape") {
         $("playersModal").classList.remove("open");
     }
 });
 
-/* =========================================================
-   START
-   ========================================================= */
+/* START ADMIN PAGE */
 
 async function initializeAdminPage() {
     $("currentYear").textContent = new Date().getFullYear();
 
     const isAdmin = await checkAdmin();
-
     if (!isAdmin) return;
 
     await refreshData();
