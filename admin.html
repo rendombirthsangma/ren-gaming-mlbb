@@ -7,6 +7,7 @@
     <title>Ren Gaming Admin Panel</title>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
     <style>
         * {
@@ -37,32 +38,56 @@
             font-weight: 900;
         }
 
-        .logout {
+        .logout,
+        .refresh,
+        .action-btn {
+            font-family: inherit;
             background: #171717;
             color: white;
             border: 1px solid #333;
-            padding: 10px 18px;
+            padding: 10px 15px;
             border-radius: 6px;
             cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
         }
 
-        .logout:hover {
+        .logout:hover,
+        .refresh:hover,
+        .action-btn:hover {
             border-color: #ff1e1e;
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
         }
 
         .container {
             max-width: 1200px;
-            margin: 35px auto;
+            margin: 30px auto;
             padding: 0 20px;
         }
 
         h1 {
+            margin-bottom: 25px;
+        }
+
+        .navigation {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
             margin-bottom: 30px;
+        }
+
+        .navigation a {
+            background: #351313;
+            border-color: #ff1e1e;
         }
 
         .stats {
             display: grid;
-            grid-template-columns: repeat(5, 1fr);
+            grid-template-columns: repeat(3, 1fr);
             gap: 15px;
             margin-bottom: 35px;
         }
@@ -76,7 +101,7 @@
 
         .stat h3 {
             color: #999;
-            font-size: 14px;
+            font-size: 13px;
             margin-bottom: 10px;
         }
 
@@ -93,23 +118,23 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 18px;
         }
 
         .section-title h2 {
             font-size: 22px;
         }
 
-        .refresh {
-            background: #171717;
-            color: white;
-            border: 1px solid #333;
-            padding: 9px 15px;
-            border-radius: 6px;
-            cursor: pointer;
+        .section-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
         }
 
-        .refresh:hover {
+        .download-btn {
+            background: #351313;
             border-color: #ff1e1e;
         }
 
@@ -134,13 +159,15 @@
         .topup-title {
             font-size: 20px;
             font-weight: bold;
+            overflow-wrap: anywhere;
         }
 
         .meta {
             color: #999;
             font-size: 14px;
             margin-top: 7px;
-            line-height: 1.6;
+            line-height: 1.7;
+            overflow-wrap: anywhere;
         }
 
         .status {
@@ -175,24 +202,8 @@
             gap: 10px;
         }
 
-        button {
-            font-family: inherit;
-        }
-
-        .action-btn {
-            padding: 9px 14px;
-            border-radius: 6px;
-            border: 1px solid #333;
-            background: #181818;
-            color: white;
-            cursor: pointer;
-        }
-
-        .action-btn:hover {
-            border-color: #ff1e1e;
-        }
-
-        .approve-btn {
+        .approve-btn,
+        .complete-btn {
             background: #12351d;
             border-color: #236b37;
         }
@@ -200,15 +211,6 @@
         .reject-btn {
             background: #351313;
             border-color: #762525;
-        }
-
-        .complete-btn {
-            background: #12351d;
-            border-color: #236b37;
-        }
-
-        .view-btn {
-            background: #171717;
         }
 
         .players {
@@ -223,6 +225,8 @@
             padding: 12px;
             border-radius: 6px;
             margin-bottom: 8px;
+            line-height: 1.7;
+            overflow-wrap: anywhere;
         }
 
         .player strong {
@@ -248,11 +252,7 @@
             border-radius: 6px;
             padding: 12px;
             margin: 10px 0;
-        }
-
-        .reject-box textarea:focus {
-            outline: none;
-            border-color: #ff1e1e;
+            font-family: inherit;
         }
 
         .message {
@@ -260,6 +260,7 @@
             border-radius: 6px;
             margin-bottom: 20px;
             display: none;
+            overflow-wrap: anywhere;
         }
 
         .success {
@@ -295,6 +296,8 @@
             background: #181818;
             border-radius: 7px;
             padding: 12px;
+            min-width: 0;
+            overflow-wrap: anywhere;
         }
 
         .payment-info span {
@@ -306,6 +309,7 @@
 
         .payment-info strong {
             color: white;
+            overflow-wrap: anywhere;
         }
 
         @media (max-width: 900px) {
@@ -319,10 +323,19 @@
         }
 
         @media (max-width: 600px) {
-            .stats {
-                grid-template-columns: 1fr;
+            header {
+                padding: 16px;
             }
 
+            .logo {
+                font-size: 18px;
+            }
+
+            .container {
+                padding: 0 12px;
+            }
+
+            .stats,
             .payment-info {
                 grid-template-columns: 1fr;
             }
@@ -330,6 +343,10 @@
             .team-header,
             .topup-header {
                 flex-direction: column;
+            }
+
+            .section-title {
+                align-items: flex-start;
             }
         }
     </style>
@@ -339,27 +356,24 @@
 
 <header>
     <div class="logo">REN GAMING — ADMIN</div>
-
-    <button class="logout" id="logoutBtn">
-        LOGOUT
-    </button>
+    <button class="logout" id="logoutBtn">LOGOUT</button>
 </header>
 
-<div style="margin-bottom:20px;">
+<div class="container">
 
-    <a href="admin-player-verification.html" class="action-btn" style="display:inline-block;text-decoration:none;background:#351313;border-color:#ff1e1e;">
-        👤 PLAYER VERIFICATION
-    </a>
+    <nav class="navigation">
+        <a href="admin-player-verification.html" class="action-btn">
+            👤 PLAYER VERIFICATION
+        </a>
 
-    <a href="admin-match-management.html" class="action-btn" style="display:inline-block;text-decoration:none;background:#351313;border-color:#ff1e1e;margin-left:8px;">
-        🎮 MATCH MANAGEMENT
-    </a>
+        <a href="admin-match-management.html" class="action-btn">
+            🎮 MATCH MANAGEMENT
+        </a>
 
-    <a href="admin-tournament-management.html" class="action-btn" style="display:inline-block;text-decoration:none;background:#351313;border-color:#ff1e1e;margin-left:8px;">
-        🏆 TOURNAMENT MANAGEMENT
-    </a>
-
-</div>
+        <a href="admin-tournament-management.html" class="action-btn">
+            🏆 TOURNAMENT MANAGEMENT
+        </a>
+    </nav>
 
     <h1>Admin Dashboard</h1>
 
@@ -399,29 +413,40 @@
 
     </div>
 
+    <!-- REGISTERED TEAMS -->
 
-    <!-- TEAMS -->
-
-    <div class="section">
+    <section class="section">
 
         <div class="section-title">
+
             <h2>🏆 Registered Teams</h2>
 
-            <button class="refresh" onclick="loadTeams()">
-                REFRESH
-            </button>
+            <div class="section-buttons">
+
+                <button class="refresh" onclick="loadTeams()">
+                    REFRESH
+                </button>
+
+                <button
+                    class="action-btn download-btn"
+                    id="downloadExcelBtn"
+                    onclick="downloadAllTeamsExcel()">
+                    📥 DOWNLOAD ALL TEAMS (EXCEL)
+                </button>
+
+            </div>
+
         </div>
 
         <div id="teamsContainer">
             Loading teams...
         </div>
 
-    </div>
+    </section>
 
+    <!-- DIAMOND TOP-UP ORDERS -->
 
-    <!-- TOP UPS -->
-
-    <div class="section">
+    <section class="section">
 
         <div class="section-title">
             <h2>💎 Diamond Top-Up Orders</h2>
@@ -435,12 +460,12 @@
             Loading top-up orders...
         </div>
 
-    </div>
+    </section>
 
 </div>
 
-
 <script>
+"use strict";
 
 const SUPABASE_URL =
     "https://bixpvxkpnaqdifmvkhvp.supabase.co";
@@ -453,25 +478,28 @@ const supabaseClient = window.supabase.createClient(
     SUPABASE_PUBLISHABLE_KEY
 );
 
+// This admin page currently displays one selected tournament.
 const TOURNAMENT_ID =
     "642cb68f-9702-483c-b1b7-f2c35f89dd09";
 
+let messageTimer = null;
 
 function showMessage(text, type) {
-
     const message = document.getElementById("message");
 
     message.textContent = text;
     message.className = "message " + type;
 
-    setTimeout(() => {
+    if (messageTimer) {
+        clearTimeout(messageTimer);
+    }
+
+    messageTimer = setTimeout(() => {
         message.className = "message";
-    }, 4000);
+    }, 6000);
 }
 
-
 function escapeHtml(value) {
-
     if (value === null || value === undefined) {
         return "";
     }
@@ -484,151 +512,134 @@ function escapeHtml(value) {
         .replace(/'/g, "&#039;");
 }
 
+function statusClass(status) {
+    if (status === "approved") return "approved";
+    if (status === "rejected") return "rejected";
+    if (status === "completed") return "completed";
+    return "pending";
+}
 
 async function checkAdmin() {
-
     const {
-        data: { user }
+        data: { user },
+        error: authError
     } = await supabaseClient.auth.getUser();
 
-    if (!user) {
+    if (authError || !user) {
         window.location.href = "login.html";
         return false;
     }
 
-    const { data: profile, error } =
-        await supabaseClient
-            .from("profiles")
-            .select("role")
-            .eq("id", user.id)
-            .single();
+    const { data: profile, error } = await supabaseClient
+        .from("profiles")
+        .select("role")
+        .eq("id", user.id)
+        .single();
 
     if (error || !profile || profile.role !== "admin") {
-
         alert("Admin access required.");
-
         window.location.href = "dashboard.html";
-
         return false;
     }
 
     return true;
 }
 
+/* LOAD REGISTERED TEAMS */
 
 async function loadTeams() {
-
-    const container =
-        document.getElementById("teamsContainer");
+    const container = document.getElementById("teamsContainer");
 
     container.innerHTML = "Loading teams...";
 
-    const { data, error } =
-        await supabaseClient
-            .from("teams")
-            .select("*")
-            .eq("tournament_id", TOURNAMENT_ID)
-            .order("created_at", { ascending: false });
+    const { data, error } = await supabaseClient
+        .from("teams")
+        .select("*")
+        .eq("tournament_id", TOURNAMENT_ID)
+        .order("created_at", { ascending: false });
 
     if (error) {
-
-        console.error(error);
+        console.error("Load teams error:", error);
 
         container.innerHTML =
-            '<div class="empty">Unable to load teams.</div>';
+            '<div class="empty">Unable to load teams. Check the browser console and Supabase RLS policies.</div>';
 
         return;
     }
 
-    document.getElementById("totalTeams").textContent =
-        data.length;
+    const teams = data || [];
+
+    document.getElementById("totalTeams").textContent = teams.length;
 
     document.getElementById("pendingTeams").textContent =
-        data.filter(team => team.status === "pending").length;
+        teams.filter(team => team.status === "pending").length;
 
     document.getElementById("approvedTeams").textContent =
-        data.filter(team => team.status === "approved").length;
+        teams.filter(team => team.status === "approved").length;
 
-
-    if (data.length === 0) {
-
+    if (teams.length === 0) {
         container.innerHTML =
-            '<div class="empty">No registered teams yet.</div>';
+            '<div class="empty">No registered teams found for this tournament.</div>';
 
         return;
     }
 
-
-    container.innerHTML = data.map(team => {
-
-        const statusClass =
-            team.status === "approved"
-                ? "approved"
-                : team.status === "rejected"
-                    ? "rejected"
-                    : "pending";
+    container.innerHTML = teams.map(team => {
+        const safeId = escapeHtml(team.id);
 
         return `
-
             <div class="team-card">
 
                 <div class="team-header">
 
                     <div>
-
                         <div class="team-name">
                             ${escapeHtml(team.team_name)}
                         </div>
 
                         <div class="meta">
-                            Team ID: ${escapeHtml(team.id)}<br>
+                            Team ID: ${safeId}<br>
                             Registered:
-                            ${new Date(team.created_at).toLocaleString()}
+                            ${team.created_at
+                                ? escapeHtml(new Date(team.created_at).toLocaleString())
+                                : "Not available"}
                         </div>
-
                     </div>
 
-                    <div class="status ${statusClass}">
-                        ${escapeHtml(team.status)}
+                    <div class="status ${statusClass(team.status)}">
+                        ${escapeHtml(team.status || "pending")}
                     </div>
 
                 </div>
-
 
                 ${
                     team.status === "rejected" && team.rejection_reason
                     ? `
                         <div class="meta" style="margin-top:15px;">
-                            <strong style="color:#ff7777;">
-                                Rejection Reason:
-                            </strong><br>
+                            <strong style="color:#ff7777;">Rejection Reason:</strong><br>
                             ${escapeHtml(team.rejection_reason)}
                         </div>
                     `
                     : ""
                 }
 
-
                 <div class="actions">
 
-                    <button
-                        class="action-btn view-btn"
-                        onclick="viewPlayers('${team.id}')">
+                    <button class="action-btn view-btn"
+                        onclick="viewPlayers('${safeId}')">
                         VIEW PLAYERS
                     </button>
 
                     ${
                         team.status === "pending"
                         ? `
-                            <button
-                                class="action-btn approve-btn"
-                                onclick="approveTeam('${team.id}')">
+                            <button class="action-btn approve-btn"
+                                onclick="approveTeam('${safeId}')">
                                 APPROVE
                             </button>
 
-                            <button
-                                class="action-btn reject-btn"
-                                onclick="showRejectBox('${team.id}')">
+                            <button class="action-btn reject-btn"
+                                onclick="showRejectBox('${safeId}')">
                                 REJECT
                             </button>
                         `
@@ -637,546 +648,524 @@ async function loadTeams() {
 
                 </div>
 
-
-                <div
-                    class="reject-box"
-                    id="reject-box-${team.id}">
-
-                    <strong>
-                        Rejection Reason
-                    </strong>
+                <div class="reject-box" id="reject-box-${safeId}">
+                    <strong>Rejection Reason</strong>
 
                     <textarea
-                        id="reason-${team.id}"
-                        placeholder="Enter the reason for rejecting this team...">
-                    </textarea>
+                        id="reason-${safeId}"
+                        placeholder="Enter the reason for rejecting this team..."></textarea>
 
                     <div class="actions">
-
-                        <button
-                            class="action-btn reject-btn"
-                            onclick="confirmReject('${team.id}')">
+                        <button class="action-btn reject-btn"
+                            onclick="confirmReject('${safeId}')">
                             CONFIRM REJECTION
                         </button>
 
-                        <button
-                            class="action-btn"
-                            onclick="cancelReject('${team.id}')">
+                        <button class="action-btn"
+                            onclick="cancelReject('${safeId}')">
                             CANCEL
                         </button>
-
                     </div>
-
                 </div>
 
-
-                <div
-                    class="players"
-                    id="players-${team.id}">
-                </div>
+                <div class="players" id="players-${safeId}"></div>
 
             </div>
         `;
-
     }).join("");
 }
 
+/* VIEW PLAYERS */
 
 async function viewPlayers(teamId) {
+    const box = document.getElementById("players-" + teamId);
 
-    const box =
-        document.getElementById("players-" + teamId);
+    if (!box) return;
 
     if (box.style.display === "block") {
-
         box.style.display = "none";
-
         return;
     }
 
     box.style.display = "block";
-
     box.innerHTML = "Loading players...";
 
-
-    const { data, error } =
-        await supabaseClient
-            .from("team_players")
-            .select("*")
-            .eq("team_id", teamId)
-            .order("player_type")
-            .order("player_number");
-
+    const { data, error } = await supabaseClient
+        .from("team_players")
+        .select("*")
+        .eq("team_id", teamId)
+        .order("player_type")
+        .order("player_number");
 
     if (error) {
-
-        console.error(error);
-
-        box.innerHTML =
-            "Unable to load players.";
-
+        console.error("Load players error:", error);
+        box.innerHTML = "Unable to load players. Check Supabase permissions.";
         return;
     }
-
 
     if (!data || data.length === 0) {
-
-        box.innerHTML =
-            "No players found.";
-
+        box.innerHTML = "No players found.";
         return;
     }
 
-
     box.innerHTML = data.map(player => `
-
         <div class="player">
-
             <strong>
                 ${escapeHtml(player.player_type)}
                 ${escapeHtml(player.player_number)}
             </strong>
-
             <br>
-
-            Username:
-            ${escapeHtml(player.username || "Not verified")}
-
+            Username: ${escapeHtml(player.username || "Not verified")}
             <br>
-
-            Game User ID:
-            ${escapeHtml(player.game_user_id)}
-
+            Game User ID: ${escapeHtml(player.game_user_id || "")}
             <br>
-
-            Server ID:
-            ${escapeHtml(player.server_id)}
-
+            Server ID: ${escapeHtml(player.server_id || "")}
             <br>
-
-            Role:
-            ${escapeHtml(player.role || "Not selected")}
-
+            Role: ${escapeHtml(player.role || "Not selected")}
             <br>
-
             Verification:
             ${escapeHtml(player.verification_status || "unverified")}
-
         </div>
-
     `).join("");
 }
 
+/* APPROVE TEAM */
 
 async function approveTeam(teamId) {
-
-    const { error } =
-        await supabaseClient
-            .from("teams")
-            .update({
-                status: "approved",
-                rejection_reason: null
-            })
-            .eq("id", teamId);
+    const { error } = await supabaseClient
+        .from("teams")
+        .update({
+            status: "approved",
+            rejection_reason: null
+        })
+        .eq("id", teamId);
 
     if (error) {
-
-        console.error(error);
-
-        showMessage(
-            "Unable to approve team.",
-            "error"
-        );
-
+        console.error("Approve team error:", error);
+        showMessage("Unable to approve team: " + error.message, "error");
         return;
     }
 
-    showMessage(
-        "Team approved successfully.",
-        "success"
-    );
-
-    loadTeams();
+    showMessage("Team approved successfully.", "success");
+    await loadTeams();
 }
 
+/* REJECT TEAM */
 
 function showRejectBox(teamId) {
+    const box = document.getElementById("reject-box-" + teamId);
 
-    document.getElementById(
-        "reject-box-" + teamId
-    ).style.display = "block";
+    if (box) box.style.display = "block";
 }
-
 
 function cancelReject(teamId) {
+    const box = document.getElementById("reject-box-" + teamId);
 
-    document.getElementById(
-        "reject-box-" + teamId
-    ).style.display = "none";
+    if (box) box.style.display = "none";
 }
-
 
 async function confirmReject(teamId) {
-
-    const reason =
-        document.getElementById(
-            "reason-" + teamId
-        ).value.trim();
+    const reasonBox = document.getElementById("reason-" + teamId);
+    const reason = reasonBox ? reasonBox.value.trim() : "";
 
     if (!reason) {
-
         alert("Please enter a rejection reason.");
-
         return;
     }
 
-
-    const { error } =
-        await supabaseClient
-            .from("teams")
-            .update({
-                status: "rejected",
-                rejection_reason: reason
-            })
-            .eq("id", teamId);
-
+    const { error } = await supabaseClient
+        .from("teams")
+        .update({
+            status: "rejected",
+            rejection_reason: reason
+        })
+        .eq("id", teamId);
 
     if (error) {
-
-        console.error(error);
-
-        showMessage(
-            "Unable to reject team.",
-            "error"
-        );
-
+        console.error("Reject team error:", error);
+        showMessage("Unable to reject team: " + error.message, "error");
         return;
     }
 
-
-    showMessage(
-        "Team rejected successfully.",
-        "success"
-    );
-
-    loadTeams();
+    showMessage("Team rejected successfully.", "success");
+    await loadTeams();
 }
 
+/* DOWNLOAD ALL TEAMS AND PLAYERS TO EXCEL */
+
+async function downloadAllTeamsExcel() {
+    const button = document.getElementById("downloadExcelBtn");
+
+    try {
+        if (typeof XLSX === "undefined") {
+            throw new Error(
+                "Excel library did not load. Check your internet connection and refresh."
+            );
+        }
+
+        button.disabled = true;
+        button.textContent = "PREPARING EXCEL...";
+
+        // Confirm that the current session belongs to an admin.
+        const {
+            data: { user },
+            error: authError
+        } = await supabaseClient.auth.getUser();
+
+        if (authError || !user) {
+            throw new Error("Your session has expired. Please log in again.");
+        }
+
+        const { data: profile, error: profileError } =
+            await supabaseClient
+                .from("profiles")
+                .select("role")
+                .eq("id", user.id)
+                .single();
+
+        if (profileError || !profile || profile.role !== "admin") {
+            throw new Error("Admin access required.");
+        }
+
+        // Fetch every team visible to this admin for the selected tournament.
+        const { data: teams, error: teamsError } =
+            await supabaseClient
+                .from("teams")
+                .select("*")
+                .eq("tournament_id", TOURNAMENT_ID)
+                .order("created_at", { ascending: false });
+
+        if (teamsError) {
+            throw new Error(
+                "Unable to fetch teams. Check admin RLS permissions: " +
+                teamsError.message
+            );
+        }
+
+        if (!teams || teams.length === 0) {
+            throw new Error("No teams found for the selected tournament.");
+        }
+
+        // Fetch players in batches to avoid oversized requests.
+        const allPlayers = [];
+        const batchSize = 100;
+
+        for (let i = 0; i < teams.length; i += batchSize) {
+            const teamBatch = teams.slice(i, i + batchSize);
+            const teamIds = teamBatch.map(team => team.id);
+
+            const { data: playerData, error: playerError } =
+                await supabaseClient
+                    .from("team_players")
+                    .select("*")
+                    .in("team_id", teamIds)
+                    .order("player_type")
+                    .order("player_number");
+
+            if (playerError) {
+                throw new Error(
+                    "Unable to fetch players. Check admin RLS permissions: " +
+                    playerError.message
+                );
+            }
+
+            allPlayers.push(...(playerData || []));
+        }
+
+        const teamRows = teams.map(team => ({
+            "Team ID": team.id ?? "",
+            "Team Name": team.team_name ?? "",
+            "User ID": team.user_id ?? "",
+            "Tournament ID": team.tournament_id ?? "",
+            "Status": team.status ?? "",
+            "Rejection Reason": team.rejection_reason ?? "",
+            "Registration Date": team.created_at
+                ? new Date(team.created_at).toLocaleString()
+                : ""
+        }));
+
+        const playerRows = allPlayers.map(player => ({
+            "Team ID": player.team_id ?? "",
+            "Player Type": player.player_type ?? "",
+            "Player Number": player.player_number ?? "",
+            "Username": player.username ?? "",
+            "Game User ID": player.game_user_id ?? "",
+            "Server ID": player.server_id ?? "",
+            "Role": player.role ?? "",
+            "Verification Status": player.verification_status ?? ""
+        }));
+
+        const workbook = XLSX.utils.book_new();
+
+        const teamsSheet = XLSX.utils.json_to_sheet(teamRows);
+        const playersSheet = XLSX.utils.json_to_sheet(playerRows);
+
+        teamsSheet["!cols"] = [
+            { wch: 38 },
+            { wch: 28 },
+            { wch: 38 },
+            { wch: 38 },
+            { wch: 16 },
+            { wch: 35 },
+            { wch: 24 }
+        ];
+
+        playersSheet["!cols"] = [
+            { wch: 38 },
+            { wch: 18 },
+            { wch: 16 },
+            { wch: 25 },
+            { wch: 20 },
+            { wch: 16 },
+            { wch: 18 },
+            { wch: 22 }
+        ];
+
+        XLSX.utils.book_append_sheet(workbook, teamsSheet, "Teams");
+        XLSX.utils.book_append_sheet(workbook, playersSheet, "Players");
+
+        XLSX.writeFile(
+            workbook,
+            "REN_GAMING_All_Team_Details.xlsx"
+        );
+
+        showMessage(
+            "Excel downloaded successfully: " +
+            teams.length + " teams and " +
+            allPlayers.length + " player records.",
+            "success"
+        );
+
+    } catch (error) {
+        console.error("Excel export error:", error);
+        showMessage(error.message || "Excel download failed.", "error");
+    } finally {
+        button.disabled = false;
+        button.textContent = "📥 DOWNLOAD ALL TEAMS (EXCEL)";
+    }
+}
+
+/* LOAD DIAMOND TOP-UP ORDERS */
 
 async function loadTopups() {
+    const container = document.getElementById("topupsContainer");
 
-    const container =
-        document.getElementById("topupsContainer");
+    container.innerHTML = "Loading top-up orders...";
 
-    container.innerHTML =
-        "Loading top-up orders...";
-
-
-    const { data, error } =
-        await supabaseClient
-            .from("topup_orders")
-            .select("*")
-            .order("created_at", { ascending: false });
-
+    const { data, error } = await supabaseClient
+        .from("topup_orders")
+        .select("*")
+        .order("created_at", { ascending: false });
 
     if (error) {
-
-        console.error(error);
+        console.error("Load top-ups error:", error);
 
         container.innerHTML =
-            '<div class="empty">Unable to load top-up orders.</div>';
+            '<div class="empty">Unable to load top-up orders. Check Supabase permissions.</div>';
 
         return;
     }
 
+    const orders = data || [];
 
     document.getElementById("totalTopups").textContent =
-        data.length;
+        orders.length;
 
     document.getElementById("pendingTopups").textContent =
-        data.filter(order => order.status === "pending").length;
+        orders.filter(order => order.status === "pending").length;
 
-
-    if (!data || data.length === 0) {
-
+    if (orders.length === 0) {
         container.innerHTML =
             '<div class="empty">No top-up orders yet.</div>';
 
         return;
     }
 
+    container.innerHTML = orders.map(order => `
+        <div class="topup-card">
 
-    container.innerHTML = data.map(order => {
-
-        const statusClass =
-            order.status === "completed"
-                ? "completed"
-                : order.status === "rejected"
-                    ? "rejected"
-                    : "pending";
-
-
-        return `
-
-            <div class="topup-card">
-
-                <div class="topup-header">
-
-                    <div>
-
-                        <div class="topup-title">
-                            💎 ${escapeHtml(order.package_name)}
-                        </div>
-
-                        <div class="meta">
-                            Order ID:
-                            ${escapeHtml(order.id)}
-                            <br>
-
-                            Created:
-                            ${new Date(order.created_at).toLocaleString()}
-                        </div>
-
+            <div class="topup-header">
+                <div>
+                    <div class="topup-title">
+                        💎 ${escapeHtml(order.package_name)}
                     </div>
 
-                    <div class="status ${statusClass}">
-                        ${escapeHtml(order.status)}
+                    <div class="meta">
+                        Order ID: ${escapeHtml(order.id)}
+                        <br>
+                        Created:
+                        ${order.created_at
+                            ? escapeHtml(new Date(order.created_at).toLocaleString())
+                            : ""}
                     </div>
-
                 </div>
 
+                <div class="status ${statusClass(order.status)}">
+                    ${escapeHtml(order.status || "pending")}
+                </div>
+            </div>
 
-                <div class="payment-info">
+            <div class="payment-info">
 
-                    <div>
-                        <span>GAME USER ID</span>
-                        <strong>
-                            ${escapeHtml(order.game_user_id)}
-                        </strong>
-                    </div>
-
-                    <div>
-                        <span>SERVER ID</span>
-                        <strong>
-                            ${escapeHtml(order.server_id)}
-                        </strong>
-                    </div>
-
-                    <div>
-                        <span>DIAMONDS</span>
-                        <strong>
-                            ${escapeHtml(order.diamonds)}
-                        </strong>
-                    </div>
-
-                    <div>
-                        <span>AMOUNT</span>
-                        <strong>
-                            ₹${escapeHtml(order.amount)}
-                        </strong>
-                    </div>
-
-                    <div>
-                        <span>PAYMENT METHOD</span>
-                        <strong>
-                            ${escapeHtml(order.payment_method || "Not provided")}
-                        </strong>
-                    </div>
-
-                    <div>
-                        <span>PAYMENT REFERENCE</span>
-                        <strong>
-                            ${escapeHtml(order.payment_reference || "Not provided")}
-                        </strong>
-                    </div>
-
-                    <div>
-                        <span>USER ID</span>
-                        <strong>
-                            ${escapeHtml(order.user_id)}
-                        </strong>
-                    </div>
-
-                    <div>
-                        <span>ADMIN NOTE</span>
-                        <strong>
-                            ${escapeHtml(order.admin_note || "None")}
-                        </strong>
-                    </div>
-
+                <div>
+                    <span>GAME USER ID</span>
+                    <strong>${escapeHtml(order.game_user_id)}</strong>
                 </div>
 
+                <div>
+                    <span>SERVER ID</span>
+                    <strong>${escapeHtml(order.server_id)}</strong>
+                </div>
 
-                ${
-                    order.status === "pending"
-                    ? `
-                        <div class="actions">
+                <div>
+                    <span>DIAMONDS</span>
+                    <strong>${escapeHtml(order.diamonds)}</strong>
+                </div>
 
-                            <button
-                                class="action-btn complete-btn"
-                                onclick="completeTopup('${order.id}')">
-                                MARK COMPLETED
-                            </button>
+                <div>
+                    <span>AMOUNT</span>
+                    <strong>₹${escapeHtml(order.amount)}</strong>
+                </div>
 
-                            <button
-                                class="action-btn reject-btn"
-                                onclick="rejectTopup('${order.id}')">
-                                REJECT
-                            </button>
+                <div>
+                    <span>PAYMENT METHOD</span>
+                    <strong>${escapeHtml(order.payment_method || "Not provided")}</strong>
+                </div>
 
-                        </div>
-                    `
-                    : ""
-                }
+                <div>
+                    <span>PAYMENT REFERENCE</span>
+                    <strong>${escapeHtml(order.payment_reference || "Not provided")}</strong>
+                </div>
+
+                <div>
+                    <span>USER ID</span>
+                    <strong>${escapeHtml(order.user_id)}</strong>
+                </div>
+
+                <div>
+                    <span>ADMIN NOTE</span>
+                    <strong>${escapeHtml(order.admin_note || "None")}</strong>
+                </div>
 
             </div>
 
-        `;
+            ${
+                order.status === "pending"
+                ? `
+                    <div class="actions">
+                        <button class="action-btn complete-btn"
+                            onclick="completeTopup('${escapeHtml(order.id)}')">
+                            MARK COMPLETED
+                        </button>
 
-    }).join("");
+                        <button class="action-btn reject-btn"
+                            onclick="rejectTopup('${escapeHtml(order.id)}')">
+                            REJECT
+                        </button>
+                    </div>
+                `
+                : ""
+            }
+
+        </div>
+    `).join("");
 }
 
+/* COUNT PENDING PLAYER VERIFICATIONS */
 
 async function loadPendingPlayerVerification() {
-
     const counter =
         document.getElementById("pendingPlayerVerification");
 
-    if (!counter) {
-        return;
-    }
-
-    const { data, error } =
-        await supabaseClient
-            .from("team_players")
-            .select("id, verification_status");
+    const { data, error } = await supabaseClient
+        .from("team_players")
+        .select("id, verification_status");
 
     if (error) {
-
-        console.error(
-            "Player verification count error:",
-            error
-        );
-
-        counter.textContent = "0";
-
+        console.error("Player verification count error:", error);
+        counter.textContent = "Unavailable";
         return;
     }
 
-    const pendingCount =
-        (data || []).filter(player =>
-            !player.verification_status ||
-            player.verification_status === "unverified"
-        ).length;
-
-    counter.textContent = pendingCount;
+    counter.textContent = (data || []).filter(player =>
+        !player.verification_status ||
+        player.verification_status === "unverified"
+    ).length;
 }
 
+/* COMPLETE TOP-UP */
 
 async function completeTopup(orderId) {
-
-    const { error } =
-        await supabaseClient
-            .from("topup_orders")
-            .update({
-                status: "completed",
-                admin_note: "Top-up processed by admin"
-            })
-            .eq("id", orderId);
-
+    const { error } = await supabaseClient
+        .from("topup_orders")
+        .update({
+            status: "completed",
+            admin_note: "Top-up processed by admin"
+        })
+        .eq("id", orderId);
 
     if (error) {
-
-        console.error(error);
-
-        showMessage(
-            "Unable to complete top-up order.",
-            "error"
-        );
-
+        console.error("Complete top-up error:", error);
+        showMessage("Unable to complete top-up: " + error.message, "error");
         return;
     }
 
-
-    showMessage(
-        "Top-up order marked as completed.",
-        "success"
-    );
-
-    loadTopups();
+    showMessage("Top-up order marked as completed.", "success");
+    await loadTopups();
 }
 
+/* REJECT TOP-UP */
 
 async function rejectTopup(orderId) {
-
-    const reason =
-        prompt("Enter the reason for rejecting this top-up order:");
-
-    if (reason === null) {
-        return;
-    }
-
-    if (!reason.trim()) {
-
-        alert("Please enter a rejection reason.");
-
-        return;
-    }
-
-
-    const { error } =
-        await supabaseClient
-            .from("topup_orders")
-            .update({
-                status: "rejected",
-                admin_note: reason.trim()
-            })
-            .eq("id", orderId);
-
-
-    if (error) {
-
-        console.error(error);
-
-        showMessage(
-            "Unable to reject top-up order.",
-            "error"
-        );
-
-        return;
-    }
-
-
-    showMessage(
-        "Top-up order rejected.",
-        "success"
+    const reason = prompt(
+        "Enter the reason for rejecting this top-up order:"
     );
 
-    loadTopups();
+    if (reason === null) return;
+
+    if (!reason.trim()) {
+        alert("Please enter a rejection reason.");
+        return;
+    }
+
+    const { error } = await supabaseClient
+        .from("topup_orders")
+        .update({
+            status: "rejected",
+            admin_note: reason.trim()
+        })
+        .eq("id", orderId);
+
+    if (error) {
+        console.error("Reject top-up error:", error);
+        showMessage("Unable to reject top-up: " + error.message, "error");
+        return;
+    }
+
+    showMessage("Top-up order rejected.", "success");
+    await loadTopups();
 }
 
+/* LOGOUT */
 
 document.getElementById("logoutBtn")
     .addEventListener("click", async () => {
-
         await supabaseClient.auth.signOut();
-
         window.location.href = "login.html";
     });
 
+/* INITIALIZE ADMIN DASHBOARD */
 
 (async function init() {
-
     const isAdmin = await checkAdmin();
 
-    if (!isAdmin) {
-        return;
-    }
+    if (!isAdmin) return;
 
-    await loadTeams();
-    await loadTopups();
-    await loadPendingPlayerVerification();
-
+    await Promise.all([
+        loadTeams(),
+        loadTopups(),
+        loadPendingPlayerVerification()
+    ]);
 })();
 </script>
 
