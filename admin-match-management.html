@@ -100,13 +100,13 @@ textarea{min-height:80px}
         </div>
 
         <div class="field">
-          <label for="team1_id">Team 1 ID *</label>
-          <input id="team1_id" required placeholder="Paste first team ID">
+          <label for="team1_id">Team 1 — Approved Team *</label>
+          <select id="team1_id" required><option value="">Loading approved teams...</option></select>
         </div>
 
         <div class="field">
-          <label for="team2_id">Team 2 ID *</label>
-          <input id="team2_id" required placeholder="Paste second team ID">
+          <label for="team2_id">Team 2 — Approved Team *</label>
+          <select id="team2_id" required><option value="">Loading approved teams...</option></select>
         </div>
 
         <div class="field">
@@ -135,8 +135,8 @@ textarea{min-height:80px}
         </div>
 
         <div class="field full">
-          <label for="winner_id">Winner Team ID</label>
-          <input id="winner_id" placeholder="Leave blank until the winner is decided">
+          <label for="winner_id">Winner</label>
+          <select id="winner_id"><option value="">No winner yet</option></select>
         </div>
 
         <div class="field full">
@@ -173,6 +173,7 @@ const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);
 
 let matchColumns=[];
 let currentMatches=[];
+let approvedTeams=[];
 let busy=false;
 
 const $=id=>document.getElementById(id);
@@ -192,6 +193,45 @@ function esc(value){
   return String(value??"").replace(/[&<>"']/g,c=>({
     "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
   })[c]);
+}
+
+function teamName(team){
+  return team.team_name || team.name || team.teamName || team.ign || ("Team " + String(team.id).slice(0,8));
+}
+
+function teamOptions(selected=""){
+  const options=['<option value="">Select an approved team</option>'];
+  approvedTeams.forEach(team=>{
+    options.push(`<option value="${esc(team.id)}" ${String(team.id)===String(selected)?"selected":""}>${esc(teamName(team))}</option>`);
+  });
+  return options.join("");
+}
+
+function refreshTeamDropdowns(selectedA=$("team1_id").value, selectedB=$("team2_id").value, selectedWinner=$("winner_id").value){
+  $("team1_id").innerHTML=teamOptions(selectedA);
+  $("team2_id").innerHTML=teamOptions(selectedB);
+  const winnerOptions=['<option value="">No winner yet</option>'];
+  approvedTeams.filter(t=>String(t.id)===String(selectedA)||String(t.id)===String(selectedB)).forEach(team=>{
+    winnerOptions.push(`<option value="${esc(team.id)}" ${String(team.id)===String(selectedWinner)?"selected":""}>${esc(teamName(team))}</option>`);
+  });
+  $("winner_id").innerHTML=winnerOptions.join("");
+}
+
+async function loadApprovedTeams(){
+  const {data,error}=await db.from("teams").select("*").eq("status","approved").order("created_at",{ascending:true});
+  if(error){
+    console.error("Approved teams loading error:",error);
+    ["team1_id","team2_id"].forEach(id=>$(id).innerHTML='<option value="">Could not load teams</option>');
+    message("Could not load approved teams: "+error.message);
+    return false;
+  }
+  approvedTeams=data||[];
+  refreshTeamDropdowns("","","");
+  if(!approvedTeams.length){
+    ["team1_id","team2_id"].forEach(id=>$(id).innerHTML='<option value="">No approved teams found</option>');
+    message("No approved teams were found. Approve team registrations first.");
+  }
+  return true;
 }
 
 async function checkAdmin(){
@@ -242,12 +282,14 @@ function fillForm(m){
   $("group_name").value=m.group_name??m.group_name??"";
   $("round_name").value=m.round_name??m.round??"";
   $("match_number").value=m.match_number??"";
-  $("team1_id").value=m.team1_id??"";
-  $("team2_id").value=m.team2_id??"";
+  refreshTeamDropdowns(m.team1_id??m.team_a_id??m.team1??"",m.team2_id??m.team_b_id??m.team2??"",m.winner_id??"");
+  $("team1_id").value=m.team1_id??m.team_a_id??m.team1??"";
+  $("team2_id").value=m.team2_id??m.team_b_id??m.team2??"";
   $("match_date").value=localDate(m.match_date??m.scheduled_at??m.start_time);
   $("status").value=m.status??"scheduled";
   $("team1_score").value=m.team1_score??m.score1??"";
   $("team2_score").value=m.team2_score??m.score2??"";
+  refreshTeamDropdowns($("team1_id").value,$("team2_id").value,m.winner_id??"");
   $("winner_id").value=m.winner_id??"";
   $("notes").value=m.notes??"";
   $("formTitle").textContent="Edit Match";
@@ -344,10 +386,10 @@ async function loadMatches(){
             Tournament: ${esc(m.tournament_id??"Not set")}<br>
             Group: ${esc(m.group_name??m.group??"Not set")}<br>
             Round: ${esc(m.round_name??m.round??"Not set")}<br>
-            Team 1 ID: ${esc(teamA)}<br>
-            Team 2 ID: ${esc(teamB)}<br>
+            Team 1: ${esc(approvedTeams.find(t=>String(t.id)===String(teamA))?teamName(approvedTeams.find(t=>String(t.id)===String(teamA))):teamA)}<br>
+            Team 2: ${esc(approvedTeams.find(t=>String(t.id)===String(teamB))?teamName(approvedTeams.find(t=>String(t.id)===String(teamB))):teamB)}<br>
             Score: ${esc(scoreA??"—")} – ${esc(scoreB??"—")}<br>
-            Winner ID: ${esc(m.winner_id??"Not decided")}<br>
+            Winner: ${esc(m.winner_id?(approvedTeams.find(t=>String(t.id)===String(m.winner_id))?teamName(approvedTeams.find(t=>String(t.id)===String(m.winner_id))):m.winner_id):"Not decided")}<br>
             Date: ${esc(date?new Date(date).toLocaleString():"Not set")}
           </div>
         </div>
@@ -446,15 +488,20 @@ async function deleteMatch(id){
   await loadMatches();
 }
 
+$("team1_id").addEventListener("change",()=>refreshTeamDropdowns($("team1_id").value,$("team2_id").value,$("winner_id").value));
+$("team2_id").addEventListener("change",()=>refreshTeamDropdowns($("team1_id").value,$("team2_id").value,$("winner_id").value));
 $("cancelBtn").addEventListener("click",resetForm);
-$("refreshBtn").addEventListener("click",loadMatches);
+$("refreshBtn").addEventListener("click",async()=>{await loadApprovedTeams();await loadMatches();});
 $("logoutBtn").addEventListener("click",async()=>{
   await db.auth.signOut();
   window.location.href="login.html";
 });
 
 (async()=>{
-  if(await checkAdmin())await loadMatches();
+  if(await checkAdmin()){
+    await loadApprovedTeams();
+    await loadMatches();
+  }
 })();
 </script>
 </body>
