@@ -50,7 +50,7 @@ th{background:#202020;color:#ddd;font-size:12px;white-space:nowrap}td{color:#eee
 .modal.open{display:flex}.modal-box{width:100%;max-width:700px;max-height:85vh;overflow:auto;background:#151515;border:1px solid #444;border-radius:12px;padding:22px}
 .modal-title{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:18px}
 .modal-close{background:#333;color:white;border:0;border-radius:6px;padding:8px 12px}
-.player-list{display:grid;gap:10px}.player-card{background:#202020;border:1px solid #333;border-radius:8px;padding:13px;line-height:1.7;overflow-wrap:anywhere}
+.receipt-image{display:block;max-width:100%;max-height:65vh;margin:0 auto;border-radius:8px;border:1px solid #444}.player-list{display:grid;gap:10px}.player-card{background:#202020;border:1px solid #333;border-radius:8px;padding:13px;line-height:1.7;overflow-wrap:anywhere}
 .hidden{display:none!important}
 @media(max-width:900px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.quick-links{grid-template-columns:1fr}}
 @media(max-width:520px){.container{width:92%;margin-top:22px}.topbar{padding:15px 4%}.brand{font-size:22px}.stats{gap:10px}.stat-card{padding:15px}.stat-card h2{font-size:24px}.section-header,.section-content{padding:15px}.field{width:100%}}
@@ -81,6 +81,7 @@ th{background:#202020;color:#ddd;font-size:12px;white-space:nowrap}td{color:#eee
 <div class="stat-card"><p>Pending Teams</p><h2 id="pendingTeams">0</h2></div>
 <div class="stat-card"><p>Approved Teams</p><h2 id="approvedTeams">0</h2></div>
 <div class="stat-card"><p>Top-up Orders Loaded</p><h2 id="totalTopups">0</h2></div>
+ <div class="stat-card"><p>Pending Payments</p><h2 id="pendingPayments">0</h2></div>
 </div>
 
 <section class="section">
@@ -140,6 +141,12 @@ th{background:#202020;color:#ddd;font-size:12px;white-space:nowrap}td{color:#eee
 </div>
 </div>
 
+
+<div id="receiptModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="receiptModalTitle">
+ <div class="modal-box"><div class="modal-title"><h2 id="receiptModalTitle">Payment Receipt</h2><button class="modal-close" id="closeReceiptModal" type="button">Close</button></div>
+ <div id="receiptModalContent" class="player-list">Loading receipt...</div></div>
+</div>
+
 <footer class="footer">© <span id="currentYear"></span> Ren Gaming. Admin Dashboard.</footer>
 
 <script>
@@ -147,7 +154,7 @@ th{background:#202020;color:#ddd;font-size:12px;white-space:nowrap}td{color:#eee
 
 const SUPABASE_URL="https://bixpvxkpnaqdifmvkhvp.supabase.co";
 const SUPABASE_KEY="sb_publishable_XtzkrIFbBPTGUmoLHqHu5Q_XeznKoVI";
-const TOURNAMENT_ID="642cb68f-9702-483c-b1b7-f2c35f89dd09";
+const TOURNAMENT_ID="8b5997f8-194a-4998-9915-6528dfbbcb44";
 
 const supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY,{
  auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}
@@ -155,6 +162,8 @@ const supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY,{
 
 let allTeams=[];
 let allTopups=[];
+let allPayments=[];
+let teamNameById={};
 let currentAdminId=null;
 const $=id=>document.getElementById(id);
 
@@ -358,6 +367,73 @@ async function viewTeamPlayers(teamId){
  }
 }
 
+
+async function loadPayments(){
+ setLoadingRow("paymentsTableBody",8,"Loading payments...");
+ try{
+  const {data,error}=await supabaseClient.from("tournament_payments").select("*")
+   .eq("tournament_id",TOURNAMENT_ID).order("created_at",{ascending:false});
+  if(error)throw error;
+  allPayments=data||[]; teamNameById={};
+  const ids=[...new Set(allPayments.map(p=>p.team_id).filter(Boolean))];
+  if(ids.length){
+   const {data:teams,error:teamError}=await supabaseClient.from("teams").select("id,team_name,name").in("id",ids);
+   if(teamError)throw teamError;
+   (teams||[]).forEach(t=>teamNameById[t.id]=t.team_name||t.name||"Unnamed team");
+  }
+  renderPayments(); updateStats();
+ }catch(error){
+  console.error(error);setLoadingRow("paymentsTableBody",8,"Could not load payments: "+error.message);
+  showNotice("Could not load payments. Check SELECT policies for tournament_payments and teams. "+error.message,"error");
+ }
+}
+function renderPayments(){
+ const search=($("paymentSearch")?.value||"").trim().toLowerCase(),filter=$("paymentStatusFilter")?.value||"all";
+ const rows=allPayments.filter(p=>(String(teamNameById[p.team_id]||"").toLowerCase().includes(search)||String(p.transaction_id||"").toLowerCase().includes(search))&&(filter==="all"||normalizeStatus(p.status)===filter));
+ if(!rows.length){setLoadingRow("paymentsTableBody",8,"No matching payment records found.");return;}
+ $("paymentsTableBody").innerHTML=rows.map(p=>{
+  const status=normalizeStatus(p.status),hasReceipt=Boolean(String(p.payment_screenshot_url||"").trim());
+  return `<tr><td><strong>${escapeHTML(teamNameById[p.team_id]||"Team not found")}</strong><br><small style="color:#aaa">${escapeHTML(p.team_id||"")}</small></td>
+  <td>${escapeHTML(p.amount??"—")}</td><td>${escapeHTML(p.payment_method||"UPI")}</td><td>${escapeHTML(p.transaction_id||"—")}</td>
+  <td>${hasReceipt?`<button class="button button-dark button-small" data-payment-action="receipt" data-id="${escapeHTML(p.id)}">View Receipt</button>`:"No receipt"}</td>
+  <td>${statusBadge(status)}</td><td>${escapeHTML(formatDate(p.created_at))}</td><td><div class="actions">
+  ${status!=="approved"?`<button class="button button-green button-small" data-payment-action="approve" data-id="${escapeHTML(p.id)}">Approve</button>`:""}
+  ${status!=="rejected"?`<button class="button button-danger button-small" data-payment-action="reject" data-id="${escapeHTML(p.id)}">Reject</button>`:""}</div></td></tr>`;
+ }).join("");
+}
+async function viewPaymentReceipt(paymentId){
+ const p=allPayments.find(x=>String(x.id)===String(paymentId));
+ if(!p){showNotice("Payment record not found. Refresh and try again.","error");return;}
+ $("receiptModalTitle").textContent="Payment Receipt — "+(teamNameById[p.team_id]||"Team");
+ $("receiptModalContent").textContent="Generating secure receipt link...";
+ $("receiptModal").classList.add("open");
+ try{
+  const path=String(p.payment_screenshot_url||"").trim();if(!path)throw new Error("No receipt path is saved.");
+  let bucket="tournament-payment-proofs",objectPath=path;
+  if(/^https?:\/\//i.test(path)){
+   if(!path.startsWith(SUPABASE_URL+"/storage/v1/object/"))throw new Error("Saved receipt URL is not from this Supabase project.");
+   const rest=path.split("/storage/v1/object/")[1].replace(/^(public|sign|authenticated)\//,"").split("?")[0];
+   const slash=rest.indexOf("/");if(slash<1)throw new Error("Could not identify the storage bucket.");
+   bucket=rest.slice(0,slash);objectPath=decodeURIComponent(rest.slice(slash+1));
+  }
+  const {data,error}=await supabaseClient.storage.from(bucket).createSignedUrl(objectPath.replace(/^\/+/,""),300);
+  if(error)throw error;
+  $("receiptModalContent").innerHTML=`<img class="receipt-image" src="${escapeHTML(data.signedUrl)}" alt="Uploaded payment receipt"><p style="color:#aaa;font-size:12px;margin-top:12px">Private receipt link expires in about 5 minutes.</p><p style="margin-top:10px"><a class="button button-red" href="${escapeHTML(data.signedUrl)}" target="_blank" rel="noopener">Open image in new tab</a></p>`;
+ }catch(error){console.error(error);$("receiptModalContent").textContent="Could not open receipt: "+error.message+" Check the saved path and Storage permissions.";}
+}
+async function updatePaymentStatus(paymentId,newStatus){
+ const p=allPayments.find(x=>String(x.id)===String(paymentId));if(!p){showNotice("Payment record not found.","error");return;}
+ let note=p.admin_note||"";
+ if(newStatus==="rejected"){const answer=prompt("Optional reason for rejecting this payment:",note);if(answer===null)return;note=answer.trim();}
+ if(!confirm(`Are you sure you want to mark this payment as ${newStatus}?`))return;
+ try{
+  const {data,error}=await supabaseClient.from("tournament_payments").update({status:newStatus,verified_at:new Date().toISOString(),admin_note:note||null})
+   .eq("id",paymentId).eq("tournament_id",TOURNAMENT_ID).select("id,status");
+  if(error)throw error;if(!data||!data.length)throw new Error("No payment updated. Check the UPDATE policy on tournament_payments.");
+  showNotice("Payment "+newStatus+" successfully.","success");await loadPayments();
+ }catch(error){console.error(error);showNotice("Could not update payment: "+error.message,"error");}
+}
+
 /* Load top-up orders. */
 async function loadTopups(){
  setLoadingRow("topupsTableBody",6,"Loading top-up orders...");
@@ -390,6 +466,7 @@ function updateStats(){
  $("pendingTeams").textContent=allTeams.filter(t=>normalizeStatus(t.status)==="pending").length;
  $("approvedTeams").textContent=allTeams.filter(t=>normalizeStatus(t.status)==="approved").length;
  $("totalTopups").textContent=allTopups.length;
+  if($("pendingPayments"))$("pendingPayments").textContent=allPayments.filter(p=>normalizeStatus(p.status)==="pending").length;
 }
 
 /* Export teams and player details to Excel. */
@@ -464,7 +541,7 @@ async function exportTeamsToExcel(){
 
 async function refreshData(){
  clearNotice();
- await Promise.all([loadTeams(),loadTopups()]);
+ await Promise.all([loadTeams(),loadTopups(),loadPayments()]);
 }
 async function logout(){
  $("logoutButton").disabled=true;
@@ -483,6 +560,9 @@ $("teamSearch").addEventListener("input",renderTeams);
 $("teamStatusFilter").addEventListener("change",renderTeams);
 $("refreshButton").addEventListener("click",refreshData);
 $("exportButton").addEventListener("click",exportTeamsToExcel);
+$("refreshPaymentsButton").addEventListener("click",loadPayments);
+$("paymentSearch").addEventListener("input",renderPayments);
+$("paymentStatusFilter").addEventListener("change",renderPayments);
 $("logoutButton").addEventListener("click",logout);
 
 $("teamsTableBody").addEventListener("click",async event=>{
@@ -496,12 +576,20 @@ $("teamsTableBody").addEventListener("click",async event=>{
  else if(action==="delete")await deleteTeamRegistration(id);
 });
 
+$("paymentsTableBody").addEventListener("click",async event=>{
+ const b=event.target.closest("button[data-payment-action]");if(!b)return;
+ const id=b.dataset.id,action=b.dataset.paymentAction;b.disabled=true;
+ try{if(action==="receipt")await viewPaymentReceipt(id);else if(action==="approve")await updatePaymentStatus(id,"approved");else if(action==="reject")await updatePaymentStatus(id,"rejected");}
+ finally{b.disabled=false;}
+});
+$("closeReceiptModal").addEventListener("click",()=>$("receiptModal").classList.remove("open"));
+$("receiptModal").addEventListener("click",event=>{if(event.target===$("receiptModal"))$("receiptModal").classList.remove("open");});
 $("closePlayersModal").addEventListener("click",()=>$("playersModal").classList.remove("open"));
 $("playersModal").addEventListener("click",event=>{
  if(event.target===$("playersModal"))$("playersModal").classList.remove("open");
 });
 document.addEventListener("keydown",event=>{
- if(event.key==="Escape")$("playersModal").classList.remove("open");
+ if(event.key==="Escape"){$("playersModal").classList.remove("open");$("receiptModal").classList.remove("open");}
 });
 
 async function initializeAdminPage(){
