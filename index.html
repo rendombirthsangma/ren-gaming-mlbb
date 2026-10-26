@@ -5,7 +5,1141 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Ren Gaming | MOBA Legends 5v5</title>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+    <title>Ren Gaming | MOBA Legends 5v5</title>
+
+    <meta name="description"
+          content="Welcome to Ren Gaming. Join tournaments, register your team, and compete in MOBA Legends 5v5.">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --background: #050505;
+            --card: #101010;
+            --red: #ff2525;
+            --red-dark: #b80000;
+            --white: #ffffff;
+            --gray: #b5b5b5;
+            --border: rgba(255, 255, 255, 0.10);
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background: var(--background);
+            color: var(--white);
+            font-family: Arial, Helvetica, sans-serif;
+            line-height: 1.6;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        button {
+            font-family: inherit;
+        }
+
+        header {
+            width: 100%;
+            background: rgba(5, 5, 5, 0.96);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar {
+            max-width: 1200px;
+            margin: auto;
+            padding: 15px 22px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 24px;
+            font-weight: 900;
+            letter-spacing: 1px;
+            white-space: nowrap;
+        }
+
+        .logo-icon {
+            width: 43px;
+            height: 43px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #ff3535, #8c0000);
+            border-radius: 10px;
+            color: white;
+            font-size: 22px;
+            font-weight: 900;
+            box-shadow: 0 0 18px rgba(255, 37, 37, 0.25);
+        }
+
+        .logo span {
+            color: var(--red);
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+        }
+
+        .nav-links a {
+            color: #dddddd;
+            font-size: 14px;
+            font-weight: bold;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: var(--red);
+        }
+
+        .account-button {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            min-width: 145px;
+            padding: 11px 17px;
+            border-radius: 7px;
+            background: var(--red);
+            color: white !important;
+            font-size: 13px !important;
+            font-weight: 900 !important;
+            text-align: center;
+            border: 1px solid var(--red);
+            transition: 0.2s;
+        }
+
+        .account-button:hover {
+            background: var(--red-dark);
+            border-color: var(--red-dark);
+            transform: translateY(-2px);
+        }
+
+        .admin-button {
+            display: none;
+            background: #171717;
+            color: #ff5555 !important;
+            border: 1px solid var(--red);
+            padding: 11px 15px;
+            border-radius: 7px;
+            font-size: 13px;
+            font-weight: 900;
+            text-align: center;
+            transition: 0.2s;
+        }
+
+        .admin-button:hover {
+            background: var(--red);
+            color: white !important;
+        }
+
+        .hero {
+            min-height: 590px;
+            padding: 90px 22px;
+            display: flex;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+            background:
+                radial-gradient(circle at 80% 40%, rgba(255, 0, 0, 0.15), transparent 35%),
+                radial-gradient(circle at 10% 90%, rgba(150, 0, 0, 0.12), transparent 30%),
+                #050505;
+        }
+
+        .hero::before {
+            content: "RG";
+            position: absolute;
+            right: 5%;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: clamp(180px, 32vw, 390px);
+            line-height: 1;
+            font-weight: 900;
+            color: rgba(255, 255, 255, 0.025);
+            pointer-events: none;
+        }
+
+        .hero-content {
+            max-width: 1200px;
+            width: 100%;
+            margin: auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-label {
+            display: inline-block;
+            padding: 7px 13px;
+            margin-bottom: 22px;
+            border: 1px solid rgba(255, 37, 37, 0.45);
+            border-radius: 5px;
+            color: #ff7777;
+            background: rgba(255, 37, 37, 0.07);
+            font-size: 12px;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+
+        .hero h1 {
+            max-width: 800px;
+            font-size: clamp(42px, 7vw, 76px);
+            line-height: 1.08;
+            font-weight: 900;
+            margin-bottom: 22px;
+        }
+
+        .hero h1 span {
+            color: var(--red);
+        }
+
+        .hero p {
+            max-width: 620px;
+            color: var(--gray);
+            font-size: 17px;
+            margin-bottom: 32px;
+        }
+
+        .hero-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+        }
+
+        .button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 14px 22px;
+            border-radius: 7px;
+            font-size: 14px;
+            font-weight: 900;
+            transition: 0.2s;
+            text-align: center;
+        }
+
+        .button-primary {
+            background: var(--red);
+            color: white;
+            border: 1px solid var(--red);
+        }
+
+        .button-primary:hover {
+            background: var(--red-dark);
+            transform: translateY(-2px);
+        }
+
+        .button-secondary {
+            background: transparent;
+            color: white;
+            border: 1px solid #444444;
+        }
+
+        .button-secondary:hover {
+            border-color: var(--red);
+            color: #ff7777;
+        }
+
+        .button-admin {
+            display: none;
+            background: #171717;
+            border: 1px solid var(--red);
+            color: #ff5555;
+        }
+
+        .button-admin:hover {
+            background: var(--red);
+            color: white;
+        }
+
+        .stats {
+            max-width: 1100px;
+            margin: -35px auto 0;
+            padding: 0 22px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            background: #111111;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .stat {
+            text-align: center;
+            padding: 27px 15px;
+            border-right: 1px solid var(--border);
+        }
+
+        .stat:last-child {
+            border-right: none;
+        }
+
+        .stat h2 {
+            font-size: 27px;
+            color: var(--red);
+            margin-bottom: 4px;
+        }
+
+        .stat p {
+            color: var(--gray);
+            font-size: 13px;
+        }
+
+        .section {
+            max-width: 1200px;
+            margin: auto;
+            padding: 95px 22px;
+        }
+
+        .section-heading {
+            text-align: center;
+            margin-bottom: 45px;
+        }
+
+        .section-heading span {
+            color: var(--red);
+            font-size: 12px;
+            font-weight: 900;
+            letter-spacing: 3px;
+        }
+
+        .section-heading h2 {
+            font-size: clamp(30px, 5vw, 43px);
+            margin: 10px 0;
+        }
+
+        .section-heading p {
+            max-width: 600px;
+            margin: auto;
+            color: var(--gray);
+            font-size: 15px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 22px;
+        }
+
+        .feature-card {
+            padding: 30px 25px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            transition: 0.25s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(255, 37, 37, 0.65);
+        }
+
+        .feature-icon {
+            width: 52px;
+            height: 52px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 37, 37, 0.12);
+            border-radius: 10px;
+            font-size: 25px;
+            margin-bottom: 20px;
+        }
+
+        .feature-card h3 {
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+
+        .feature-card p {
+            color: var(--gray);
+            font-size: 14px;
+        }
+
+        .game-section {
+            background: linear-gradient(135deg, rgba(255, 0, 0, 0.09), transparent 55%), #0b0b0b;
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .game-content {
+            max-width: 1200px;
+            margin: auto;
+            padding: 75px 22px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 35px;
+        }
+
+        .game-text {
+            max-width: 700px;
+        }
+
+        .game-text h2 {
+            font-size: clamp(29px, 5vw, 42px);
+            line-height: 1.2;
+            margin-bottom: 18px;
+        }
+
+        .game-text h2 span {
+            color: var(--red);
+        }
+
+        .game-text p {
+            color: var(--gray);
+            font-size: 15px;
+        }
+
+        .game-badge {
+            flex-shrink: 0;
+            padding: 25px;
+            border: 1px solid rgba(255, 37, 37, 0.4);
+            border-radius: 12px;
+            background: rgba(255, 37, 37, 0.06);
+            text-align: center;
+        }
+
+        .game-badge strong {
+            display: block;
+            color: var(--red);
+            font-size: 28px;
+        }
+
+        .game-badge span {
+            color: #dddddd;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        /* REN GAMING LIVE STREAM SECTION */
+
+        .live-section {
+            max-width: 1200px;
+            margin: auto;
+            padding: 85px 22px;
+            scroll-margin-top: 90px;
+        }
+
+        .live-card {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 25px;
+            background: linear-gradient(
+                145deg,
+                rgba(255, 37, 37, 0.10),
+                #101010 50%
+            );
+            border: 1px solid rgba(255, 37, 37, 0.4);
+            border-radius: 14px;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+        }
+
+        .live-badge {
+            display: inline-block;
+            padding: 7px 12px;
+            margin-bottom: 15px;
+            color: #ff7777;
+            background: rgba(255, 37, 37, 0.1);
+            border: 1px solid rgba(255, 37, 37, 0.4);
+            border-radius: 5px;
+            font-size: 12px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .live-card h2 {
+            font-size: clamp(26px, 4vw, 38px);
+            margin-bottom: 10px;
+        }
+
+        .live-card h2 span {
+            color: var(--red);
+        }
+
+        .live-card p {
+            color: var(--gray);
+            margin-bottom: 22px;
+        }
+
+        .live-player {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            background: #000;
+            border: 1px solid #333;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .live-player iframe {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+
+        .live-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .cta {
+            max-width: 1156px;
+            margin: 70px auto;
+            padding: 55px 25px;
+            text-align: center;
+            background: radial-gradient(circle at center, rgba(255, 37, 37, 0.16), transparent 70%), #111111;
+            border: 1px solid var(--border);
+            border-radius: 14px;
+        }
+
+        .cta h2 {
+            font-size: clamp(28px, 5vw, 42px);
+            margin-bottom: 12px;
+        }
+
+        .cta p {
+            color: var(--gray);
+            max-width: 600px;
+            margin: 0 auto 25px;
+        }
+
+        footer {
+            border-top: 1px solid var(--border);
+            background: #080808;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: auto;
+            padding: 30px 22px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .footer-content p {
+            color: var(--gray);
+            font-size: 13px;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: #cccccc;
+            font-size: 13px;
+        }
+
+        .footer-links a:hover {
+            color: var(--red);
+        }
+
+        @media (max-width: 800px) {
+            .navbar {
+                flex-wrap: wrap;
+            }
+
+            .nav-links {
+                order: 3;
+                width: 100%;
+                justify-content: center;
+                gap: 20px;
+                padding-top: 8px;
+            }
+
+            .account-button {
+                min-width: auto;
+                padding: 10px 12px;
+            }
+
+            .admin-button {
+                padding: 10px 12px;
+            }
+
+            .hero {
+                min-height: 510px;
+                padding-top: 70px;
+                padding-bottom: 75px;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .game-content {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .game-badge {
+                width: 100%;
+            }
+
+            .cta {
+                margin: 45px 22px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .logo {
+                font-size: 20px;
+            }
+
+            .logo-icon {
+                width: 38px;
+                height: 38px;
+            }
+
+            .nav-links {
+                gap: 14px;
+            }
+
+            .nav-links a {
+                font-size: 12px;
+            }
+
+            .hero h1 {
+                font-size: 43px;
+            }
+
+            .hero p {
+                font-size: 15px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stat {
+                border-right: none;
+                border-bottom: 1px solid var(--border);
+                padding: 20px;
+            }
+
+            .stat:last-child {
+                border-bottom: none;
+            }
+
+            .section {
+                padding-top: 70px;
+                padding-bottom: 70px;
+            }
+
+            .live-section {
+                padding-top: 60px;
+                padding-bottom: 60px;
+            }
+
+            .live-card {
+                padding: 15px;
+            }
+
+            .live-buttons .button {
+                width: 100%;
+            }
+
+            .footer-content {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <nav class="navbar">
+
+        <a href="index.html" class="logo">
+            <div class="logo-icon">RG</div>
+            <div>REN <span>GAMING</span></div>
+        </a>
+
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="#features">Features</a>
+            <a href="#game">Our Game</a>
+            <a href="#live">Live Stream</a>
+            <a href="tournament-register.html">Tournament</a>
+        </div>
+
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+
+            <a href="admin.html" class="admin-button" id="adminPanelButton">
+                ADMIN PANEL
+            </a>
+
+            <a href="login.html" class="account-button" id="accountButton">
+                LOGIN / REGISTER
+            </a>
+
+        </div>
+    </nav>
+</header>
+
+<main>
+
+    <!-- HERO SECTION -->
+
+    <section class="hero">
+        <div class="hero-content">
+
+            <div class="hero-label">WELCOME TO REN GAMING</div>
+
+            <h1>
+                PLAY TO WIN.<br>
+                <span>RISE TO GLORY.</span>
+            </h1>
+
+            <p>
+                Join the Ren Gaming community, compete in exciting
+                tournaments, build your team, and show everyone
+                what you are capable of.
+            </p>
+
+            <div class="hero-buttons">
+
+                <a href="tournament-register.html"
+                   class="button button-primary">
+                    JOIN TOURNAMENT
+                </a>
+
+                <a href="login.html"
+                   class="button button-secondary"
+                   id="heroDashboardButton">
+                    MY DASHBOARD
+                </a>
+
+                <a href="admin.html"
+                   class="button button-admin"
+                   id="heroAdminButton">
+                    OPEN ADMIN PANEL
+                </a>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- STATS SECTION -->
+
+    <section class="stats">
+        <div class="stats-grid">
+
+            <div class="stat">
+                <h2>5v5</h2>
+                <p>Team Battles</p>
+            </div>
+
+            <div class="stat">
+                <h2>RG</h2>
+                <p>Ren Gaming Community</p>
+            </div>
+
+            <div class="stat">
+                <h2>100%</h2>
+                <p>Competitive Spirit</p>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- FEATURES SECTION -->
+
+    <section class="section" id="features">
+
+        <div class="section-heading">
+            <span>WHY REN GAMING?</span>
+            <h2>YOUR GAMING JOURNEY STARTS HERE</h2>
+            <p>
+                Everything you need to become part of our gaming community.
+            </p>
+        </div>
+
+        <div class="features-grid">
+
+            <div class="feature-card">
+                <div class="feature-icon">🏆</div>
+                <h3>Join Tournaments</h3>
+                <p>
+                    Register for Ren Gaming tournaments and compete
+                    against other teams for exciting prizes.
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">⚔️</div>
+                <h3>Build Your Team</h3>
+                <p>
+                    Bring your teammates together, prepare your
+                    strategies, and fight for victory.
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">🎮</div>
+                <h3>Gaming Community</h3>
+                <p>
+                    Connect with players, follow tournament updates,
+                    and grow together with Ren Gaming.
+                </p>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- LIVE STREAM SECTION -->
+
+    <section class="live-section" id="live">
+
+        <div class="section-heading">
+            <span>WATCH THE ACTION</span>
+            <h2>REN GAMING LIVE STREAM</h2>
+            <p>
+                Watch Ren Gaming tournament matches and gaming streams
+                directly from our website.
+            </p>
+        </div>
+
+        <div class="live-card">
+
+            <div class="live-badge">
+                🔴 REN GAMING • YOUTUBE
+            </div>
+
+            <h2>
+                WATCH <span>REN GAMING</span>
+            </h2>
+
+            <p>
+                Join us for MOBA Legends 5v5 tournament matches,
+                exciting battles, and live gaming.
+                If the player is unavailable, visit our YouTube
+                channel to watch the current broadcast or recent streams.
+            </p>
+
+            <!--
+                IMPORTANT:
+                Replace YOUR_CHANNEL_ID with your actual YouTube Channel ID.
+                This allows YouTube to locate your channel's live stream.
+            -->
+
+            <div class="live-player">
+
+                <iframe
+                    src="https://www.youtube.com/embed/live_stream?channel=UCgB7Ygb_-OHdPP5P3qMFeKA"
+                    title="Ren Gaming Live Stream"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    referrerpolicy="strict-origin-when-cross-origin"
+                    allowfullscreen>
+                </iframe>
+
+            </div>
+
+            <div class="live-buttons">
+
+                <a
+                    href="https://www.youtube.com/@Rendombirth"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="button button-primary">
+                    WATCH ON YOUTUBE
+                </a>
+
+                <a
+                    href="https://www.youtube.com/@Rendombirth/streams"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="button button-secondary">
+                    VIEW ALL STREAMS
+                </a>
+
+            </div>
+
+        </div>
+    </section>
+
+    <!-- GAME SECTION -->
+
+    <section class="game-section" id="game">
+
+        <div class="game-content">
+
+            <div class="game-text">
+
+                <h2>
+                    READY FOR THE BATTLE IN
+                    <span>MOBA LEGENDS 5v5?</span>
+                </h2>
+
+                <p>
+                    Gather your squad, sharpen your skills, and enter
+                    the battlefield. Represent your team and compete
+                    with the Ren Gaming community.
+                </p>
+
+                <div style="margin-top:25px;">
+                    <a href="tournament-register.html"
+                       class="button button-primary">
+                        REGISTER NOW
+                    </a>
+                </div>
+
+            </div>
+
+            <div class="game-badge">
+                <strong>5 vs 5</strong>
+                <span>TEAM BATTLE</span>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- CALL TO ACTION -->
+
+    <section class="cta">
+
+        <h2>ARE YOU READY, PLAYER?</h2>
+
+        <p>
+            Become part of Ren Gaming and get ready for your next tournament.
+            Your journey to victory starts here.
+        </p>
+
+        <a href="login.html"
+           class="button button-primary"
+           id="ctaAccountButton">
+            CREATE YOUR ACCOUNT
+        </a>
+
+    </section>
+
+</main>
+
+<!-- FOOTER -->
+
+<footer>
+    <div class="footer-content">
+
+        <a href="index.html" class="logo">
+            <div class="logo-icon">RG</div>
+            <div>REN <span>GAMING</span></div>
+        </a>
+
+        <p>
+            © <span id="currentYear"></span> Ren Gaming. All rights reserved.
+        </p>
+
+        <div class="footer-links">
+            <a href="index.html">Home</a>
+            <a href="tournament-register.html">Tournament</a>
+            <a href="https://www.youtube.com/@Rendombirth"
+               target="_blank"
+               rel="noopener noreferrer">YouTube</a>
+            <a href="login.html">Login</a>
+        </div>
+
+    </div>
+</footer>
+
+<!-- SUPABASE -->
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+    const SUPABASE_URL =
+        "https://bixpvxkpnaqdifmvkhvp.supabase.co";
+
+    const SUPABASE_PUBLISHABLE_KEY =
+        "sb_publishable_XtzkrIFbBPTGUmoLHqHu5Q_XeznKoVI";
+
+    const accountButton =
+        document.getElementById("accountButton");
+
+    const heroDashboardButton =
+        document.getElementById("heroDashboardButton");
+
+    const ctaAccountButton =
+        document.getElementById("ctaAccountButton");
+
+    const adminPanelButton =
+        document.getElementById("adminPanelButton");
+
+    const heroAdminButton =
+        document.getElementById("heroAdminButton");
+
+    document.getElementById("currentYear").textContent =
+        new Date().getFullYear();
+
+    const authClient = window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_PUBLISHABLE_KEY
+    );
+
+    function showLoggedOut() {
+
+        accountButton.textContent = "LOGIN / REGISTER";
+        accountButton.href = "login.html";
+
+        heroDashboardButton.textContent = "MY DASHBOARD";
+        heroDashboardButton.href = "login.html";
+
+        ctaAccountButton.textContent = "CREATE YOUR ACCOUNT";
+        ctaAccountButton.href = "login.html";
+
+        adminPanelButton.style.display = "none";
+        heroAdminButton.style.display = "none";
+    }
+
+    async function updateAccountLinks(user) {
+
+        showLoggedOut();
+
+        if (!user) {
+            return;
+        }
+
+        accountButton.textContent = "DASHBOARD";
+        heroDashboardButton.textContent = "MY DASHBOARD";
+        ctaAccountButton.textContent = "GO TO DASHBOARD";
+
+        try {
+
+            const { data: profile, error } = await authClient
+                .from("profiles")
+                .select("role")
+                .eq("id", user.id)
+                .maybeSingle();
+
+            if (error) {
+
+                console.error(
+                    "Unable to check user role:",
+                    error.message
+                );
+
+                accountButton.href = "dashboard.html";
+                heroDashboardButton.href = "dashboard.html";
+                ctaAccountButton.href = "dashboard.html";
+
+                return;
+            }
+
+            const isAdmin =
+                String(profile?.role || "")
+                    .trim()
+                    .toLowerCase() === "admin";
+
+            if (isAdmin) {
+
+                accountButton.href = "admin.html";
+                accountButton.textContent = "ADMIN DASHBOARD";
+
+                heroDashboardButton.href = "admin.html";
+                heroDashboardButton.textContent = "OPEN ADMIN PANEL";
+
+                ctaAccountButton.href = "admin.html";
+                ctaAccountButton.textContent = "OPEN ADMIN PANEL";
+
+                adminPanelButton.style.display = "inline-flex";
+                heroAdminButton.style.display = "inline-flex";
+
+            } else {
+
+                accountButton.href = "dashboard.html";
+                heroDashboardButton.href = "dashboard.html";
+                ctaAccountButton.href = "dashboard.html";
+
+                adminPanelButton.style.display = "none";
+                heroAdminButton.style.display = "none";
+            }
+
+        } catch (error) {
+
+            console.error("Account display error:", error);
+
+            adminPanelButton.style.display = "none";
+            heroAdminButton.style.display = "none";
+        }
+    }
+
+    async function initializeRenGaming() {
+
+        showLoggedOut();
+
+        const { data, error } =
+            await authClient.auth.getSession();
+
+        if (error) {
+
+            console.error(
+                "Could not check login status:",
+                error.message
+            );
+
+            return;
+        }
+
+        await updateAccountLinks(
+            data.session?.user || null
+        );
+
+        authClient.auth.onAuthStateChange(
+            (event, session) => {
+
+                setTimeout(() => {
+                    updateAccountLinks(
+                        session?.user || null
+                    );
+                }, 0);
+
+            }
+        );
+    }
+
+    initializeRenGaming();
+</script>
+
+</body>
+</html>
     <meta name="description"
           content="Welcome to Ren Gaming. Join tournaments, register your team, and compete in MOBA Legends 5v5.">
 
