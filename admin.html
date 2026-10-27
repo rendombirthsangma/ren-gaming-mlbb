@@ -878,8 +878,191 @@ function renderReview() {
 
 
 /* =====================================
-   PAYMENT RECEIPT
+   PAYMENT RECEIPT — FIXED
 ===================================== */
+
+function getReceiptStoragePath(value) {
+  if (!value) return null;
+
+  let raw = String(value).trim();
+
+  if (!raw) return null;
+
+  // If the database stores a URL, extract its storage path.
+  if (/^https?:\/\//i.test(raw)) {
+    try {
+      const url = new URL(raw);
+
+      // Handle the Supabase dashboard URL format:
+      // ?path=FOLDER&preview=IMAGE.jpg
+      if (
+        url.hostname === "supabase.com" &&
+        url.pathname.includes("/storage/files/buckets/")
+      ) {
+        const folder = url.searchParams.get("path") || "";
+        const preview = url.searchParams.get("preview") || "";
+
+        if (preview) {
+          raw = folder
+            ? folder.replace(/^\/+|\/+$/g, "") + "/" + preview
+            : preview;
+        } else {
+          raw = folder;
+        }
+      } else {
+        // Handle Supabase Storage public or signed URLs.
+        const match = url.pathname.match(
+          /\/storage\/v1\/object\/(?:public|sign)\/payment-receipts\/(.+)$/
+        );
+
+        if (match) {
+          raw = decodeURIComponent(match[1]);
+        } else {
+          // An unrelated external URL can be opened directly.
+          return {
+            externalUrl: value,
+            path: null
+          };
+        }
+      }
+    } catch (error) {
+      console.error("Invalid receipt URL:", error);
+      return null;
+    }
+  }
+
+  // Remove query strings and URL fragments.
+  raw = raw.split("#")[0].split("?")[0];
+
+  // Remove bucket prefix if the database stores it.
+  raw = raw.replace(/^\/+/, "");
+  raw = raw.replace(/^payment-receipts\//, "");
+
+  try {
+    raw = raw
+      .split("/")
+      .map(part => decodeURIComponent(part))
+      .join("/");
+  } catch (error) {
+    console.warn("Could not decode receipt path:", error);
+  }
+
+  // Reject empty paths and unsafe traversal.
+  if (
+    !raw ||
+    raw.split("/").some(part => part === "." || part === "..")
+  ) {
+    return null;
+  }
+
+  return { path: raw };
+}
+
+async function loadPaymentReceipt(payment) {
+  const area = document.getElementById("receiptArea");
+
+  if (!area) return;
+
+  const originalValue = payment?.payment_screenshot_url;
+
+  if (!originalValue) {
+    area.textContent = "No payment screenshot was uploaded.";
+    return;
+  }
+
+  area.textContent = "Loading payment receipt...";
+
+  const result = getReceiptStoragePath(originalValue);
+
+  if (!result) {
+    area.textContent =
+      "The receipt path is invalid. Check payment_screenshot_url in the database.";
+    return;
+  }
+
+  // For an unrelated external image URL, display it directly.
+  if (result.externalUrl) {
+    const url = result.externalUrl;
+
+    area.innerHTML = `
+      <p>Payment receipt:</p>
+      <a href="${esc(url)}"
+         target="_blank"
+         rel="noopener noreferrer">
+        OPEN RECEIPT
+      </a>
+      <img src="${esc(url)}"
+           alt="Payment receipt"
+           onerror="this.style.display='none';">
+    `;
+
+    return;
+  }
+
+  const path = result.path;
+
+  // Generate a private, temporary URL for the receipt.
+  const { data, error } = await db.storage
+    .from(PAYMENT_BUCKET)
+    .createSignedUrl(path, 3600);
+
+  if (error || !data?.signedUrl) {
+    console.error("Receipt loading error:", {
+      path,
+      error
+    });
+
+    area.innerHTML = `
+      <div class="empty">
+        <strong>Unable to load the payment receipt.</strong>
+        <p>
+          The image exists, but Supabase could not generate a
+          signed URL for this path.
+        </p>
+        <p>
+          Check the saved payment_screenshot_url value and the
+          authenticated admin's Storage SELECT permissions.
+        </p>
+        <button type="button"
+          onclick="retryPaymentReceipt()">
+          RETRY
+        </button>
+      </div>
+    `;
+
+    return;
+  }
+
+  const url = data.signedUrl;
+
+  area.innerHTML = `
+    <p>Payment receipt:</p>
+
+    <a href="${esc(url)}"
+       target="_blank"
+       rel="noopener noreferrer">
+      OPEN RECEIPT IN NEW TAB
+    </a>
+
+    <img
+      src="${esc(url)}"
+      alt="Payment receipt"
+      onerror="this.style.display='none';
+        this.nextElementSibling.style.display='block';"
+    >
+
+    <p class="muted" style="display:none">
+      The receipt URL was generated, but the image could not
+      be displayed. Use OPEN RECEIPT IN NEW TAB to test it.
+    </p>
+  `;
+}
+
+async function retryPaymentReceipt() {
+  if (!selectedPayment) return;
+
+  await loadPaymentReceipt(selectedPayment);
+}
 
 async function loadPaymentReceipt(payment) {
   const area = document.getElementById("receiptArea");
