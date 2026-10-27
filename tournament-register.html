@@ -1395,16 +1395,27 @@
         if (!isFreeTournament) {
           const { error: paymentError } =
             await supabaseClient
-              .from("tournament_payments")
-              .insert({
-                team_id: createdTeamId,
-                transaction_id: cleanText(
-                  $("transactionId").value
-                ),
-                receipt_url: receiptPath,
-                payment_method: "QR payment",
-                status: "pending"
-              });
+              const { error: paymentError } = await supabaseClient
+  .from("tournament_payments")
+  .insert({
+    team_id: createdTeamId,
+    tournament_id: tournamentId,
+    user_id: user.id,
+    amount: Number(currentTournament.entry_fee),
+    transaction_id: cleanText(
+      $("transactionId").value
+    ),
+    payment_screenshot_url: receiptPath,
+    payment_method: "UPI",
+    status: "pending"
+  });
+
+if (paymentError) {
+  throw new Error(
+    "Your team and players were saved, but payment details could not be saved: " +
+    paymentError.message
+  );
+}
 
           if (paymentError) {
             throw new Error(
