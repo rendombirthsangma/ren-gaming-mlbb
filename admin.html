@@ -2,1306 +2,764 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ren Gaming | Admin Dashboard</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ren Gaming | Admin Panel</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
 :root {
   --bg:#080808;
-  --card:#131313;
-  --red:#e50914;
+  --card:#121212;
   --border:#303030;
+  --red:#ff2020;
   --text:#fff;
   --muted:#aaa;
-  --green:#16894b;
-  --orange:#bd7900;
+  --green:#167b3b;
 }
 * { box-sizing:border-box; }
 body {
   margin:0;
+  font-family:Arial,sans-serif;
   background:var(--bg);
   color:var(--text);
-  font-family:Arial,sans-serif;
 }
-button,input,textarea,select { font:inherit; }
-button { cursor:pointer; }
-.topbar {
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:12px;
-  flex-wrap:wrap;
+header {
   padding:18px 5%;
   background:#101010;
   border-bottom:1px solid var(--border);
-}
-.logo { font-size:23px;font-weight:900; }
-.logo span { color:var(--red); }
-.container { width:min(1200px,94%);margin:28px auto; }
-h1 { font-size:27px;margin:0 0 8px; }
-h2 { font-size:21px; }
-p { color:#ccc; }
-.muted { color:var(--muted);font-size:13px; }
-.card {
-  background:var(--card);
-  border:1px solid var(--border);
-  border-radius:12px;
-  padding:20px;
-  margin-bottom:18px;
-}
-.row {
   display:flex;
-  gap:10px;
+  justify-content:space-between;
   align-items:center;
+  gap:15px;
   flex-wrap:wrap;
 }
-input,textarea,select {
-  width:100%;
-  background:#080808;
+.logo { color:var(--red);font-size:22px;font-weight:900; }
+nav { display:flex;gap:8px;flex-wrap:wrap; }
+a,button { cursor:pointer;font-family:inherit; }
+nav a,button {
   color:white;
+  background:#202020;
   border:1px solid #444;
-  border-radius:8px;
-  padding:11px;
-}
-textarea { min-height:90px;resize:vertical; }
-.field { margin:13px 0; }
-label {
-  display:block;
-  margin-bottom:6px;
-  font-size:13px;
-  font-weight:bold;
-}
-.btn {
-  display:inline-flex;
-  justify-content:center;
-  align-items:center;
-  padding:10px 14px;
-  border:0;
   border-radius:7px;
-  font-weight:bold;
-  font-size:13px;
+  padding:10px 13px;
   text-decoration:none;
-  color:white;
-  background:#333;
 }
-.btn:disabled { opacity:.5;cursor:not-allowed; }
-.btn-red { background:var(--red); }
-.btn-green { background:var(--green); }
-.btn-orange { background:var(--orange); }
-.btn-outline { border:1px solid #555;background:#181818; }
-.btn-small { padding:7px 10px;font-size:12px; }
-.message {
-  display:none;
-  padding:12px;
-  border-radius:8px;
-  margin:12px 0;
-  overflow-wrap:anywhere;
-}
-.message.show { display:block; }
-.message.error { background:#350b0d;color:#ffc2c5; }
-.message.success { background:#0b301b;color:#b7ffce; }
-.message.info { background:#102338;color:#d7e9ff; }
+button:hover,nav a:hover { border-color:var(--red); }
+.container { max-width:1250px;margin:30px auto;padding:0 18px; }
+h1 { margin:0 0 10px; }
+.subtitle { color:var(--muted);margin-bottom:25px; }
 .stats {
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
   gap:12px;
-  margin:20px 0;
+  margin:22px 0;
 }
-.stat {
-  background:#171717;
-  border:1px solid #333;
-  padding:16px;
+.stat,.panel,.team-card,.topup-card {
+  background:var(--card);
+  border:1px solid var(--border);
   border-radius:10px;
+  padding:18px;
 }
-.stat strong { display:block;font-size:25px;margin-top:5px; }
-.table-wrap { overflow-x:auto; }
-table { width:100%;border-collapse:collapse;min-width:650px; }
-th,td {
-  text-align:left;
-  padding:13px 10px;
-  border-bottom:1px solid #303030;
-  font-size:13px;
+.stat span { color:var(--muted);font-size:12px;display:block; }
+.stat strong { display:block;color:var(--red);font-size:27px;margin-top:8px; }
+.panel { margin-bottom:25px; }
+.panel-head {
+  display:flex;justify-content:space-between;align-items:center;
+  gap:12px;flex-wrap:wrap;margin-bottom:15px;
 }
-th { color:#aaa; }
+.panel h2 { margin:0;font-size:21px; }
+.muted { color:var(--muted);font-size:13px;line-height:1.7; }
+.team-card,.topup-card { margin:12px 0; }
+.team-head {
+  display:flex;justify-content:space-between;align-items:flex-start;
+  gap:12px;flex-wrap:wrap;
+}
+.team-name { font-size:19px;font-weight:bold;overflow-wrap:anywhere; }
 .badge {
-  display:inline-block;
-  padding:5px 8px;
-  border-radius:20px;
-  font-size:11px;
-  font-weight:bold;
-  background:#333;
+  display:inline-block;border-radius:5px;padding:5px 8px;
+  background:#343434;font-size:11px;text-transform:uppercase;
 }
-.badge.pending { background:#49350c;color:#ffdc91; }
-.badge.approved { background:#103e25;color:#a8ffc5; }
-.badge.rejected { background:#481316;color:#ffb5b9; }
-.badge.unverified { background:#333;color:#ddd; }
-.tabs { display:flex;gap:8px;flex-wrap:wrap;margin:20px 0; }
-.tab.active { background:var(--red); }
+.badge.pending { color:#ffd666;background:#3a2b00; }
+.badge.approved,.badge.verified { color:#83efaa;background:#10351b; }
+.badge.rejected { color:#ff9999;background:#451515; }
+.actions { display:flex;gap:8px;flex-wrap:wrap;margin-top:15px; }
+.primary { background:#a80e0e;border-color:var(--red); }
+.good { background:#12351d;border-color:#236b37; }
+.danger { background:#351313;border-color:#762525; }
 .hidden { display:none!important; }
-.modal {
-  position:fixed;
-  inset:0;
-  z-index:1000;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:14px;
-  background:rgba(0,0,0,.86);
+.message { padding:12px;border-radius:7px;margin:15px 0;display:none;overflow-wrap:anywhere; }
+.message.show { display:block; }
+.message.success { background:#102814;border:1px solid #238636;color:#7ee787; }
+.message.error { background:#2b1010;border:1px solid var(--red);color:#ff9999; }
+.player-card {
+  background:#191919;border:1px solid #333;border-radius:8px;
+  padding:15px;margin:12px 0;
 }
-.modal-box {
-  width:min(850px,100%);
-  max-height:94vh;
-  overflow:auto;
-  background:#151515;
-  border:1px solid #444;
-  border-radius:13px;
-  padding:22px;
+.player-card h3 { margin:0 0 12px;color:#ff6666; }
+.player-grid {
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;
 }
-.modal-head {
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:10px;
+label { display:block;color:var(--muted);font-size:12px;margin-bottom:5px; }
+input,select,textarea {
+  width:100%;padding:10px;background:#080808;color:white;
+  border:1px solid #444;border-radius:6px;font:inherit;
 }
-.player {
-  border:1px solid #383838;
-  border-radius:9px;
-  padding:14px;
-  margin:10px 0;
-  background:#101010;
-}
-.player h3 { margin:0 0 8px;font-size:16px; }
-.player p { font-size:13px;line-height:1.7; }
-.player-actions { display:flex;gap:8px;flex-wrap:wrap; }
-.payment-image {
-  display:block;
-  max-width:100%;
-  max-height:450px;
-  margin:15px auto;
-  object-fit:contain;
-  border-radius:8px;
-}
-.status-line { margin:12px 0;line-height:1.8; }
-footer { text-align:center;color:#777;padding:25px;font-size:12px; }
+textarea { min-height:90px;resize:vertical; }
+.field { margin:12px 0; }
+.payment-box { background:#191919;padding:15px;border-radius:8px;margin-top:15px; }
+.payment-box img { max-width:100%;max-height:450px;display:block;margin-top:12px;border-radius:6px; }
+.empty { color:#999;padding:18px;background:#101010;border-radius:8px; }
+hr { border:0;border-top:1px solid #333;margin:18px 0; }
 @media(max-width:600px) {
-  .container { width:94%;margin:18px auto; }
-  .card,.modal-box { padding:15px; }
-  h1 { font-size:23px; }
+  header { padding:15px; }
+  .container { margin:20px auto; }
+  .panel { padding:13px; }
 }
 </style>
 </head>
 
 <body>
-<header class="topbar">
-  <div class="logo">REN <span>GAMING</span> <small style="font-size:12px;color:#aaa">ADMIN</small></div>
-  <div class="row">
-    <button class="btn btn-outline" onclick="loadTeams()">Refresh</button>
-    <button class="btn btn-outline" onclick="signOut()">Log Out</button>
-  </div>
+
+<header>
+  <div class="logo">REN GAMING — ADMIN</div>
+  <nav>
+    <a href="index.html">HOME</a>
+    <a href="admin-tournament-management.html">TOURNAMENTS</a>
+    <a href="admin-match-management.html">MATCHES</a>
+    <button id="logoutBtn">LOGOUT</button>
+  </nav>
 </header>
 
 <main class="container">
+  <h1>Admin Dashboard</h1>
+  <p class="subtitle">Manage registrations, verify players and payments, and review top-up orders.</p>
 
-  <section id="login-section" class="card hidden">
-    <h1>Admin Login</h1>
-    <p class="muted">Sign in with your existing Ren Gaming administrator account.</p>
-    <div id="login-message" class="message"></div>
-    <div class="field">
-      <label>Email</label>
-      <input id="login-email" type="email" autocomplete="username">
+  <div id="message" class="message"></div>
+
+  <div class="stats">
+    <div class="stat"><span>TOTAL TEAMS</span><strong id="totalTeams">0</strong></div>
+    <div class="stat"><span>PENDING TEAMS</span><strong id="pendingTeams">0</strong></div>
+    <div class="stat"><span>APPROVED TEAMS</span><strong id="approvedTeams">0</strong></div>
+    <div class="stat"><span>PENDING PLAYERS</span><strong id="pendingPlayers">0</strong></div>
+    <div class="stat"><span>TOP-UP ORDERS</span><strong id="topupCount">0</strong></div>
+  </div>
+
+  <section class="panel">
+    <div class="panel-head">
+      <h2>🏆 Registered Teams</h2>
+      <button onclick="loadTeams()">REFRESH</button>
     </div>
-    <div class="field">
-      <label>Password</label>
-      <input id="login-password" type="password" autocomplete="current-password">
-    </div>
-    <button class="btn btn-red" onclick="signIn()">Sign In</button>
+    <p class="muted">Select a team to review its leader, players and payment receipt.</p>
+    <div id="teamsList">Loading teams...</div>
   </section>
 
-  <section id="dashboard" class="hidden">
-    <h1>Tournament Administration</h1>
-    <p class="muted">Verify players, review payments, and manage registration decisions.</p>
-
-    <div id="page-message" class="message"></div>
-
-    <div class="stats">
-      <div class="stat">Total Teams<strong id="stat-total">0</strong></div>
-      <div class="stat">Pending<strong id="stat-pending">0</strong></div>
-      <div class="stat">Approved<strong id="stat-approved">0</strong></div>
-      <div class="stat">Rejected<strong id="stat-rejected">0</strong></div>
+  <section class="panel" id="reviewPanel">
+    <div class="panel-head">
+      <h2>🔍 Team Review</h2>
+      <button onclick="closeReview()">CLOSE</button>
     </div>
+    <div id="reviewContent" class="muted">Select a team above to see its details.</div>
+  </section>
 
-    <section class="card">
-      <div class="row">
-        <div style="flex:2;min-width:200px">
-          <label>Search Team</label>
-          <input id="team-search" placeholder="Enter team name..." oninput="renderTeams()">
-        </div>
-        <div style="flex:1;min-width:170px">
-          <label>Filter Status</label>
-          <select id="status-filter" onchange="renderTeams()">
-            <option value="all">All teams</option>
-            <option value="pending">Pending</option>
-            <option value="approved">Approved</option>
-            <option value="rejected">Rejected</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="tabs">
-        <button class="btn tab active" id="tab-teams" onclick="showSection('teams')">Team Registrations</button>
-        <button class="btn tab" id="tab-payments" onclick="showSection('payments')">Payment Records</button>
-      </div>
-
-      <div id="teams-section">
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Team Name</th>
-                <th>Players</th>
-                <th>Payment</th>
-                <th>Registration</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody id="teams-body">
-              <tr><td colspan="5">Loading teams...</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <div id="payments-section" class="hidden">
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Team</th>
-                <th>Transaction ID</th>
-                <th>Amount</th>
-                <th>Payment Status</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody id="payments-body"></tbody>
-          </table>
-        </div>
-      </div>
-    </section>
+  <section class="panel">
+    <div class="panel-head">
+      <h2>💎 Diamond Top-Up Orders</h2>
+      <button onclick="loadTopups()">REFRESH</button>
+    </div>
+    <div id="topupsList">Loading top-up orders...</div>
   </section>
 </main>
 
-<footer>Ren Gaming Admin Dashboard</footer>
-
-<div id="team-modal" class="modal hidden">
-  <div class="modal-box">
-    <div class="modal-head">
-      <h2 id="modal-team-name">Team Details</h2>
-      <button class="btn btn-outline" onclick="closeTeamModal()">Close</button>
-    </div>
-
-    <div id="team-details-message" class="message"></div>
-    <div id="team-leader-details" class="card"></div>
-
-    <h2>Player Verification</h2>
-    <p class="muted">Verify every player before approving a registration.</p>
-    <div id="players-list">Loading players...</div>
-
-    <section id="payment-review" class="card">
-      <h2>Payment Review</h2>
-      <div id="payment-details">Loading payment information...</div>
-      <div id="payment-actions" class="row"></div>
-    </section>
-
-    <section class="card">
-      <h2>Registration Decision</h2>
-      <div id="approval-checklist" class="status-line"></div>
-
-      <button id="approve-team-btn" class="btn btn-green hidden" onclick="approveTeam()">
-        Approve Registration
-      </button>
-
-      <div class="field">
-        <label>Rejection Reason</label>
-        <textarea id="rejection-reason" maxlength="1000" placeholder="Explain why this registration is rejected..."></textarea>
-      </div>
-      <button class="btn btn-red" onclick="rejectTeam()">Reject Registration</button>
-    </section>
-  </div>
-</div>
-
-<div id="receipt-modal" class="modal hidden">
-  <div class="modal-box" style="max-width:700px">
-    <div class="modal-head">
-      <h2>Payment Receipt</h2>
-      <button class="btn btn-outline" onclick="closeReceipt()">Close</button>
-    </div>
-    <div id="receipt-content"></div>
-  </div>
-</div>
-
 <script>
-/* =========================
-   REN GAMING CONFIGURATION
-   ========================= */
+/*
+  REN GAMING CONFIGURATION
+  Uses your existing Supabase project.
+*/
+const SUPABASE_URL =
+  "https://bixpvxkpnaqdifmvkhvp.supabase.co";
 
-const SUPABASE_URL = "https://bixpvxkpnaqdifmvkhvp.supabase.co";
-const SUPABASE_KEY = "sb_publishable_XtzkrIFbBPTGUmoLHqHu5Q_XeznKoVI";
+const SUPABASE_KEY =
+  "sb_publishable_XtzkrIFbBPTGUmoLHqHu5Q_XeznKoVI";
 
-const TOURNAMENT_ID = "8b5997f8-194a-4998-9915-6528dfbbcb44";
-const RECEIPT_BUCKET = "tournament-payment-proofs";
+const PAYMENT_BUCKET = "tournament-payment-proofs";
 
-const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const db = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
 
 let currentUser = null;
-let teams = [];
-let currentTeam = null;
-let currentPlayers = [];
-let currentPayment = null;
-let tournamentEntryFee = 0;
-let isAdmin = false;
-let busy = false;
+let selectedTeam = null;
+let selectedPlayers = [];
+let selectedPayment = null;
+let selectedProfile = null;
 
-/* =========================
-   COMMON HELPERS
-   ========================= */
-
-function el(id) {
-  return document.getElementById(id);
-}
-
-function escapeHtml(value) {
+function esc(value) {
   return String(value ?? "").replace(/[&<>"']/g, char => ({
     "&":"&amp;",
     "<":"&lt;",
     ">":"&gt;",
     '"':"&quot;",
     "'":"&#39;"
-  }[char]));
+  })[char]);
 }
 
-function showMessage(id, message, type="info") {
-  const node = el(id);
-  node.className = "message show " + type;
-  node.textContent = message;
+function showMessage(text, type="success") {
+  const el = document.getElementById("message");
+  el.textContent = text;
+  el.className = "message show " + type;
+  window.scrollTo({top:0,behavior:"smooth"});
 }
 
-function clearMessage(id) {
-  const node = el(id);
-  node.className = "message";
-  node.textContent = "";
+function hideMessage() {
+  const el = document.getElementById("message");
+  el.className = "message";
+  el.textContent = "";
 }
 
-function badge(status) {
-  const value = String(status || "pending").toLowerCase();
-  const cls = ["approved","rejected","pending","unverified"].includes(value)
-    ? value : "pending";
-
-  return `<span class="badge ${cls}">${escapeHtml(value)}</span>`;
+function statusBadge(status) {
+  const s = String(status || "pending").toLowerCase();
+  const css = ["approved","verified","rejected","pending"].includes(s) ? s : "";
+  return `<span class="badge ${css}">${esc(s)}</span>`;
 }
 
-function formatDate(value) {
-  if (!value) return "Not available";
-  const date = new Date(value);
-  return Number.isNaN(date.getTime())
-    ? "Not available"
-    : date.toLocaleString("en-IN");
-}
-
-function normalizePhone(value) {
-  let phone = String(value || "").trim();
-  phone = phone.replace(/[^\d+]/g,"");
-
-  // Add India's country code when a 10-digit Indian mobile is stored.
-  if (/^\d{10}$/.test(phone)) phone = "91" + phone;
-
-  return phone.replace(/\D/g,"");
-}
-
-function makeWhatsAppLink(phone, message) {
-  const number = normalizePhone(phone);
-  if (!number) return null;
-
-  return "https://wa.me/" + number + "?text=" + encodeURIComponent(message);
-}
-
-function openWhatsApp(phone, message) {
-  const link = makeWhatsAppLink(phone, message);
-
-  if (!link) {
-    alert("The team leader's WhatsApp number is missing or invalid in profiles.phone. The decision was saved, but WhatsApp could not be opened.");
-    return;
-  }
-
-  window.open(link, "_blank", "noopener,noreferrer");
-}
-
-function statusText(value) {
-  return String(value || "pending").toLowerCase();
-}
-
-/* =========================
-   LOGIN AND ADMIN SECURITY
-   ========================= */
-
-async function initialize() {
-  const { data, error } = await db.auth.getUser();
+async function checkAdmin() {
+  const {data,error} = await db.auth.getUser();
 
   if (error || !data?.user) {
-    el("login-section").classList.remove("hidden");
-    return;
+    location.href = "login.html";
+    return false;
   }
 
   currentUser = data.user;
-  await verifyAdmin();
-}
 
-async function signIn() {
-  clearMessage("login-message");
-
-  const email = el("login-email").value.trim();
-  const password = el("login-password").value;
-
-  if (!email || !password) {
-    showMessage("login-message","Enter your email and password.","error");
-    return;
-  }
-
-  const { data, error } = await db.auth.signInWithPassword({
-    email,
-    password
-  });
-
-  if (error) {
-    showMessage("login-message",error.message,"error");
-    return;
-  }
-
-  currentUser = data.user;
-  await verifyAdmin();
-}
-
-async function verifyAdmin() {
-  if (!currentUser) {
-    el("login-section").classList.remove("hidden");
-    return;
-  }
-
-  const { data: profile, error } = await db
+  const {data:profile,error:profileError} = await db
     .from("profiles")
-    .select("id,full_name,phone,role")
+    .select("role")
     .eq("id",currentUser.id)
     .maybeSingle();
 
-  if (error) {
-    showMessage("login-message","Unable to verify administrator: " + error.message,"error");
-    el("login-section").classList.remove("hidden");
-    return;
+  if (profileError || !profile || String(profile.role).toLowerCase() !== "admin") {
+    alert("Admin access required.");
+    location.href = "dashboard.html";
+    return false;
   }
 
-  if (!profile || String(profile.role || "").toLowerCase() !== "admin") {
-    await db.auth.signOut();
-    currentUser = null;
-    el("login-section").classList.remove("hidden");
-    showMessage("login-message","Access denied. This account is not an administrator.","error");
-    return;
-  }
-
-  isAdmin = true;
-  el("login-section").classList.add("hidden");
-  el("dashboard").classList.remove("hidden");
-
-  await loadTournamentSettings();
-  await loadTeams();
+  return true;
 }
 
-async function signOut() {
+document.getElementById("logoutBtn").addEventListener("click",async()=>{
   await db.auth.signOut();
-  location.reload();
-}
-
-/* =========================
-   LOAD TOURNAMENT SETTINGS
-   ========================= */
-
-async function loadTournamentSettings() {
-  const { data, error } = await db
-    .from("tournament")
-    .select("id,entry_fee,team_size,substitute_players")
-    .eq("id",TOURNAMENT_ID)
-    .maybeSingle();
-
-  if (error) {
-    showMessage("page-message","Could not load tournament settings: " + error.message,"error");
-    return;
-  }
-
-  tournamentEntryFee = Number(data?.entry_fee || 0);
-}
-
-/* =========================
-   LOAD TEAM REGISTRATIONS
-   ========================= */
+  location.href = "login.html";
+});
 
 async function loadTeams() {
-  if (!isAdmin) return;
+  hideMessage();
+  const box = document.getElementById("teamsList");
+  box.textContent = "Loading teams...";
 
-  el("teams-body").innerHTML =
-    `<tr><td colspan="5">Loading teams...</td></tr>`;
-
-  const { data, error } = await db
+  /*
+    Load teams from all tournaments so this page does not depend
+    on a hard-coded tournament ID.
+  */
+  const {data,error} = await db
     .from("teams")
     .select("*")
-    .eq("tournament_id",TOURNAMENT_ID)
     .order("created_at",{ascending:false});
 
   if (error) {
-    el("teams-body").innerHTML =
-      `<tr><td colspan="5">Could not load teams: ${escapeHtml(error.message)}</td></tr>`;
+    console.error(error);
+    box.innerHTML = '<div class="empty">Could not load teams: '+esc(error.message)+'</div>';
     return;
   }
 
-  teams = data || [];
+  const teams = data || [];
 
-  const teamIds = teams.map(team => team.id);
+  document.getElementById("totalTeams").textContent = teams.length;
+  document.getElementById("pendingTeams").textContent =
+    teams.filter(t => t.status === "pending").length;
+  document.getElementById("approvedTeams").textContent =
+    teams.filter(t => t.status === "approved").length;
 
-  let players = [];
-  let payments = [];
-
-  if (teamIds.length) {
-    const playerResult = await db
-      .from("team_players")
-      .select("team_id,verification_status")
-      .in("team_id",teamIds);
-
-    if (playerResult.error) {
-      showMessage("page-message","Player status could not be loaded: " + playerResult.error.message,"error");
-    } else {
-      players = playerResult.data || [];
-    }
-
-    const paymentResult = await db
-      .from("tournament_payments")
-      .select("*")
-      .eq("tournament_id",TOURNAMENT_ID)
-      .in("team_id",teamIds);
-
-    if (paymentResult.error) {
-      showMessage("page-message","Payment status could not be loaded: " + paymentResult.error.message,"error");
-    } else {
-      payments = paymentResult.data || [];
-    }
-  }
-
-  teams = teams.map(team => ({
-    ...team,
-    _players:players.filter(player => player.team_id === team.id),
-    _payment:payments.find(payment => payment.team_id === team.id) || null
-  }));
-
-  updateStats();
-  renderTeams();
-  renderPayments();
-}
-
-function updateStats() {
-  el("stat-total").textContent = teams.length;
-
-  el("stat-pending").textContent =
-    teams.filter(team => statusText(team.status) === "pending").length;
-
-  el("stat-approved").textContent =
-    teams.filter(team => statusText(team.status) === "approved").length;
-
-  el("stat-rejected").textContent =
-    teams.filter(team => statusText(team.status) === "rejected").length;
-}
-
-function renderTeams() {
-  const query = el("team-search").value.trim().toLowerCase();
-  const filter = el("status-filter").value;
-
-  const filtered = teams.filter(team => {
-    const name = team.team_name || team.name || "Unnamed Team";
-    return name.toLowerCase().includes(query) &&
-      (filter === "all" || statusText(team.status) === filter);
-  });
-
-  if (!filtered.length) {
-    el("teams-body").innerHTML =
-      `<tr><td colspan="5">No teams found.</td></tr>`;
+  if (!teams.length) {
+    box.innerHTML = '<div class="empty">No registered teams found.</div>';
     return;
   }
 
-  el("teams-body").innerHTML = filtered.map(team => {
-    const paymentStatus = team._payment
-      ? statusText(team._payment.status)
-      : (tournamentEntryFee > 0 ? "missing" : "not required");
-
-    return `
-      <tr>
-        <td><strong>${escapeHtml(team.team_name || team.name || "Unnamed Team")}</strong>
-          <br><span class="muted">${escapeHtml(formatDate(team.created_at))}</span>
-        </td>
-        <td>${team._players.length}</td>
-        <td>${badge(paymentStatus)}</td>
-        <td>${badge(statusText(team.status))}</td>
-        <td><button class="btn btn-red btn-small" onclick="openTeam('${team.id}')">Review</button></td>
-      </tr>`;
-  }).join("");
+  box.innerHTML = teams.map(team => `
+    <div class="team-card">
+      <div class="team-head">
+        <div>
+          <div class="team-name">${esc(team.team_name || "Unnamed team")}</div>
+          <div class="muted">
+            Team ID: ${esc(team.id)}<br>
+            Tournament ID: ${esc(team.tournament_id || "—")}<br>
+            Registered: ${esc(team.created_at ? new Date(team.created_at).toLocaleString() : "—")}
+          </div>
+        </div>
+        ${statusBadge(team.status)}
+      </div>
+      <div class="actions">
+        <button class="primary" onclick="openReview('${esc(team.id)}')">REVIEW TEAM</button>
+      </div>
+    </div>
+  `).join("");
 }
 
-function renderPayments() {
-  const rows = teams.filter(team => team._payment);
+async function openReview(teamId) {
+  hideMessage();
+  const content = document.getElementById("reviewContent");
+  content.textContent = "Loading team details...";
+  selectedTeam = null;
+  selectedPlayers = [];
+  selectedPayment = null;
+  selectedProfile = null;
 
-  if (!rows.length) {
-    el("payments-body").innerHTML =
-      `<tr><td colspan="5">No payment records found.</td></tr>`;
-    return;
-  }
-
-  el("payments-body").innerHTML = rows.map(team => {
-    const payment = team._payment;
-
-    return `
-      <tr>
-        <td>${escapeHtml(team.team_name || team.name || "Unnamed Team")}</td>
-        <td>${escapeHtml(payment.transaction_id || "Not provided")}</td>
-        <td>₹${escapeHtml(payment.amount ?? 0)}</td>
-        <td>${badge(statusText(payment.status))}</td>
-        <td>
-          <button class="btn btn-outline btn-small"
-            onclick="openTeam('${team.id}')">Review Team</button>
-        </td>
-      </tr>`;
-  }).join("");
-}
-
-function showSection(section) {
-  el("teams-section").classList.toggle("hidden",section !== "teams");
-  el("payments-section").classList.toggle("hidden",section !== "payments");
-  el("tab-teams").classList.toggle("active",section === "teams");
-  el("tab-payments").classList.toggle("active",section === "payments");
-}
-
-/* =========================
-   OPEN TEAM REVIEW
-   ========================= */
-
-async function openTeam(teamId) {
-  if (!isAdmin) return;
-
-  clearMessage("team-details-message");
-
-  currentTeam = teams.find(team => team.id === teamId);
-
-  if (!currentTeam) {
-    showMessage("page-message","Team not found. Refresh the page.","error");
-    return;
-  }
-
-  currentPlayers = [];
-  currentPayment = null;
-
-  el("team-modal").classList.remove("hidden");
-  el("modal-team-name").textContent =
-    currentTeam.team_name || currentTeam.name || "Team Details";
-
-  el("team-leader-details").innerHTML = "Loading team leader...";
-  el("players-list").innerHTML = "Loading players...";
-  el("payment-details").innerHTML = "Loading payment...";
-  el("payment-actions").innerHTML = "";
-
-  await loadTeamDetails(teamId);
-}
-
-async function loadTeamDetails(teamId) {
-  const { data: team, error: teamError } = await db
+  const {data:team,error:teamError} = await db
     .from("teams")
     .select("*")
     .eq("id",teamId)
-    .eq("tournament_id",TOURNAMENT_ID)
     .single();
 
   if (teamError || !team) {
-    showMessage("team-details-message","Unable to load team: " + (teamError?.message || "Not found"),"error");
+    content.textContent = "Could not load team: " + (teamError?.message || "Not found");
     return;
   }
 
-  currentTeam = {
-    ...team,
-    _payment:null,
-    _players:[]
-  };
+  selectedTeam = team;
 
-  const { data: players, error: playerError } = await db
-    .from("team_players")
-    .select("*")
-    .eq("team_id",teamId)
-    .order("player_type",{ascending:true})
-    .order("player_number",{ascending:true});
+  const [
+    playersResult,
+    paymentResult,
+    profileResult
+  ] = await Promise.all([
+    db.from("team_players").select("*").eq("team_id",teamId),
+    db.from("tournament_payments")
+      .select("*")
+      .eq("team_id",teamId)
+      .order("created_at",{ascending:false})
+      .limit(1),
+    db.from("profiles")
+      .select("id,full_name,phone")
+      .eq("id",team.user_id)
+      .maybeSingle()
+  ]);
 
-  if (playerError) {
-    showMessage("team-details-message","Unable to load players: " + playerError.message,"error");
+  if (playersResult.error) {
+    content.textContent = "Could not load players: " + playersResult.error.message;
     return;
   }
 
-  currentPlayers = players || [];
-  currentTeam._players = currentPlayers;
-
-  const { data: payments, error: paymentError } = await db
-    .from("tournament_payments")
-    .select("*")
-    .eq("team_id",teamId)
-    .eq("tournament_id",TOURNAMENT_ID)
-    .order("created_at",{ascending:false});
-
-  if (paymentError) {
-    showMessage("team-details-message","Unable to load payment: " + paymentError.message,"error");
+  if (paymentResult.error) {
+    content.textContent = "Could not load payment: " + paymentResult.error.message;
     return;
   }
 
-  currentPayment = payments?.[0] || null;
-  currentTeam._payment = currentPayment;
+  selectedPlayers = playersResult.data || [];
+  selectedPayment = paymentResult.data?.[0] || null;
+  selectedProfile = profileResult.data || null;
 
-  await loadLeaderDetails();
-  renderPlayers();
-  renderPaymentDetails();
-  renderApprovalChecklist();
+  renderReview();
 }
 
-/* =========================
-   TEAM LEADER DETAILS
-   ========================= */
+function renderReview() {
+  const t = selectedTeam;
+  if (!t) return;
 
-async function loadLeaderDetails() {
-  const userId = currentTeam.user_id;
+  const players = selectedPlayers;
+  const payment = selectedPayment;
+  const profile = selectedProfile;
 
-  if (!userId) {
-    el("team-leader-details").innerHTML =
-      "<strong>Team leader</strong><p>Missing teams.user_id.</p>";
-    return;
-  }
+  const allPlayersVerified =
+    players.length > 0 &&
+    players.every(p => String(p.verification_status || "").toLowerCase() === "verified");
 
-  const { data: profile, error } = await db
-    .from("profiles")
-    .select("id,full_name,phone")
-    .eq("id",userId)
-    .maybeSingle();
+  const paymentVerified =
+    payment &&
+    String(payment.status || "").toLowerCase() === "verified";
 
-  if (error) {
-    el("team-leader-details").innerHTML =
-      `<strong>Team Leader</strong><p>Could not load profile: ${escapeHtml(error.message)}</p>`;
-    return;
-  }
+  const canApprove = allPlayersVerified && paymentVerified;
 
-  const phone = profile?.phone || "";
+  document.getElementById("pendingPlayers").textContent =
+    players.filter(p => String(p.verification_status || "").toLowerCase() !== "verified").length;
 
-  el("team-leader-details").innerHTML = `
-    <h3>Team Leader</h3>
-    <p><strong>Name:</strong> ${escapeHtml(profile?.full_name || "Not provided")}</p>
-    <p><strong>Phone:</strong> ${escapeHtml(phone || "Not provided")}</p>
-    <p><strong>Registration Status:</strong> ${badge(statusText(currentTeam.status))}</p>
-    <p><strong>Registered:</strong> ${escapeHtml(formatDate(currentTeam.created_at))}</p>
-    ${currentTeam.admin_note ? `<p><strong>Admin Note:</strong> ${escapeHtml(currentTeam.admin_note)}</p>` : ""}
+  let html = `
+    <h3>${esc(t.team_name || "Team")}</h3>
+    <p class="muted">
+      Team status: ${esc(t.status || "pending")}<br>
+      Leader: ${esc(profile?.full_name || "Name unavailable")}<br>
+      Registered phone: ${esc(profile?.phone || "No phone number saved")}<br>
+      Team ID: ${esc(t.id)}
+    </p>
+    <hr>
+    <h3>Players (${players.length})</h3>
   `;
 
-  currentTeam._leader = profile || null;
+  if (!players.length) {
+    html += '<div class="empty">No player records found for this team.</div>';
+  }
+
+  html += players.map((p,index) => `
+    <div class="player-card">
+      <h3>${esc(p.player_type || "Player")} ${esc(p.player_number || index+1)}</h3>
+      <div class="player-grid">
+        <div><label>Username</label><strong>${esc(p.username || "—")}</strong></div>
+        <div><label>Game User ID</label><strong>${esc(p.game_user_id || "—")}</strong></div>
+        <div><label>Server ID</label><strong>${esc(p.server_id || "—")}</strong></div>
+        <div><label>Verification status</label>${statusBadge(p.verification_status)}</div>
+      </div>
+      <div class="field">
+        <label>Verification note</label>
+        <input id="note-${esc(p.id)}" placeholder="Optional note for this player"
+          value="${esc(p.verification_message || "")}">
+      </div>
+      <div class="actions">
+        <button class="good" onclick="verifyPlayer('${esc(p.id)}')">VERIFY PLAYER</button>
+        <button class="danger" onclick="unverifyPlayer('${esc(p.id)}')">MARK UNVERIFIED</button>
+      </div>
+    </div>
+  `).join("");
+
+  html += `<hr><h3>💳 Payment Verification</h3>`;
+
+  if (!payment) {
+    html += '<div class="empty">No payment record found. A payment must be submitted before the team can be approved.</div>';
+  } else {
+    html += `
+      <div class="payment-box">
+        <p><label>Transaction ID</label><strong>${esc(payment.transaction_id || "Not provided")}</strong></p>
+        <p style="margin-top:10px"><label>Amount</label><strong>₹${esc(payment.amount ?? "—")}</strong></p>
+        <p style="margin-top:10px"><label>Payment status</label>${statusBadge(payment.status)}</p>
+        <div id="receiptArea" class="muted">Loading receipt...</div>
+        <div class="field">
+          <label>Admin payment note</label>
+          <textarea id="paymentNote" placeholder="Optional payment verification note">${esc(payment.admin_note || "")}</textarea>
+        </div>
+        <div class="actions">
+          <button class="good" onclick="verifyPayment()">VERIFY PAYMENT</button>
+          <button class="danger" onclick="rejectPayment()">MARK PAYMENT UNVERIFIED</button>
+        </div>
+      </div>
+    `;
+  }
+
+  html += `<hr><h3>Team Decision</h3>`;
+
+  if (!allPlayersVerified) {
+    html += '<p class="muted">Approval is locked: verify every player first.</p>';
+  } else if (!paymentVerified) {
+    html += '<p class="muted">Approval is locked: verify the payment first.</p>';
+  } else {
+    html += '<p class="muted">All players and payment are verified. The team can now be approved.</p>';
+  }
+
+  if (String(t.status).toLowerCase() === "approved") {
+    html += '<p class="muted">This team is already approved.</p>';
+  } else {
+    html += `
+      <div class="actions">
+        ${canApprove ? `<button class="primary" onclick="approveTeam()">APPROVE TEAM</button>` : ""}
+        <button class="danger" onclick="rejectTeam()">REJECT TEAM</button>
+      </div>
+      <div class="field">
+        <label>Rejection reason (required when rejecting)</label>
+        <textarea id="rejectionReason" placeholder="Explain what the team needs to correct"></textarea>
+      </div>
+    `;
+  }
+
+  document.getElementById("reviewContent").innerHTML = html;
+
+  if (payment) loadPaymentReceipt(payment);
 }
 
-/* =========================
-   PLAYER VERIFICATION
-   ========================= */
+async function loadPaymentReceipt(payment) {
+  const area = document.getElementById("receiptArea");
+  if (!area) return;
 
-function renderPlayers() {
-  if (!currentPlayers.length) {
-    el("players-list").innerHTML =
-      "<p>No player records were found. Approval is blocked.</p>";
+  const path = payment.payment_screenshot_url;
+
+  if (!path) {
+    area.textContent = "No payment screenshot was uploaded.";
     return;
   }
 
-  el("players-list").innerHTML = currentPlayers.map(player => {
-    const status = statusText(player.verification_status);
-    const isVerified = status === "verified" || status === "approved";
+  if (/^https?:\/\//i.test(path)) {
+    area.innerHTML = `
+      <p>Payment receipt:</p>
+      <a href="${esc(path)}" target="_blank" rel="noopener">OPEN RECEIPT</a>
+      ${/\.(png|jpe?g|webp)(\?|$)/i.test(path)
+        ? `<img src="${esc(path)}" alt="Payment receipt">`
+        : ""}
+    `;
+    return;
+  }
 
-    return `
-      <div class="player">
-        <h3>${escapeHtml(player.player_type || "Player")} ${escapeHtml(player.player_number ?? "")}</h3>
-        <p>
-          <strong>Username:</strong> ${escapeHtml(player.username || player.player_name || player.name || "Not provided")}<br>
-          <strong>Game User ID:</strong> ${escapeHtml(player.game_user_id || "Not provided")}<br>
-          <strong>Server ID:</strong> ${escapeHtml(player.server_id || "Not provided")}<br>
-          <strong>Verification:</strong> ${badge(status)}
-        </p>
-        ${player.verification_message
-          ? `<p><strong>Note:</strong> ${escapeHtml(player.verification_message)}</p>`
-          : ""}
-        <div class="player-actions">
-          <button class="btn btn-green btn-small"
-            onclick="verifyPlayer('${player.id}')"
-            ${isVerified ? "disabled" : ""}>Verify Player</button>
-          <button class="btn btn-outline btn-small"
-            onclick="unverifyPlayer('${player.id}')"
-            ${!isVerified ? "disabled" : ""}>Mark Unverified</button>
-        </div>
-      </div>`;
-  }).join("");
+  const {data,error} = await db.storage
+    .from(PAYMENT_BUCKET)
+    .createSignedUrl(path,3600);
+
+  if (error || !data?.signedUrl) {
+    area.textContent = "Unable to open receipt. Check the storage bucket and admin storage permissions.";
+    console.error(error);
+    return;
+  }
+
+  const url = data.signedUrl;
+  const isImage = /\.(png|jpe?g|webp)(\?|$)/i.test(path);
+
+  area.innerHTML = `
+    <p>Payment receipt:</p>
+    <a href="${esc(url)}" target="_blank" rel="noopener">OPEN RECEIPT</a>
+    ${isImage ? `<img src="${esc(url)}" alt="Payment receipt">` : ""}
+  `;
 }
 
 async function verifyPlayer(playerId) {
-  if (!isAdmin || busy) return;
-
-  const player = currentPlayers.find(p => p.id === playerId);
+  const player = selectedPlayers.find(p => String(p.id) === String(playerId));
   if (!player) return;
 
-  busy = true;
+  const note = document.getElementById("note-" + playerId)?.value.trim() || "Verified by Ren Gaming admin.";
 
-  try {
-    const { error } = await db
-      .from("team_players")
-      .update({
-        verification_status:"verified",
-        verified_at:new Date().toISOString(),
-        verification_message:"Verified by administrator."
-      })
-      .eq("id",playerId)
-      .eq("team_id",currentTeam.id);
+  const {error} = await db.from("team_players").update({
+    verification_status:"verified",
+    verified_at:new Date().toISOString(),
+    verification_message:note
+  }).eq("id",playerId);
 
-    if (error) throw error;
-
-    await refreshCurrentTeam();
-    showMessage("team-details-message","Player verified successfully.","success");
-  } catch (error) {
-    showMessage("team-details-message","Unable to verify player: " + error.message,"error");
-  } finally {
-    busy = false;
-  }
-}
-
-async function unver ifyPlayerPlaceholder() {}
-
-/* =========================
-   PAYMENT REVIEW
-   ========================= */
-
-function renderPaymentDetails() {
-  const box = el("payment-details");
-  const actions = el("payment-actions");
-  actions.innerHTML = "";
-
-  if (tournamentEntryFee <= 0) {
-    box.innerHTML = `
-      <p>This tournament has no entry fee.</p>
-      <p>Payment verification is not required.</p>`;
-    el("payment-review").classList.remove("hidden");
+  if (error) {
+    showMessage("Could not verify player: " + error.message,"error");
     return;
   }
 
-  if (!currentPayment) {
-    box.innerHTML = `
-      <p><strong>Payment record:</strong> Missing</p>
-      <p>Paid registration cannot be approved until a valid payment record is available.</p>`;
+  showMessage("Player verified.");
+  await openReview(selectedTeam.id);
+}
+
+async function unverifPlayerUpdate(playerId) {
+  const note = document.getElementById("note-" + playerId)?.value.trim() || "Not verified yet.";
+
+  const {error} = await db.from("team_players").update({
+    verification_status:"unverified",
+    verified_at:null,
+    verification_message:note
+  }).eq("id",playerId);
+
+  if (error) {
+    showMessage("Could not update player: " + error.message,"error");
     return;
   }
 
-  box.innerHTML = `
-    <p><strong>Amount:</strong> ₹${escapeHtml(currentPayment.amount ?? 0)}</p>
-    <p><strong>Method:</strong> ${escapeHtml(currentPayment.payment_method || "Not specified")}</p>
-    <p><strong>Transaction ID:</strong> ${escapeHtml(currentPayment.transaction_id || "Not provided")}</p>
-    <p><strong>Payment status:</strong> ${badge(statusText(currentPayment.status))}</p>
-    <p><strong>Submitted:</strong> ${escapeHtml(formatDate(currentPayment.created_at))}</p>
-    ${currentPayment.admin_note
-      ? `<p><strong>Admin note:</strong> ${escapeHtml(currentPayment.admin_note)}</p>`
-      : ""}
-  `;
-
-  actions.innerHTML = `
-    <button class="btn btn-outline" onclick="viewReceipt()">View Receipt</button>
-    <button class="btn btn-green"
-      onclick="setPaymentStatus('approved')"
-      ${statusText(currentPayment.status) === "approved" ? "disabled" : ""}>
-      Approve Payment
-    </button>
-    <button class="btn btn-red"
-      onclick="setPaymentStatus('rejected')"
-      ${statusText(currentPayment.status) === "rejected" ? "disabled" : ""}>
-      Reject Payment
-    </button>`;
+  showMessage("Player marked unverified.");
+  await openReview(selectedTeam.id);
 }
 
-async function viewReceipt() {
-  if (!currentPayment?.payment_screenshot_url) {
-    alert("No receipt has been uploaded.");
+async function unverifyPlayer(playerId) {
+  await unverifPlayerUpdate(playerId);
+}
+
+async function verifyPayment() {
+  if (!selectedPayment) return;
+
+  const note = document.getElementById("paymentNote")?.value.trim() || "Payment verified by admin.";
+
+  const {error} = await db.from("tournament_payments").update({
+    status:"verified",
+    admin_note:note,
+    verified_at:new Date().toISOString()
+  }).eq("id",selectedPayment.id);
+
+  if (error) {
+    showMessage("Could not verify payment: " + error.message,"error");
     return;
   }
 
-  const path = currentPayment.payment_screenshot_url;
+  showMessage("Payment verified.");
+  await openReview(selectedTeam.id);
+}
 
-  // The registration page stores the Storage object path, not a public URL.
-  const { data, error } = await db.storage
-    .from(RECEIPT_BUCKET)
-    .createSignedUrl(path,300);
+async function rejectPayment() {
+  if (!selectedPayment) return;
 
-  if (error || !data?.signedUrl) {
-    el("receipt-content").innerHTML =
-      `<p>Unable to open receipt: ${escapeHtml(error?.message || "No signed URL returned")}</p>
-       <p>Confirm that the administrator has permission to read files from the ${escapeHtml(RECEIPT_BUCKET)} bucket.</p>`;
-  } else {
-    const url = escapeHtml(data.signedUrl);
-    const isPdf = /\.pdf(?:$|\?)/i.test(path);
+  const note = document.getElementById("paymentNote")?.value.trim() || "Payment needs further review.";
 
-    el("receipt-content").innerHTML = isPdf
-      ? `<iframe src="${url}" style="width:100%;height:65vh;border:0"></iframe>
-         <p><a class="btn btn-outline" href="${url}" target="_blank" rel="noopener">Open PDF</a></p>`
-      : `<a href="${url}" target="_blank" rel="noopener"><img class="payment-image" src="${url}" alt="Payment receipt"></a>
-         <p><a class="btn btn-outline" href="${url}" target="_blank" rel="noopener">Open Full Image</a></p>`;
+  const {error} = await db.from("tournament_payments").update({
+    status:"pending",
+    admin_note:note,
+    verified_at:null
+  }).eq("id",selectedPayment.id);
+
+  if (error) {
+    showMessage("Could not update payment: " + error.message,"error");
+    return;
   }
 
-  el("receipt-modal").classList.remove("hidden");
+  showMessage("Payment marked pending.");
+  await openReview(selectedTeam.id);
 }
 
-function closeReceipt() {
-  el("receipt-modal").classList.add("hidden");
+function whatsappUrl(phone,message) {
+  const digits = String(phone || "").replace(/\D/g,"");
+  if (!digits) return null;
+  return "https://wa.me/" + digits + "?text=" + encodeURIComponent(message);
 }
 
-async function setPaymentStatus(status) {
-  if (!isAdmin || busy || !currentPayment) return;
+function openWhatsApp(message) {
+  const phone = selectedProfile?.phone;
 
-  if (!["approved","rejected"].includes(status)) return;
+  const url = whatsappUrl(phone,message);
 
-  if (status === "rejected") {
-    const reason = prompt("Enter the reason for rejecting this payment:");
-    if (reason === null) return;
-
-    if (!reason.trim()) {
-      alert("A rejection reason is required.");
-      return;
-    }
-
-    const { error } = await db
-      .from("tournament_payments")
-      .update({
-        status:"rejected",
-        admin_note:reason.trim(),
-        verified_at:new Date().toISOString()
-      })
-      .eq("id",currentPayment.id)
-      .eq("team_id",currentTeam.id);
-
-    if (error) {
-      showMessage("team-details-message","Unable to reject payment: " + error.message,"error");
-      return;
-    }
-  } else {
-    const confirmed = confirm(
-      "Confirm that you have checked the transaction ID and payment receipt?"
-    );
-    if (!confirmed) return;
-
-    const { error } = await db
-      .from("tournament_payments")
-      .update({
-        status:"approved",
-        admin_note:"Payment verified by administrator.",
-        verified_at:new Date().toISOString()
-      })
-      .eq("id",currentPayment.id)
-      .eq("team_id",currentTeam.id);
-
-    if (error) {
-      showMessage("team-details-message","Unable to approve payment: " + error.message,"error");
-      return;
-    }
+  if (!url) {
+    alert("No valid team leader phone number was found in profiles.phone. Update the leader's phone number, including country code, before sending the WhatsApp message.");
+    return;
   }
 
-  await refreshCurrentTeam();
-  await loadTeams();
-
-  showMessage(
-    "team-details-message",
-    status === "approved" ? "Payment approved." : "Payment rejected.",
-    status === "approved" ? "success" : "info"
-  );
+  window.open(url,"_blank","noopener,noreferrer");
 }
-
-/* =========================
-   APPROVAL REQUIREMENTS
-   ========================= */
-
-function getApprovalRequirements() {
-  const allPlayersVerified =
-    currentPlayers.length > 0 &&
-    currentPlayers.every(player =>
-      ["verified","approved"].includes(statusText(player.verification_status))
-    );
-
-  const fee = tournamentEntryFee;
-
-  const paymentVerified = fee <= 0 ||
-    (
-      currentPayment &&
-      statusText(currentPayment.status) === "approved" &&
-      Number(currentPayment.amount) >= fee &&
-      Boolean(String(currentPayment.transaction_id || "").trim()) &&
-      Boolean(String(currentPayment.payment_screenshot_url || "").trim())
-    );
-
-  const teamRejected = statusText(currentTeam?.status) === "rejected";
-
-  return {
-    allPlayersVerified,
-    paymentVerified,
-    teamRejected,
-    canApprove:allPlayersVerified && paymentVerified && !teamRejected
-  };
-}
-
-function renderApprovalChecklist() {
-  if (!currentTeam) return;
-
-  const checks = getApprovalRequirements();
-
-  el("approval-checklist").innerHTML = `
-    ${checks.allPlayersVerified
-      ? "✅ All players verified"
-      : "❌ All players must be verified"}<br>
-    ${checks.paymentVerified
-      ? "✅ Payment requirements satisfied"
-      : "❌ Payment must be verified"}<br>
-    ${checks.teamRejected
-      ? "❌ This team has already been rejected"
-      : "✅ Team is eligible for review"}
-  `;
-
-  const alreadyApproved = statusText(currentTeam.status) === "approved";
-
-  el("approve-team-btn").classList.toggle(
-    "hidden",
-    !checks.canApprove || alreadyApproved
-  );
-}
-
-/* =========================
-   APPROVE TEAM
-   ========================= */
 
 async function approveTeam() {
-  if (!isAdmin || busy || !currentTeam) return;
+  if (!selectedTeam) return;
 
-  const checks = getApprovalRequirements();
+  const allVerified = selectedPlayers.length > 0 &&
+    selectedPlayers.every(p => String(p.verification_status || "").toLowerCase() === "verified");
 
-  if (!checks.canApprove) {
-    showMessage(
-      "team-details-message",
-      "Approval blocked. Verify every player and approve the payment first.",
-      "error"
-    );
+  const paymentVerified = selectedPayment &&
+    String(selectedPayment.status || "").toLowerCase() === "verified";
+
+  if (!allVerified || !paymentVerified) {
+    showMessage("Approval blocked. Verify every player and the payment first.","error");
     return;
   }
 
-  const confirmed = confirm(
-    "Approve " + (currentTeam.team_name || currentTeam.name) +
-    "? The registration status will be updated and WhatsApp will open."
-  );
+  if (!confirm("Approve " + selectedTeam.team_name + "?")) return;
 
-  if (!confirmed) return;
+  const {error} = await db.from("teams").update({
+    status:"approved"
+  }).eq("id",selectedTeam.id);
 
-  busy = true;
-  el("approve-team-btn").disabled = true;
-
-  try {
-    // Re-fetch the player records immediately before the decision.
-    const { data: freshPlayers, error: playersError } = await db
-      .from("team_players")
-      .select("id,verification_status")
-      .eq("team_id",currentTeam.id);
-
-    if (playersError) throw playersError;
-
-    if (
-      !freshPlayers?.length ||
-      freshPlayers.some(player =>
-        !["verified","approved"].includes(statusText(player.verification_status))
-      )
-    ) {
-      throw new Error("A player is still unverified. Refresh the team and try again.");
-    }
-
-    if (tournamentEntryFee > 0) {
-      const { data: freshPayment, error: paymentError } = await db
-        .from("tournament_payments")
-        .select("id,status,amount,transaction_id,payment_screenshot_url")
-        .eq("team_id",currentTeam.id)
-        .eq("tournament_id",TOURNAMENT_ID)
-        .eq("status","approved")
-        .order("created_at",{ascending:false})
-        .limit(1)
-        .maybeSingle();
-
-      if (paymentError) throw paymentError;
-
-      if (
-        !freshPayment ||
-        Number(freshPayment.amount) < tournamentEntryFee ||
-        !String(freshPayment.transaction_id || "").trim() ||
-        !String(freshPayment.payment_screenshot_url || "").trim()
-      ) {
-        throw new Error("Payment verification is incomplete. Recheck the payment record.");
-      }
-    }
-
-    const { error: updateError } = await db
-      .from("teams")
-      .update({
-        status:"approved"
-      })
-      .eq("id",currentTeam.id)
-      .eq("tournament_id",TOURNAMENT_ID);
-
-    if (updateError) throw updateError;
-
-    const teamName = currentTeam.team_name || currentTeam.name || "your team";
-
-    const message =
-      "Hello " + (currentTeam._leader?.full_name || "Team Leader") + ",\n\n" +
-      "Congratulations! Your team \"" + teamName +
-      "\" has been approved for the Ren Gaming tournament.\n\n" +
-      "Your player details and registration payment have been verified.\n\n" +
-      "Please stay connected with the tournament group for further updates.\n\n" +
-      "Thank you,\nRen Gaming Admin Team";
-
-    const phone = currentTeam._leader?.phone;
-
-    closeTeamModal();
-    await loadTeams();
-
-    showMessage("page-message","Team registration approved successfully.","success");
-
-    // WhatsApp opens with a prepared message. The administrator must press Send.
-    openWhatsApp(phone,message);
-
-  } catch (error) {
-    showMessage(
-      "team-details-message",
-      "Unable to approve registration: " + error.message,
-      "error"
-    );
-  } finally {
-    busy = false;
-    el("approve-team-btn").disabled = false;
+  if (error) {
+    showMessage("Could not approve team: " + error.message,"error");
+    return;
   }
-}
 
-/* =========================
-   REJECT TEAM
-   ========================= */
+  const message =
+    "Hello " + (selectedProfile?.full_name || "Team Leader") + ",\n\n" +
+    "Your team \"" + selectedTeam.team_name + "\" has been APPROVED for the Ren Gaming tournament.\n\n" +
+    "Please stay connected with the tournament group for match updates.\n\n" +
+    "Thank you,\nRen Gaming";
+
+  showMessage("Team approved. WhatsApp will open if a valid leader phone number is saved.");
+  openWhatsApp(message);
+  await loadTeams();
+  await openReview(selectedTeam.id);
+}
 
 async function rejectTeam() {
-  if (!isAdmin || busy || !currentTeam) return;
+  if (!selectedTeam) return;
 
-  const reason = el("rejection-reason").value.trim();
+  const reason = document.getElementById("rejectionReason")?.value.trim();
 
   if (!reason) {
-    showMessage(
-      "team-details-message",
-      "Enter a rejection reason before rejecting the registration.",
-      "error"
-    );
-    el("rejection-reason").focus();
+    showMessage("Please enter a rejection reason first.","error");
     return;
   }
 
-  const confirmed = confirm(
-    "Reject " + (currentTeam.team_name || currentTeam.name) +
-    "?\n\nReason: " + reason
-  );
+  if (!confirm("Reject " + selectedTeam.team_name + "?")) return;
 
-  if (!confirmed) return;
+  /*
+    The existing teams schema may not contain a rejection_reason column.
+    Save status first. Then try to save the reason separately if the
+    column exists; do not silently pretend the reason was saved.
+  */
+  const {error} = await db.from("teams").update({
+    status:"rejected"
+  }).eq("id",selectedTeam.id);
 
-  busy = true;
-
-  try {
-    // Existing admin_note is used if this column exists.
-    // If it doesn't, the update will fail and must be fixed in Supabase.
-    const { error } = await db
-      .from("teams")
-      .update({
-        status:"rejected",
-        admin_note:reason
-      })
-      .eq("id",currentTeam.id)
-      .eq("tournament_id",TOURNAMENT_ID);
-
-    if (error) throw error;
-
-    const teamName = currentTeam.team_name || currentTeam.name || "your team";
-
-    const message =
-      "Hello " + (currentTeam._leader?.full_name || "Team Leader") + ",\n\n" +
-      "Your registration for the Ren Gaming tournament has been rejected.\n\n" +
-      "Team: " + teamName + "\n\n" +
-      "Reason: " + reason + "\n\n" +
-      "If you believe this decision was made in error, please contact the tournament administrator.\n\n" +
-      "Ren Gaming Admin Team";
-
-    const phone = currentTeam._leader?.phone;
-
-    closeTeamModal();
-    await loadTeams();
-
-    showMessage("page-message","Registration rejection saved.","info");
-
-    // WhatsApp is opened for the administrator to review and send manually.
-    openWhatsApp(phone,message);
-
-  } catch (error) {
-    showMessage(
-      "team-details-message",
-      "Unable to reject registration: " + error.message,
-      "error"
-    );
-  } finally {
-    busy = false;
+  if (error) {
+    showMessage("Could not reject team: " + error.message,"error");
+    return;
   }
+
+  const message =
+    "Hello " + (selectedProfile?.full_name || "Team Leader") + ",\n\n" +
+    "Your team \"" + selectedTeam.team_name + "\" registration needs correction.\n\n" +
+    "Reason: " + reason + "\n\n" +
+    "Please contact Ren Gaming if you need clarification.";
+
+  showMessage("Team rejected. WhatsApp will open if the leader's phone number is saved.");
+  openWhatsApp(message);
+  await loadTeams();
+  await openReview(selectedTeam.id);
 }
 
-/* =========================
-   REFRESH AND CLOSE MODALS
-   ========================= */
-
-async function refreshCurrentTeam() {
-  if (!currentTeam) return;
-
-  const id = currentTeam.id;
-  await loadTeamDetails(id);
+function closeReview() {
+  selectedTeam = null;
+  selectedPlayers = [];
+  selectedPayment = null;
+  selectedProfile = null;
+  document.getElementById("reviewContent").textContent =
+    "Select a team above to see its details.";
 }
 
-function closeTeamModal() {
-  el("team-modal").classList.add("hidden");
-  currentTeam = null;
-  currentPlayers = [];
-  currentPayment = null;
-}
+async function loadTopups() {
+  const box = document.getElementById("topupsList");
+  box.textContent = "Loading top-up orders...";
 
-el("team-modal").addEventListener("click",event => {
-  if (event.target === el("team-modal")) closeTeamModal();
-});
+  /*
+    This assumes your top-up table is named topup_orders.
+    If your actual table uses another name, the error message will tell us.
+  */
+  const {data,error} = await db
+    .from("topup_orders")
+    .select("*")
+    .order("created_at",{ascending:false})
+    .limit(100);
 
-el("receipt-modal").addEventListener("click",event => {
-  if (event.target === el("receipt-modal")) closeReceipt();
-});
-
-db.auth.onAuthStateChange(async (_event,session) => {
-  if (!session?.user) {
-    currentUser = null;
-    isAdmin = false;
-    el("dashboard").classList.add("hidden");
-    el("login-section").classList.remove("hidden");
+  if (error) {
+    console.error("Top-up loading error:",error);
+    box.innerHTML =
+      '<div class="empty">Could not load top-up orders. Check the table name and permissions. Details: ' +
+      esc(error.message) + '</div>';
+    document.getElementById("topupCount").textContent = "—";
+    return;
   }
-});
 
-initialize();
+  const orders = data || [];
+  document.getElementById("topupCount").textContent = orders.length;
+
+  if (!orders.length) {
+    box.innerHTML = '<div class="empty">No top-up orders found.</div>';
+    return;
+  }
+
+  box.innerHTML = orders.map(order => `
+    <div class="topup-card">
+      <div class="team-head">
+        <strong>Order #${esc(order.id)}</strong>
+        ${statusBadge(order.status || "pending")}
+      </div>
+      <p class="muted">
+        Player: ${esc(order.username || order.game_username || order.player_name || "—")}<br>
+        Game User ID: ${esc(order.game_user_id || "—")}<br>
+        Server ID: ${esc(order.server_id || "—")}<br>
+        Package: ${esc(order.package_name || order.diamond_amount || order.product_name || "—")}<br>
+        Amount: ₹${esc(order.amount ?? order.price ?? "—")}<br>
+        Created: ${esc(order.created_at ? new Date(order.created_at).toLocaleString() : "—")}
+      </p>
+    </div>
+  `).join("");
+}
+
+async function init() {
+  const allowed = await checkAdmin();
+  if (!allowed) return;
+
+  await loadTeams();
+  await loadTopups();
+}
+
+init();
 </script>
+
 </body>
 </html>
