@@ -4,13 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#080808">
-
   <title>Tournament Registration | Ren Gaming</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
@@ -42,7 +40,7 @@
       line-height: 1.6;
     }
 
-    button, input, textarea {
+    button, input {
       font: inherit;
     }
 
@@ -51,7 +49,7 @@
     }
 
     .navbar {
-      background: rgba(8, 8, 8, 0.96);
+      background: rgba(8, 8, 8, .96);
       border-bottom: 1px solid var(--border);
       padding: 16px 5%;
       display: flex;
@@ -195,8 +193,9 @@
       color: var(--red);
     }
 
-    input,
-    textarea {
+    input[type="text"],
+    input[type="tel"],
+    input[type="file"] {
       display: block;
       width: 100%;
       color: white;
@@ -208,13 +207,11 @@
       transition: border-color .2s;
     }
 
-    input:focus,
-    textarea:focus {
+    input:focus {
       border-color: var(--red);
     }
 
-    input::placeholder,
-    textarea::placeholder {
+    input::placeholder {
       color: #696969;
     }
 
@@ -470,14 +467,12 @@
 </head>
 
 <body>
-
   <header class="navbar">
     <a class="brand" href="index.html">REN <span>GAMING</span></a>
     <a class="nav-link" href="index.html">BACK TO HOME</a>
   </header>
 
   <main class="container">
-
     <div class="hero">
       <span class="badge">Official Registration</span>
 
@@ -498,13 +493,10 @@
     <div id="statusMessage" class="status" role="alert"></div>
 
     <form id="registrationForm">
-
       <!-- TEAM LEADER -->
       <section class="card">
-
         <div class="section-heading">
           <div class="section-number">01</div>
-
           <div>
             <h2>Team Leader Details</h2>
             <p class="section-description">
@@ -517,7 +509,6 @@
           <label for="teamName">
             Team Name <span class="required">*</span>
           </label>
-
           <input
             type="text"
             id="teamName"
@@ -532,7 +523,6 @@
           <label for="leaderPhone">
             Team Leader WhatsApp Number <span class="required">*</span>
           </label>
-
           <input
             type="tel"
             id="leaderPhone"
@@ -544,21 +534,16 @@
             pattern="[6-9][0-9]{9}"
             required
           >
-
           <p class="help">
             Enter your 10-digit Indian mobile number linked to WhatsApp.
-            Include the correct number so Ren Gaming can contact you.
           </p>
         </div>
-
       </section>
 
       <!-- MAIN PLAYERS -->
       <section class="card">
-
         <div class="section-heading">
           <div class="section-number">02</div>
-
           <div>
             <h2>Main Players (5 Required)</h2>
             <p class="section-description">
@@ -566,36 +551,27 @@
             </p>
           </div>
         </div>
-
         <div id="mainPlayers" class="players-grid"></div>
-
       </section>
 
       <!-- SUBSTITUTE PLAYERS -->
       <section class="card">
-
         <div class="section-heading">
           <div class="section-number">03</div>
-
           <div>
             <h2>Substitute Players (2 Required)</h2>
             <p class="section-description">
-              Both substitutes must be registered. No empty substitute
-              slots are allowed.
+              Both substitutes must be registered.
             </p>
           </div>
         </div>
-
         <div id="substitutePlayers" class="players-grid"></div>
-
       </section>
 
       <!-- PAYMENT -->
       <section class="card" id="paymentSection">
-
         <div class="section-heading">
           <div class="section-number">04</div>
-
           <div>
             <h2>Registration Payment</h2>
             <p class="section-description">
@@ -605,7 +581,6 @@
         </div>
 
         <div id="paymentDetails">
-
           <div class="qr-wrapper">
             <img
               id="paymentQr"
@@ -613,24 +588,20 @@
               alt="Ren Gaming tournament payment QR code"
               onerror="this.style.display='none'; document.getElementById('qrFallback').style.display='block';"
             >
-
             <div id="qrFallback" class="qr-placeholder" style="display:none;">
-              Payment QR code could not be loaded.
-              Please contact Ren Gaming before paying.
+              Payment QR code could not be loaded. Please contact Ren Gaming.
             </div>
           </div>
 
-          <p class="payment-instructions">
+          <p class="payment-instructions" id="paymentInstructions">
             Scan the QR code above to make your payment. After paying,
-            enter the transaction reference and upload a screenshot
-            of your payment receipt.
+            enter the transaction reference and upload a screenshot.
           </p>
 
           <div class="field">
             <label for="transactionId">
               Transaction Reference / UTR <span class="required">*</span>
             </label>
-
             <input
               type="text"
               id="transactionId"
@@ -645,7 +616,6 @@
             <label for="paymentReceipt">
               Payment Receipt Screenshot <span class="required">*</span>
             </label>
-
             <div class="upload-box">
               <input
                 type="file"
@@ -654,25 +624,20 @@
                 accept="image/jpeg,image/png,image/webp"
                 required
               >
-
               <p class="help">
-                Upload a clear JPG, PNG or WEBP screenshot.
-                Maximum file size: 5 MB.
+                Upload a JPG, PNG or WEBP screenshot. Maximum size: 5 MB.
               </p>
             </div>
           </div>
 
           <label class="check-row">
             <input type="checkbox" id="paymentConfirmation" required>
-
             <span>
               I confirm that I have completed the payment and that the
               transaction reference and receipt screenshot are genuine.
-              I understand that my registration remains pending until
-              Ren Gaming verifies my payment and player details.
+              My registration remains pending until Ren Gaming verifies it.
             </span>
           </label>
-
         </div>
 
         <div id="freeRegistrationMessage" style="display:none;">
@@ -680,15 +645,12 @@
             This tournament has free registration. No payment is required.
           </p>
         </div>
-
       </section>
 
-      <!-- SUBMIT -->
+      <!-- CONFIRMATION -->
       <section class="card">
-
         <div class="section-heading">
           <div class="section-number">05</div>
-
           <div>
             <h2>Confirm Registration</h2>
             <p class="section-description">
@@ -699,11 +661,10 @@
 
         <label class="check-row" style="margin-bottom:20px;">
           <input type="checkbox" id="detailsConfirmation" required>
-
           <span>
             I confirm that all seven players' usernames, Game User IDs
-            and Server IDs are correct. I understand that incorrect
-            information may result in rejection.
+            and Server IDs are correct. Incorrect information may result
+            in rejection.
           </span>
         </label>
 
@@ -712,29 +673,20 @@
         </button>
 
         <p class="help" style="text-align:center;margin-top:12px;">
-          Do not close this page while your registration is being submitted.
+          Do not close this page while registration is being submitted.
         </p>
-
       </section>
-
     </form>
 
     <!-- SUCCESS -->
     <section class="card success-panel" id="successPanel">
-
       <div class="success-icon">✓</div>
-
       <h2>Registration Submitted!</h2>
-
-      <p id="successText">
-        Your registration has been submitted successfully.
-      </p>
-
+      <p id="successText"></p>
       <p>
-        Your registration is not yet approved. Ren Gaming must verify
-        your player details and payment before approval.
+        Your registration remains pending until Ren Gaming verifies
+        your player details and payment.
       </p>
-
       <a
         id="whatsappLink"
         class="whatsapp-btn"
@@ -744,9 +696,7 @@
       >
         CONFIRM ON WHATSAPP
       </a>
-
     </section>
-
   </main>
 
   <footer>
@@ -755,8 +705,10 @@
   </footer>
 
   <script>
+    "use strict";
+
     /* =====================================================
-       REN GAMING CONFIGURATION
+       CONFIGURATION
        ===================================================== */
 
     const SUPABASE_URL =
@@ -768,20 +720,12 @@
     const DEFAULT_TOURNAMENT_ID =
       "8b5997f8-194a-4998-9915-6528dfbbcb44";
 
-    const RECEIPT_BUCKET =
-      "tournament-payment-proofs";
-
-    const REN_GAMING_WHATSAPP =
-      "918638129770";
-
-    const DEFAULT_QR_URL =
-      "https://bixpvxkpnaqdifmvkhvp.supabase.co/storage/v1/object/public/tournament-qr/WhatsApp%20Image%202026-10-25%20at%2000.55.29.jpeg";
+    const RECEIPT_BUCKET = "tournament-payment-proofs";
+    const REN_GAMING_WHATSAPP = "918638129770";
 
     const MAIN_PLAYER_COUNT = 5;
     const SUBSTITUTE_COUNT = 2;
-    const TOTAL_PLAYER_COUNT =
-      MAIN_PLAYER_COUNT + SUBSTITUTE_COUNT;
-
+    const TOTAL_PLAYER_COUNT = 7;
     const MAX_RECEIPT_SIZE = 5 * 1024 * 1024;
 
     const supabaseClient = window.supabase.createClient(
@@ -793,15 +737,14 @@
     let isFreeTournament = false;
     let registrationInProgress = false;
 
-    /* =====================================================
-       GENERAL HELPERS
-       ===================================================== */
-
     const $ = (id) => document.getElementById(id);
+
+    /* =====================================================
+       STATUS MESSAGES
+       ===================================================== */
 
     function showStatus(message, type = "info") {
       const box = $("statusMessage");
-
       box.className = "status " + type;
       box.textContent = message;
       box.scrollIntoView({
@@ -811,22 +754,12 @@
     }
 
     function clearStatus() {
-      const box = $("statusMessage");
-
-      box.className = "status";
-      box.textContent = "";
+      $("statusMessage").className = "status";
+      $("statusMessage").textContent = "";
     }
 
     function cleanText(value) {
       return String(value || "").trim();
-    }
-
-    function escapeFileName(value) {
-      return String(value || "")
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, "-")
-        .replace(/^-+|-+$/g, "")
-        .slice(0, 45) || "team";
     }
 
     function validIndianMobile(phone) {
@@ -834,33 +767,23 @@
     }
 
     function validUUID(value) {
-      return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
-        value
-      );
+      return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value);
     }
 
     function formatAmount(value) {
-      const amount = Number(value);
-
-      if (!Number.isFinite(amount)) {
-        return "the displayed registration fee";
-      }
-
       return new Intl.NumberFormat("en-IN", {
         style: "currency",
         currency: "INR",
         maximumFractionDigits: 2
-      }).format(amount);
+      }).format(Number(value) || 0);
     }
 
     /* =====================================================
-       BUILD EXACTLY 7 PLAYER CARDS
-       No role fields are created or submitted.
+       CREATE THE SEVEN PLAYER FORMS
        ===================================================== */
 
     function createPlayerCard(playerType, number, label) {
       const card = document.createElement("div");
-
       card.className = "player-card";
 
       card.innerHTML = `
@@ -872,10 +795,7 @@
         </h3>
 
         <div class="field">
-          <label>
-            Username <span class="required">*</span>
-          </label>
-
+          <label>Username <span class="required">*</span></label>
           <input
             type="text"
             name="${playerType}_${number}_username"
@@ -887,10 +807,7 @@
         </div>
 
         <div class="field">
-          <label>
-            Game User ID <span class="required">*</span>
-          </label>
-
+          <label>Game User ID <span class="required">*</span></label>
           <input
             type="text"
             name="${playerType}_${number}_game_user_id"
@@ -902,10 +819,7 @@
         </div>
 
         <div class="field">
-          <label>
-            Server ID <span class="required">*</span>
-          </label>
-
+          <label>Server ID <span class="required">*</span></label>
           <input
             type="text"
             name="${playerType}_${number}_server_id"
@@ -924,6 +838,10 @@
       const mainContainer = $("mainPlayers");
       const substituteContainer = $("substitutePlayers");
 
+      if (!mainContainer || !substituteContainer) {
+        throw new Error("Player form containers were not found in the HTML.");
+      }
+
       mainContainer.replaceChildren();
       substituteContainer.replaceChildren();
 
@@ -938,6 +856,38 @@
           createPlayerCard("substitute", i, `Substitute ${i}`)
         );
       }
+
+      console.info("Created player forms:", TOTAL_PLAYER_COUNT);
+    }
+
+    function readPlayer(playerType, number) {
+      const prefix = `${playerType}_${number}`;
+
+      const username = cleanText(
+        document.querySelector(`[name="${prefix}_username"]`)?.value
+      );
+
+      const gameUserId = cleanText(
+        document.querySelector(`[name="${prefix}_game_user_id"]`)?.value
+      );
+
+      const serverId = cleanText(
+        document.querySelector(`[name="${prefix}_server_id"]`)?.value
+      );
+
+      if (!username || !gameUserId || !serverId) {
+        throw new Error(
+          `${playerType === "main" ? "Main player" : "Substitute"} ${number}: complete all three fields.`
+        );
+      }
+
+      return {
+        player_type: playerType,
+        player_number: number,
+        username,
+        game_user_id: gameUserId,
+        server_id: serverId
+      };
     }
 
     function collectPlayers() {
@@ -952,58 +902,18 @@
       }
 
       if (players.length !== TOTAL_PLAYER_COUNT) {
-        throw new Error(
-          "Your team must contain exactly seven players."
-        );
+        throw new Error("Exactly seven players are required.");
       }
 
       return players;
     }
 
-    function readPlayer(playerType, number) {
-      const prefix = `${playerType}_${number}`;
-
-      const username = cleanText(
-        document.querySelector(
-          `[name="${prefix}_username"]`
-        )?.value
-      );
-
-      const gameUserId = cleanText(
-        document.querySelector(
-          `[name="${prefix}_game_user_id"]`
-        )?.value
-      );
-
-      const serverId = cleanText(
-        document.querySelector(
-          `[name="${prefix}_server_id"]`
-        )?.value
-      );
-
-      if (!username || !gameUserId || !serverId) {
-        throw new Error(
-          `${playerType === "main" ? "Main player" : "Substitute"} ${number}: please complete the username, Game User ID and Server ID.`
-        );
-      }
-
-      return {
-        player_type: playerType,
-        player_number: number,
-        username,
-        game_user_id: gameUserId,
-        server_id: serverId
-      };
-    }
-
     /* =====================================================
-       LOAD TOURNAMENT DETAILS
+       LOAD TOURNAMENT
        ===================================================== */
 
     async function loadTournament() {
-      const params = new URLSearchParams(
-        window.location.search
-      );
+      const params = new URLSearchParams(window.location.search);
 
       const tournamentId =
         params.get("tournament") ||
@@ -1011,128 +921,88 @@
         DEFAULT_TOURNAMENT_ID;
 
       if (!validUUID(tournamentId)) {
-        showStatus(
-          "The tournament ID in the registration link is invalid.",
-          "error"
-        );
-
-        $("submitButton").disabled = true;
-        return;
+        throw new Error("The tournament ID in the URL is invalid.");
       }
 
-      try {
-        const { data, error } = await supabaseClient
-          .from("tournament")
-          .select("*")
-          .eq("id", tournamentId)
-          .maybeSingle();
+      const { data, error } = await supabaseClient
+        .from("tournament")
+        .select("*")
+        .eq("id", tournamentId)
+        .maybeSingle();
 
-        if (error) {
-          throw error;
-        }
+      if (error) throw error;
 
-        if (!data) {
-          throw new Error(
-            "Tournament not found. Please check your tournament ID."
-          );
-        }
-
-        currentTournament = data;
-
-        const fee = Number(data.entry_fee || 0);
-
-        isFreeTournament =
-          !Number.isFinite(fee) || fee <= 0;
-
-        if (isFreeTournament) {
-          $("paymentDetails").style.display = "none";
-          $("freeRegistrationMessage").style.display = "block";
-
-          $("transactionId").required = false;
-          $("paymentReceipt").required = false;
-          $("paymentConfirmation").required = false;
-        } else {
-          $("paymentDetails").style.display = "block";
-          $("freeRegistrationMessage").style.display = "none";
-
-          $("transactionId").required = true;
-          $("paymentReceipt").required = true;
-          $("paymentConfirmation").required = true;
-        }
-
-        const heading = document.querySelector(".hero h1");
-
-        if (data.name && heading) {
-          heading.textContent = data.name + " — REGISTRATION";
-        }
-
-        const subtitle = document.querySelector(".subtitle");
-
-        if (subtitle && data.description) {
-          subtitle.textContent = data.description;
-        }
-
-        if (data.banner_url) {
-          const banner = document.createElement("img");
-
-          banner.src = data.banner_url;
-          banner.alt = data.name || "Tournament banner";
-          banner.style.cssText =
-            "display:block;width:100%;max-height:300px;object-fit:cover;border-radius:12px;margin-top:20px;";
-
-          document.querySelector(".hero").appendChild(banner);
-        }
-
-        if (data.qr_code_url) {
-          $("paymentQr").src = data.qr_code_url;
-        }
-
-        if (!isFreeTournament) {
-          const instructions = document.querySelector(
-            ".payment-instructions"
-          );
-
-          if (instructions) {
-            instructions.textContent =
-              `Registration fee: ${formatAmount(fee)}. ` +
-              "Scan the QR code above to pay. After paying, enter " +
-              "your transaction reference and upload your receipt screenshot.";
-          }
-        }
-
-      } catch (error) {
-        console.error("Tournament loading error:", error);
-
-        showStatus(
-          "Could not load tournament details. " +
-          (error.message || "Please try again later."),
-          "error"
+      if (!data) {
+        throw new Error(
+          "Tournament not found. Please check the tournament ID."
         );
+      }
 
-        $("submitButton").disabled = true;
+      currentTournament = data;
+
+      const fee = Number(data.entry_fee || 0);
+      isFreeTournament = !Number.isFinite(fee) || fee <= 0;
+
+      if (isFreeTournament) {
+        $("paymentDetails").style.display = "none";
+        $("freeRegistrationMessage").style.display = "block";
+
+        $("transactionId").required = false;
+        $("paymentReceipt").required = false;
+        $("paymentConfirmation").required = false;
+      } else {
+        $("paymentDetails").style.display = "block";
+        $("freeRegistrationMessage").style.display = "none";
+
+        $("transactionId").required = true;
+        $("paymentReceipt").required = true;
+        $("paymentConfirmation").required = true;
+
+        $("paymentInstructions").textContent =
+          `Registration fee: ${formatAmount(fee)}. Scan the QR code, pay, ` +
+          "and enter your transaction reference and upload the receipt.";
+      }
+
+      if (data.name) {
+        const heading = document.querySelector(".hero h1");
+        heading.textContent = data.name + " — REGISTRATION";
+      }
+
+      if (data.description) {
+        document.querySelector(".subtitle").textContent = data.description;
+      }
+
+      if (data.qr_code_url) {
+        $("paymentQr").src = data.qr_code_url;
+      }
+
+      if (data.banner_url) {
+        const banner = document.createElement("img");
+        banner.src = data.banner_url;
+        banner.alt = data.name || "Tournament banner";
+        banner.style.cssText =
+          "display:block;width:100%;max-height:300px;object-fit:cover;border-radius:12px;margin-top:20px;";
+        document.querySelector(".hero").appendChild(banner);
       }
     }
 
     /* =====================================================
-       CHECK AUTHENTICATION
+       AUTHENTICATION
        ===================================================== */
 
     async function getCurrentUser() {
-      const {
-        data: { user },
-        error
-      } = await supabaseClient.auth.getUser();
+      const { data, error } = await supabaseClient.auth.getUser();
 
       if (error) {
-        console.warn("Authentication check:", error.message);
+        console.error("Authentication check:", error.message);
         return null;
       }
 
-      return user || null;
+      return data.user || null;
     }
 
     /* =====================================================
-       CHECK TEAM DUPLICATES
+       DUPLICATE TEAM CHECK
        ===================================================== */
 
     async function checkExistingTeam(teamName, tournamentId) {
@@ -1145,8 +1015,7 @@
 
       if (error) {
         throw new Error(
-          "Could not check for duplicate team names: " +
-          error.message
+          "Could not check for duplicate team names: " + error.message
         );
       }
 
@@ -1154,32 +1023,16 @@
     }
 
     /* =====================================================
-       UPLOAD PAYMENT RECEIPT
+       UPLOAD RECEIPT
        ===================================================== */
 
     async function uploadReceipt(file, teamId) {
       if (!file) {
-        throw new Error(
-          "Please upload your payment receipt screenshot."
-        );
+        throw new Error("Please upload your payment receipt.");
       }
 
       if (file.size > MAX_RECEIPT_SIZE) {
-        throw new Error(
-          "Your receipt image exceeds 5 MB. Please choose a smaller image."
-        );
-      }
-
-      const allowedTypes = [
-        "image/jpeg",
-        "image/png",
-        "image/webp"
-      ];
-
-      if (!allowedTypes.includes(file.type)) {
-        throw new Error(
-          "Receipt must be a JPG, PNG or WEBP image."
-        );
+        throw new Error("Your receipt image exceeds 5 MB.");
       }
 
       const extensionByType = {
@@ -1190,8 +1043,17 @@
 
       const extension = extensionByType[file.type];
 
+      if (!extension) {
+        throw new Error("Receipt must be JPG, PNG or WEBP.");
+      }
+
+      const randomPart =
+        window.crypto && crypto.randomUUID
+          ? crypto.randomUUID()
+          : `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+
       const path =
-        `${teamId}/${Date.now()}-${crypto.randomUUID()}.${extension}`;
+        `${teamId}/${Date.now()}-${randomPart}.${extension}`;
 
       const { data, error } = await supabaseClient.storage
         .from(RECEIPT_BUCKET)
@@ -1202,55 +1064,43 @@
 
       if (error) {
         throw new Error(
-          "Could not upload the payment receipt. Check the storage bucket permissions. " +
+          "Receipt upload failed. Check your storage bucket permissions: " +
           error.message
         );
       }
 
-      // The receipt bucket should remain private.
-      // Save its storage path, not a public URL.
+      // Store the private bucket's object path in the database.
       return data.path;
     }
 
     /* =====================================================
-       REGISTER TEAM
+       REGISTRATION
        ===================================================== */
 
     async function registerTeam(event) {
       event.preventDefault();
 
-      if (registrationInProgress) {
-        return;
-      }
+      if (registrationInProgress) return;
 
       clearStatus();
 
-      if (!currentTournament) {
-        showStatus(
-          "Tournament details are not ready. Please refresh the page.",
-          "error"
-        );
-        return;
-      }
-
       const form = $("registrationForm");
 
-      if (!form.reportValidity()) {
+      if (!form.reportValidity()) return;
+
+      if (!currentTournament) {
+        showStatus("Tournament details are not loaded.", "error");
         return;
       }
 
       const teamName = cleanText($("teamName").value);
-
-      const leaderPhone = cleanText(
-        $("leaderPhone").value
-      );
+      const leaderPhone = cleanText($("leaderPhone").value);
 
       if (!validIndianMobile(leaderPhone)) {
         showStatus(
           "Enter a valid 10-digit Indian mobile number starting with 6, 7, 8 or 9.",
           "error"
         );
-
         $("leaderPhone").focus();
         return;
       }
@@ -1265,51 +1115,34 @@
       }
 
       if (players.length !== 7) {
-        showStatus(
-          "Exactly seven players are required: five main players and two substitutes.",
-          "error"
-        );
+        showStatus("Exactly seven players are required.", "error");
         return;
       }
 
       const tournamentId = currentTournament.id;
-
-      const receiptFile =
-        $("paymentReceipt").files[0] || null;
+      const receiptFile = $("paymentReceipt").files[0] || null;
 
       if (!isFreeTournament && !receiptFile) {
-        showStatus(
-          "Please upload your payment receipt before submitting.",
-          "error"
-        );
+        showStatus("Please upload your payment receipt.", "error");
         return;
       }
 
       registrationInProgress = true;
-
-      const submitButton = $("submitButton");
-
-      submitButton.disabled = true;
-      submitButton.textContent = "SUBMITTING REGISTRATION...";
-
-      let createdTeamId = null;
-      let receiptPath = null;
+      $("submitButton").disabled = true;
+      $("submitButton").textContent = "SUBMITTING REGISTRATION...";
 
       try {
-        /*
-         * Account required.
-         * The form itself does not create accounts.
-         */
         const user = await getCurrentUser();
 
         if (!user) {
           throw new Error(
-            "Please log in to your Ren Gaming account before registering your team."
+            "Please log in to your Ren Gaming account before registering."
           );
         }
 
         /*
-         * Check for duplicate team name.
+         * Avoid creating a duplicate team.
+         * This check does not repair a previous partial registration.
          */
         const duplicate = await checkExistingTeam(
           teamName,
@@ -1318,50 +1151,43 @@
 
         if (duplicate) {
           throw new Error(
-            "A team with this name is already registered for this tournament. Please use your existing registration or choose another name."
+            "A team with this name is already registered. Do not submit again. Contact Ren Gaming to check the existing registration."
           );
         }
 
         /*
-         * Create the team.
-         * The team leader phone is included in the confirmation message,
-         * but is not inserted into the database because the known
-         * teams schema does not specify a phone column.
+         * Create team.
          */
-        const { data: team, error: teamError } =
-          await supabaseClient
-            .from("teams")
-            .insert({
-              user_id: user.id,
-              team_name: teamName,
-              tournament_id: tournamentId,
-              status: "pending"
-            })
-            .select("id, team_name, tournament_id, status")
-            .single();
+        const { data: team, error: teamError } = await supabaseClient
+          .from("teams")
+          .insert({
+            user_id: user.id,
+            team_name: teamName,
+            tournament_id: tournamentId,
+            status: "pending"
+          })
+          .select("id, team_name, tournament_id, status")
+          .single();
 
         if (teamError) {
           throw new Error(
-            "Could not create team registration: " +
-            teamError.message
+            "Could not create team registration: " + teamError.message
           );
         }
 
-        createdTeamId = team.id;
+        const createdTeamId = team.id;
 
         /*
-         * Upload receipt for paid tournaments.
+         * Upload receipt before saving payment record.
          */
+        let receiptPath = null;
+
         if (!isFreeTournament) {
-          receiptPath = await uploadReceipt(
-            receiptFile,
-            createdTeamId
-          );
+          receiptPath = await uploadReceipt(receiptFile, createdTeamId);
         }
 
         /*
-         * Save exactly seven players.
-         * No role field is collected or inserted.
+         * Save exactly seven players. No role column is used.
          */
         const playerRows = players.map((player) => ({
           team_id: createdTeamId,
@@ -1375,10 +1201,9 @@
           verification_message: null
         }));
 
-        const { error: playersError } =
-          await supabaseClient
-            .from("team_players")
-            .insert(playerRows);
+        const { error: playersError } = await supabaseClient
+          .from("team_players")
+          .insert(playerRows);
 
         if (playersError) {
           throw new Error(
@@ -1388,59 +1213,45 @@
         }
 
         /*
-         * Save payment information.
-         * This insert assumes your existing tournament_payments
-         * table has the listed columns.
+         * Save payment using your actual table columns:
+         * payment_screenshot_url, tournament_id, user_id and amount.
          */
         if (!isFreeTournament) {
-          const { error: paymentError } =
-            await supabaseClient
-              const { error: paymentError } = await supabaseClient
-  .from("tournament_payments")
-  .insert({
-    team_id: createdTeamId,
-    tournament_id: tournamentId,
-    user_id: user.id,
-    amount: Number(currentTournament.entry_fee),
-    transaction_id: cleanText(
-      $("transactionId").value
-    ),
-    payment_screenshot_url: receiptPath,
-    payment_method: "UPI",
-    status: "pending"
-  });
-
-if (paymentError) {
-  throw new Error(
-    "Your team and players were saved, but payment details could not be saved: " +
-    paymentError.message
-  );
-}
+          const { error: paymentError } = await supabaseClient
+            .from("tournament_payments")
+            .insert({
+              team_id: createdTeamId,
+              tournament_id: tournamentId,
+              user_id: user.id,
+              amount: Number(currentTournament.entry_fee),
+              transaction_id: cleanText($("transactionId").value),
+              payment_screenshot_url: receiptPath,
+              payment_method: "UPI",
+              status: "pending"
+            });
 
           if (paymentError) {
             throw new Error(
-              "Your team and players were saved, but payment details could not be saved. Contact Ren Gaming and provide your team name. " +
-              paymentError.message
+              "Your team and players were saved, but payment details could not be saved. Contact Ren Gaming and provide team ID " +
+              createdTeamId + ". Error: " + paymentError.message
             );
           }
         }
 
         /*
-         * Prepare WhatsApp message.
-         * The leader must tap Send in WhatsApp.
+         * Prepare WhatsApp confirmation.
          */
         const playerLines = players.map((player, index) => {
-          const playerLabel =
-            player.player_type === "main"
-              ? `Main Player ${player.player_number}`
-              : `Substitute ${player.player_number}`;
+          const label = player.player_type === "main"
+            ? `Main Player ${player.player_number}`
+            : `Substitute ${player.player_number}`;
 
-          return (
-            `${index + 1}. ${playerLabel}\n` +
-            `Username: ${player.username}\n` +
-            `Game User ID: ${player.game_user_id}\n` +
+          return [
+            `${index + 1}. ${label}`,
+            `Username: ${player.username}`,
+            `Game User ID: ${player.game_user_id}`,
             `Server ID: ${player.server_id}`
-          );
+          ].join("\n");
         });
 
         const message = [
@@ -1462,26 +1273,20 @@ if (paymentError) {
             : `Transaction Reference: ${cleanText($("transactionId").value)}`,
           "",
           "Please verify my team and registration.",
-          "I understand that the registration is pending until Ren Gaming verifies it."
+          "I understand the registration is pending until Ren Gaming verifies it."
         ].join("\n");
 
-        const whatsappUrl =
-          `https://wa.me/${REN_GAMING_WHATSAPP}?text=` +
-          encodeURIComponent(message);
-
-        /*
-         * Show success panel.
-         */
         $("registrationForm").style.display = "none";
         $("successPanel").style.display = "block";
 
         $("successText").textContent =
           `Team "${teamName}" has been submitted with all seven players. Your registration is pending verification.`;
 
-        $("whatsappLink").href = whatsappUrl;
+        $("whatsappLink").href =
+          `https://wa.me/${REN_GAMING_WHATSAPP}?text=${encodeURIComponent(message)}`;
 
         showStatus(
-          "Registration submitted successfully. Please confirm the details through WhatsApp.",
+          "Registration submitted successfully. Please confirm through WhatsApp.",
           "success"
         );
 
@@ -1503,28 +1308,46 @@ if (paymentError) {
         registrationInProgress = false;
 
         if ($("registrationForm").style.display !== "none") {
-          submitButton.disabled = false;
-          submitButton.textContent =
-            "SUBMIT TEAM REGISTRATION";
+          $("submitButton").disabled = false;
+          $("submitButton").textContent = "SUBMIT TEAM REGISTRATION";
         }
       }
     }
 
     /* =====================================================
-       INITIALIZE PAGE
+       START PAGE
+       Player forms are built immediately, even if Supabase
+       tournament loading later fails.
        ===================================================== */
 
     document.addEventListener("DOMContentLoaded", async () => {
-      buildPlayerForms();
+      try {
+        buildPlayerForms();
+      } catch (error) {
+        console.error("Player form creation error:", error);
+        showStatus(
+          "Could not create player forms: " + error.message,
+          "error"
+        );
+        return;
+      }
 
-      $("registrationForm").addEventListener(
-        "submit",
-        registerTeam
-      );
+      $("registrationForm").addEventListener("submit", registerTeam);
 
-      await loadTournament();
+      try {
+        await loadTournament();
+      } catch (error) {
+        console.error("Tournament loading error:", error);
+
+        showStatus(
+          "Player forms are ready, but tournament details could not load: " +
+          error.message,
+          "error"
+        );
+
+        $("submitButton").disabled = true;
+      }
     });
   </script>
-
 </body>
 </html>
