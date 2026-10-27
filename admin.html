@@ -14,7 +14,6 @@
   --red:#ff2020;
   --text:#fff;
   --muted:#aaa;
-  --green:#167b3b;
 }
 * { box-sizing:border-box; }
 
@@ -182,13 +181,17 @@ textarea { min-height:90px;resize:vertical; }
   padding:15px;
   border-radius:8px;
   margin-top:15px;
+  overflow-wrap:anywhere;
 }
 .payment-box img {
+  width:auto;
   max-width:100%;
   max-height:450px;
+  object-fit:contain;
   display:block;
   margin-top:12px;
   border-radius:6px;
+  background:#080808;
 }
 .empty {
   color:#999;
@@ -199,7 +202,7 @@ textarea { min-height:90px;resize:vertical; }
 }
 hr { border:0;border-top:1px solid #333;margin:18px 0; }
 
-/* TEAM REVIEW POPUP */
+/* REVIEW POPUP */
 #reviewPanel {
   display:none;
   position:fixed;
@@ -211,6 +214,7 @@ hr { border:0;border-top:1px solid #333;margin:18px 0; }
   overflow-y:auto;
   border:0;
   border-radius:0;
+  overscroll-behavior:contain;
 }
 #reviewPanel.review-open { display:block; }
 
@@ -230,6 +234,7 @@ hr { border:0;border-top:1px solid #333;margin:18px 0; }
   padding-right:6px;
   overscroll-behavior:contain;
   scrollbar-width:thin;
+  overflow-anchor:none;
 }
 .review-modal-content:focus { outline:none; }
 
@@ -268,26 +273,11 @@ hr { border:0;border-top:1px solid #333;margin:18px 0; }
   <div id="message" class="message" role="status" aria-live="polite"></div>
 
   <div class="stats">
-    <div class="stat">
-      <span>TOTAL TEAMS</span>
-      <strong id="totalTeams">0</strong>
-    </div>
-    <div class="stat">
-      <span>PENDING TEAMS</span>
-      <strong id="pendingTeams">0</strong>
-    </div>
-    <div class="stat">
-      <span>APPROVED TEAMS</span>
-      <strong id="approvedTeams">0</strong>
-    </div>
-    <div class="stat">
-      <span>PENDING PLAYERS</span>
-      <strong id="pendingPlayers">0</strong>
-    </div>
-    <div class="stat">
-      <span>TOP-UP ORDERS</span>
-      <strong id="topupCount">0</strong>
-    </div>
+    <div class="stat"><span>TOTAL TEAMS</span><strong id="totalTeams">0</strong></div>
+    <div class="stat"><span>PENDING TEAMS</span><strong id="pendingTeams">0</strong></div>
+    <div class="stat"><span>APPROVED TEAMS</span><strong id="approvedTeams">0</strong></div>
+    <div class="stat"><span>PENDING PLAYERS</span><strong id="pendingPlayers">0</strong></div>
+    <div class="stat"><span>TOP-UP ORDERS</span><strong id="topupCount">0</strong></div>
   </div>
 
   <section class="panel">
@@ -295,24 +285,19 @@ hr { border:0;border-top:1px solid #333;margin:18px 0; }
       <h2>🏆 Registered Teams</h2>
       <button type="button" onclick="loadTeams()">REFRESH</button>
     </div>
-    <p class="muted">
-      Select a team to review its leader, players and payment receipt.
-    </p>
+    <p class="muted">Select a team to review its leader, players and payment receipt.</p>
     <div id="teamsList">Loading teams...</div>
   </section>
 
-  <!-- REVIEW POPUP -->
   <section class="panel" id="reviewPanel" aria-hidden="true">
     <div class="review-modal">
       <div class="panel-head">
         <h2>🔍 Team Review</h2>
         <button type="button" onclick="closeReview()">CLOSE ✕</button>
       </div>
-      <div
-        id="reviewContent"
-        class="review-modal-content muted"
-        tabindex="0"
-      >Select a team above to see its details.</div>
+      <div id="reviewContent" class="review-modal-content muted" tabindex="0">
+        Select a team above to see its details.
+      </div>
     </div>
   </section>
 
@@ -329,7 +314,7 @@ hr { border:0;border-top:1px solid #333;margin:18px 0; }
 "use strict";
 
 /* =====================================
-   REN GAMING SUPABASE CONFIGURATION
+   SUPABASE CONFIGURATION
 ===================================== */
 
 const SUPABASE_URL =
@@ -338,11 +323,6 @@ const SUPABASE_URL =
 const SUPABASE_KEY =
   "sb_publishable_XtzkrIFbBPTGUmoLHqHu5Q_XeznKoVI";
 
-/*
-  IMPORTANT:
-  Your registration page uploads receipts to payment-receipts.
-  The admin page must use the same bucket.
-*/
 const PAYMENT_BUCKET = "payment-receipts";
 
 const db = window.supabase.createClient(
@@ -355,12 +335,13 @@ let selectedTeam = null;
 let selectedPlayers = [];
 let selectedPayment = null;
 let selectedProfile = null;
+
 let reviewRequestNumber = 0;
+let receiptRequestNumber = 0;
 let messageTimer = null;
 
-
 /* =====================================
-   HELPER FUNCTIONS
+   HELPERS
 ===================================== */
 
 function esc(value) {
@@ -379,7 +360,6 @@ function showMessage(text, type = "success") {
   el.textContent = text;
   el.className = "message show " + type;
 
-  // Do not scroll the page to the top.
   if (messageTimer) clearTimeout(messageTimer);
 
   messageTimer = setTimeout(() => {
@@ -390,6 +370,7 @@ function showMessage(text, type = "success") {
 
 function hideMessage() {
   const el = document.getElementById("message");
+
   el.className = "message";
   el.textContent = "";
 
@@ -422,6 +403,7 @@ function openReviewModal() {
 
 function closeReview() {
   reviewRequestNumber++;
+  receiptRequestNumber++;
 
   selectedTeam = null;
   selectedPlayers = [];
@@ -438,14 +420,10 @@ function closeReview() {
     "Select a team above to see its details.";
 }
 
-/* Close popup when clicking the dark background. */
 document.getElementById("reviewPanel").addEventListener("click", event => {
-  if (event.target.id === "reviewPanel") {
-    closeReview();
-  }
+  if (event.target.id === "reviewPanel") closeReview();
 });
 
-/* Close popup with Escape. */
 document.addEventListener("keydown", event => {
   if (
     event.key === "Escape" &&
@@ -455,9 +433,8 @@ document.addEventListener("keydown", event => {
   }
 });
 
-
 /* =====================================
-   ADMIN AUTHENTICATION
+   AUTHENTICATION
 ===================================== */
 
 async function checkAdmin() {
@@ -494,14 +471,12 @@ document.getElementById("logoutBtn").addEventListener("click", async () => {
   location.href = "login.html";
 });
 
-
 /* =====================================
-   LOAD REGISTERED TEAMS
+   LOAD TEAMS
 ===================================== */
 
 async function loadTeams() {
   const box = document.getElementById("teamsList");
-
   box.textContent = "Loading teams...";
 
   const { data, error } = await db
@@ -511,31 +486,20 @@ async function loadTeams() {
 
   if (error) {
     console.error("Team loading error:", error);
-
-    box.innerHTML =
-      '<div class="empty">Could not load teams: ' +
-      esc(error.message) + '</div>';
-
+    box.innerHTML = `<div class="empty">Could not load teams: ${esc(error.message)}</div>`;
     return;
   }
 
   const teams = data || [];
 
   document.getElementById("totalTeams").textContent = teams.length;
-
   document.getElementById("pendingTeams").textContent =
-    teams.filter(t =>
-      String(t.status || "").toLowerCase() === "pending"
-    ).length;
-
+    teams.filter(t => String(t.status || "").toLowerCase() === "pending").length;
   document.getElementById("approvedTeams").textContent =
-    teams.filter(t =>
-      String(t.status || "").toLowerCase() === "approved"
-    ).length;
+    teams.filter(t => String(t.status || "").toLowerCase() === "approved").length;
 
   if (!teams.length) {
-    box.innerHTML =
-      '<div class="empty">No registered teams found.</div>';
+    box.innerHTML = '<div class="empty">No registered teams found.</div>';
     return;
   }
 
@@ -543,53 +507,43 @@ async function loadTeams() {
     <div class="team-card">
       <div class="team-head">
         <div>
-          <div class="team-name">
-            ${esc(team.team_name || "Unnamed team")}
-          </div>
+          <div class="team-name">${esc(team.team_name || "Unnamed team")}</div>
           <div class="muted">
             Team ID: ${esc(team.id)}<br>
             Tournament ID: ${esc(team.tournament_id || "—")}<br>
-            Registered:
-            ${esc(
-              team.created_at
-                ? new Date(team.created_at).toLocaleString()
-                : "—"
-            )}
+            Registered: ${esc(team.created_at ? new Date(team.created_at).toLocaleString() : "—")}
           </div>
         </div>
         ${statusBadge(team.status)}
       </div>
-
       <div class="actions">
-        <button
-          class="primary"
-          type="button"
-          onclick="openReview('${esc(team.id)}')"
-        >REVIEW TEAM</button>
+        <button class="primary" type="button"
+          onclick="openReview('${esc(team.id)}')">REVIEW TEAM</button>
       </div>
     </div>
   `).join("");
 }
 
-
 /* =====================================
-   OPEN TEAM REVIEW POPUP
+   OPEN TEAM REVIEW
 ===================================== */
 
-async function openReview(teamId) {
+async function openReview(teamId, options = {}) {
   hideMessage();
   openReviewModal();
 
   const thisRequest = ++reviewRequestNumber;
   const content = document.getElementById("reviewContent");
 
-  content.scrollTop = 0;
-  content.textContent = "Loading team details...";
+  // Preserve scroll position when refreshing after an action.
+  const previousScroll = options.preserveScroll ? content.scrollTop : 0;
 
   selectedTeam = null;
   selectedPlayers = [];
   selectedPayment = null;
   selectedProfile = null;
+
+  content.textContent = "Loading team details...";
 
   const { data: team, error: teamError } = await db
     .from("teams")
@@ -612,20 +566,17 @@ async function openReview(teamId) {
     paymentResult,
     profileResult
   ] = await Promise.all([
-    db
-      .from("team_players")
+    db.from("team_players")
       .select("*")
       .eq("team_id", teamId),
 
-    db
-      .from("tournament_payments")
+    db.from("tournament_payments")
       .select("*")
       .eq("team_id", teamId)
       .order("created_at", { ascending: false })
       .limit(1),
 
-    db
-      .from("profiles")
+    db.from("profiles")
       .select("id,full_name,phone")
       .eq("id", team.user_id)
       .maybeSingle()
@@ -634,19 +585,17 @@ async function openReview(teamId) {
   if (thisRequest !== reviewRequestNumber) return;
 
   if (playersResult.error) {
-    content.textContent =
-      "Could not load players: " + playersResult.error.message;
+    content.textContent = "Could not load players: " + playersResult.error.message;
     return;
   }
 
   if (paymentResult.error) {
-    content.textContent =
-      "Could not load payment: " + paymentResult.error.message;
+    content.textContent = "Could not load payment: " + paymentResult.error.message;
     return;
   }
 
   if (profileResult.error) {
-    console.warn("Could not load team leader profile:", profileResult.error);
+    console.warn("Profile loading error:", profileResult.error);
   }
 
   selectedPlayers = playersResult.data || [];
@@ -655,13 +604,15 @@ async function openReview(teamId) {
 
   renderReview();
 
-  // Keep the popup open. The page behind it does not scroll.
-  content.scrollTop = 0;
+  requestAnimationFrame(() => {
+    if (thisRequest === reviewRequestNumber) {
+      content.scrollTop = previousScroll;
+    }
+  });
 }
 
-
 /* =====================================
-   RENDER TEAM REVIEW
+   RENDER REVIEW
 ===================================== */
 
 function renderReview() {
@@ -691,238 +642,135 @@ function renderReview() {
 
   let html = `
     <h3>${esc(t.team_name || "Team")}</h3>
-
     <p class="muted">
       Team status: ${esc(t.status || "pending")}<br>
       Leader: ${esc(profile?.full_name || "Name unavailable")}<br>
       WhatsApp / Phone: ${esc(profile?.phone || "No phone number saved")}<br>
       Team ID: ${esc(t.id)}
     </p>
-
     <hr>
     <h3>Players (${players.length})</h3>
   `;
 
   if (!players.length) {
-    html += `
-      <div class="empty">
-        No player records found for this team.
-      </div>
-    `;
+    html += '<div class="empty">No player records found for this team.</div>';
   }
 
   html += players.map((p, index) => `
     <div class="player-card">
-      <h3>
-        ${esc(p.player_type || "Player")}
-        ${esc(p.player_number || index + 1)}
-      </h3>
-
+      <h3>${esc(p.player_type || "Player")} ${esc(p.player_number || index + 1)}</h3>
       <div class="player-grid">
-        <div>
-          <label>Username</label>
-          <strong>${esc(p.username || "—")}</strong>
-        </div>
-
-        <div>
-          <label>Game User ID</label>
-          <strong>${esc(p.game_user_id || "—")}</strong>
-        </div>
-
-        <div>
-          <label>Server ID</label>
-          <strong>${esc(p.server_id || "—")}</strong>
-        </div>
-
-        <div>
-          <label>Verification status</label>
-          ${statusBadge(p.verification_status)}
-        </div>
+        <div><label>Username</label><strong>${esc(p.username || "—")}</strong></div>
+        <div><label>Game User ID</label><strong>${esc(p.game_user_id || "—")}</strong></div>
+        <div><label>Server ID</label><strong>${esc(p.server_id || "—")}</strong></div>
+        <div><label>Verification status</label>${statusBadge(p.verification_status)}</div>
       </div>
-
       <div class="actions">
-        <button
-          class="good"
-          type="button"
-          onclick="verifyPlayer('${esc(p.id)}')"
-        >VERIFY PLAYER</button>
-
-        <button
-          class="danger"
-          type="button"
-          onclick="unverifyPlayer('${esc(p.id)}')"
-        >MARK UNVERIFIED</button>
+        <button class="good" type="button" onclick="verifyPlayer('${esc(p.id)}')">VERIFY PLAYER</button>
+        <button class="danger" type="button" onclick="unverifyPlayer('${esc(p.id)}')">MARK UNVERIFIED</button>
       </div>
     </div>
   `).join("");
 
-  html += `<hr><h3>💳 Payment Verification</h3>`;
+  html += '<hr><h3>💳 Payment Verification</h3>';
 
   if (!payment) {
     html += `
       <div class="empty">
-        No payment record found. A payment must be submitted
-        before the team can be approved.
+        No payment record found. A payment must be submitted before the team can be approved.
       </div>
     `;
   } else {
     html += `
       <div class="payment-box">
-        <p>
-          <label>Transaction ID</label>
-          <strong>${esc(payment.transaction_id || "Not provided")}</strong>
-        </p>
+        <p><label>Transaction ID</label><strong>${esc(payment.transaction_id || "Not provided")}</strong></p>
+        <p><label>Amount</label><strong>₹${esc(payment.amount ?? "—")}</strong></p>
+        <p><label>Payment status</label>${statusBadge(payment.status)}</p>
 
-        <p style="margin-top:10px">
-          <label>Amount</label>
-          <strong>₹${esc(payment.amount ?? "—")}</strong>
-        </p>
-
-        <p style="margin-top:10px">
-          <label>Payment status</label>
-          ${statusBadge(payment.status)}
-        </p>
-
-        <div id="receiptArea" class="muted">
-          Loading receipt...
-        </div>
+        <div id="receiptArea" class="muted">Loading receipt...</div>
 
         <div class="field">
           <label>Admin payment note</label>
-          <textarea
-            id="paymentNote"
-            placeholder="Optional payment verification note"
-          >${esc(payment.admin_note || "")}</textarea>
+          <textarea id="paymentNote" placeholder="Optional payment verification note">${esc(payment.admin_note || "")}</textarea>
         </div>
 
         <div class="actions">
-          <button
-            class="good"
-            type="button"
-            onclick="verifyPayment()"
-          >VERIFY PAYMENT</button>
-
-          <button
-            class="danger"
-            type="button"
-            onclick="rejectPayment()"
-          >MARK PAYMENT UNVERIFIED</button>
+          <button class="good" type="button" onclick="verifyPayment()">VERIFY PAYMENT</button>
+          <button class="danger" type="button" onclick="rejectPayment()">MARK PAYMENT UNVERIFIED</button>
         </div>
       </div>
     `;
   }
 
-  html += `<hr><h3>Team Decision</h3>`;
+  html += '<hr><h3>Team Decision</h3>';
 
   if (!allPlayersVerified) {
-    html += `
-      <p class="muted">
-        Approval is locked: verify every player first.
-      </p>
-    `;
+    html += '<p class="muted">Approval is locked: verify every player first.</p>';
   } else if (!paymentVerified) {
-    html += `
-      <p class="muted">
-        Approval is locked: verify the payment first.
-      </p>
-    `;
+    html += '<p class="muted">Approval is locked: verify the payment first.</p>';
   } else {
-    html += `
-      <p class="muted">
-        All players and payment are verified.
-        The team can now be approved.
-      </p>
-    `;
+    html += '<p class="muted">All players and payment are verified. The team can now be approved.</p>';
   }
 
   if (String(t.status || "").toLowerCase() === "approved") {
-    html += `
-      <p class="muted">This team is already approved.</p>
-    `;
+    html += '<p class="muted">This team is already approved.</p>';
   } else {
     html += `
       <div class="actions">
-        ${
-          canApprove
-            ? `<button
-                 class="primary"
-                 type="button"
-                 onclick="approveTeam()"
-               >APPROVE TEAM</button>`
-            : ""
-        }
-
-        <button
-          class="danger"
-          type="button"
-          onclick="rejectTeam()"
-        >REJECT TEAM</button>
+        ${canApprove ? '<button class="primary" type="button" onclick="approveTeam()">APPROVE TEAM</button>' : ''}
+        <button class="danger" type="button" onclick="rejectTeam()">REJECT TEAM</button>
       </div>
-
       <div class="field">
         <label>Rejection reason (required when rejecting)</label>
-        <textarea
-          id="rejectionReason"
-          placeholder="Explain what the team needs to correct"
-        ></textarea>
+        <textarea id="rejectionReason" placeholder="Explain what the team needs to correct"></textarea>
       </div>
     `;
   }
 
   document.getElementById("reviewContent").innerHTML = html;
 
-  if (payment) {
-    loadPaymentReceipt(payment);
-  }
+  if (payment) loadPaymentReceipt(payment);
 }
 
-
 /* =====================================
-   PAYMENT RECEIPT — FIXED
+   RECEIPT PATH HANDLING
 ===================================== */
 
-function getReceiptStoragePath(value) {
+function getReceiptPath(value) {
   if (!value) return null;
 
   let raw = String(value).trim();
 
   if (!raw) return null;
 
-  // If the database stores a URL, extract its storage path.
   if (/^https?:\/\//i.test(raw)) {
     try {
       const url = new URL(raw);
 
-      // Handle the Supabase dashboard URL format:
-      // ?path=FOLDER&preview=IMAGE.jpg
+      // Supabase dashboard file preview URL.
       if (
         url.hostname === "supabase.com" &&
         url.pathname.includes("/storage/files/buckets/")
       ) {
         const folder = url.searchParams.get("path") || "";
-        const preview = url.searchParams.get("preview") || "";
+        const file = url.searchParams.get("preview") || "";
 
-        if (preview) {
-          raw = folder
-            ? folder.replace(/^\/+|\/+$/g, "") + "/" + preview
-            : preview;
-        } else {
-          raw = folder;
-        }
+        if (!file) return null;
+
+        raw = folder
+          ? folder.replace(/^\/+|\/+$/g, "") + "/" + file
+          : file;
       } else {
-        // Handle Supabase Storage public or signed URLs.
+        // Supabase Storage public or signed URL.
         const match = url.pathname.match(
-          /\/storage\/v1\/object\/(?:public|sign)\/payment-receipts\/(.+)$/
+          /\/storage\/v1\/object\/(?:public|sign|authenticated)\/payment-receipts\/(.+)$/
         );
 
         if (match) {
-          raw = decodeURIComponent(match[1]);
+          raw = match[1];
         } else {
-          // An unrelated external URL can be opened directly.
-          return {
-            externalUrl: value,
-            path: null
-          };
+          // Support an external URL as a fallback.
+          return { externalUrl: value };
         }
       }
     } catch (error) {
@@ -931,212 +779,143 @@ function getReceiptStoragePath(value) {
     }
   }
 
-  // Remove query strings and URL fragments.
   raw = raw.split("#")[0].split("?")[0];
-
-  // Remove bucket prefix if the database stores it.
   raw = raw.replace(/^\/+/, "");
   raw = raw.replace(/^payment-receipts\//, "");
 
   try {
-    raw = raw
-      .split("/")
-      .map(part => decodeURIComponent(part))
-      .join("/");
+    raw = raw.split("/").map(part => decodeURIComponent(part)).join("/");
   } catch (error) {
-    console.warn("Could not decode receipt path:", error);
+    console.warn("Could not decode path:", error);
   }
 
-  // Reject empty paths and unsafe traversal.
-  if (
-    !raw ||
-    raw.split("/").some(part => part === "." || part === "..")
-  ) {
+  if (!raw || raw.split("/").some(part => part === "." || part === "..")) {
     return null;
   }
 
   return { path: raw };
 }
 
+/* =====================================
+   LOAD PAYMENT RECEIPT
+===================================== */
+
 async function loadPaymentReceipt(payment) {
   const area = document.getElementById("receiptArea");
-
   if (!area) return;
 
-  const originalValue = payment?.payment_screenshot_url;
+  const requestId = ++receiptRequestNumber;
+  const value = payment?.payment_screenshot_url;
 
-  if (!originalValue) {
+  if (!value) {
     area.textContent = "No payment screenshot was uploaded.";
     return;
   }
 
   area.textContent = "Loading payment receipt...";
 
-  const result = getReceiptStoragePath(originalValue);
+  const result = getReceiptPath(value);
 
   if (!result) {
-    area.textContent =
-      "The receipt path is invalid. Check payment_screenshot_url in the database.";
+    area.innerHTML = `
+      <div class="empty">
+        Invalid receipt path. Check the payment_screenshot_url value in the database.
+      </div>
+    `;
     return;
   }
 
-  // For an unrelated external image URL, display it directly.
+  // External URL fallback.
   if (result.externalUrl) {
     const url = result.externalUrl;
 
     area.innerHTML = `
       <p>Payment receipt:</p>
-      <a href="${esc(url)}"
-         target="_blank"
-         rel="noopener noreferrer">
-        OPEN RECEIPT
-      </a>
-      <img src="${esc(url)}"
-           alt="Payment receipt"
-           onerror="this.style.display='none';">
+      <a href="${esc(url)}" target="_blank" rel="noopener noreferrer">OPEN RECEIPT</a>
+      <img src="${esc(url)}" alt="Payment receipt"
+        onerror="this.style.display='none'">
     `;
-
     return;
   }
 
   const path = result.path;
 
-  // Generate a private, temporary URL for the receipt.
+  // Generate a signed URL for the private bucket.
   const { data, error } = await db.storage
     .from(PAYMENT_BUCKET)
     .createSignedUrl(path, 3600);
 
+  if (requestId !== receiptRequestNumber) return;
+
   if (error || !data?.signedUrl) {
-    console.error("Receipt loading error:", {
+    console.error("Receipt URL generation failed:", {
       path,
       error
     });
 
     area.innerHTML = `
       <div class="empty">
-        <strong>Unable to load the payment receipt.</strong>
+        <strong>Unable to open receipt.</strong>
+        <p>File path: ${esc(path)}</p>
         <p>
-          The image exists, but Supabase could not generate a
-          signed URL for this path.
+          Supabase could not generate a signed URL. Check the Storage
+          SELECT policy for authenticated admins and confirm the saved
+          file path matches the uploaded object.
         </p>
-        <p>
-          Check the saved payment_screenshot_url value and the
-          authenticated admin's Storage SELECT permissions.
-        </p>
-        <button type="button"
-          onclick="retryPaymentReceipt()">
-          RETRY
-        </button>
+        <button type="button" onclick="retryPaymentReceipt()">RETRY</button>
       </div>
     `;
-
     return;
   }
 
-  const url = data.signedUrl;
+  const signedUrl = data.signedUrl;
 
   area.innerHTML = `
     <p>Payment receipt:</p>
-
-    <a href="${esc(url)}"
-       target="_blank"
-       rel="noopener noreferrer">
+    <a href="${esc(signedUrl)}" target="_blank" rel="noopener noreferrer">
       OPEN RECEIPT IN NEW TAB
     </a>
-
     <img
-      src="${esc(url)}"
+      src="${esc(signedUrl)}"
       alt="Payment receipt"
-      onerror="this.style.display='none';
-        this.nextElementSibling.style.display='block';"
+      onerror="this.style.display='none';this.nextElementSibling.style.display='block'"
     >
-
     <p class="muted" style="display:none">
-      The receipt URL was generated, but the image could not
-      be displayed. Use OPEN RECEIPT IN NEW TAB to test it.
+      The signed URL was created, but the image did not display. Try opening it in a new tab.
     </p>
   `;
 }
 
 async function retryPaymentReceipt() {
-  if (!selectedPayment) return;
-
-  await loadPaymentReceipt(selectedPayment);
+  if (selectedPayment) {
+    await loadPaymentReceipt(selectedPayment);
+  }
 }
 
-async function loadPaymentReceipt(payment) {
-  const area = document.getElementById("receiptArea");
-  if (!area) return;
+/* =====================================
+   REFRESH REVIEW WITHOUT JUMPING
+===================================== */
 
-  const path = payment.payment_screenshot_url;
+async function refreshReview() {
+  if (!selectedTeam) return;
 
-  if (!path) {
-    area.textContent = "No payment screenshot was uploaded.";
-    return;
-  }
+  const teamId = selectedTeam.id;
+  const content = document.getElementById("reviewContent");
+  const savedScroll = content.scrollTop;
 
-  if (/^https?:\/\//i.test(path)) {
-    const safeUrl = esc(path);
+  await openReview(teamId, { preserveScroll: true });
 
-    area.innerHTML = `
-      <p>Payment receipt:</p>
-      <a href="${safeUrl}" target="_blank" rel="noopener noreferrer">
-        OPEN RECEIPT
-      </a>
-      ${
-        /\.(png|jpe?g|webp)(\?|$)/i.test(path)
-          ? `<img src="${safeUrl}" alt="Payment receipt">`
-          : ""
-      }
-    `;
-
-    return;
-  }
-
-  const { data, error } = await db.storage
-    .from(PAYMENT_BUCKET)
-    .createSignedUrl(path, 3600);
-
-  if (error || !data?.signedUrl) {
-    area.textContent =
-      "Unable to open receipt. Check the storage bucket and admin storage permissions.";
-
-    console.error("Receipt loading error:", error);
-    return;
-  }
-
-  const url = data.signedUrl;
-  const isImage = /\.(png|jpe?g|webp)(\?|$)/i.test(path);
-
-  area.innerHTML = `
-    <p>Payment receipt:</p>
-
-    <a href="${esc(url)}" target="_blank" rel="noopener noreferrer">
-      OPEN RECEIPT
-    </a>
-
-    ${
-      isImage
-        ? `<img src="${esc(url)}" alt="Payment receipt">`
-        : ""
-    }
-  `;
+  requestAnimationFrame(() => {
+    content.scrollTop = savedScroll;
+  });
 }
-
 
 /* =====================================
    VERIFY PLAYER
-   No verification note field.
 ===================================== */
 
 async function verifyPlayer(playerId) {
   if (!selectedTeam) return;
-
-  const player = selectedPlayers.find(
-    p => String(p.id) === String(playerId)
-  );
-
-  if (!player) return;
 
   const { error } = await db
     .from("team_players")
@@ -1147,23 +926,13 @@ async function verifyPlayer(playerId) {
     .eq("id", playerId);
 
   if (error) {
-    showMessage(
-      "Could not verify player: " + error.message,
-      "error"
-    );
+    showMessage("Could not verify player: " + error.message, "error");
     return;
   }
 
   showMessage("Player verified.");
-
-  // Refresh the popup without scrolling the main page.
-  await openReview(selectedTeam.id);
+  await refreshReview();
 }
-
-
-/* =====================================
-   MARK PLAYER UNVERIFIED
-===================================== */
 
 async function unverifyPlayer(playerId) {
   if (!selectedTeam) return;
@@ -1177,25 +946,22 @@ async function unverifyPlayer(playerId) {
     .eq("id", playerId);
 
   if (error) {
-    showMessage(
-      "Could not update player: " + error.message,
-      "error"
-    );
+    showMessage("Could not update player: " + error.message, "error");
     return;
   }
 
   showMessage("Player marked unverified.");
-
-  await openReview(selectedTeam.id);
+  await refreshReview();
 }
 
-
 /* =====================================
-   VERIFY PAYMENT
+   PAYMENT ACTIONS
 ===================================== */
 
 async function verifyPayment() {
   if (!selectedPayment || !selectedTeam) return;
+
+  const teamId = selectedTeam.id;
 
   const note =
     document.getElementById("paymentNote")?.value.trim() ||
@@ -1211,25 +977,18 @@ async function verifyPayment() {
     .eq("id", selectedPayment.id);
 
   if (error) {
-    showMessage(
-      "Could not verify payment: " + error.message,
-      "error"
-    );
+    showMessage("Could not verify payment: " + error.message, "error");
     return;
   }
 
   showMessage("Payment verified.");
-
-  await openReview(selectedTeam.id);
+  await openReview(teamId, { preserveScroll: true });
 }
-
-
-/* =====================================
-   MARK PAYMENT PENDING
-===================================== */
 
 async function rejectPayment() {
   if (!selectedPayment || !selectedTeam) return;
+
+  const teamId = selectedTeam.id;
 
   const note =
     document.getElementById("paymentNote")?.value.trim() ||
@@ -1245,21 +1004,16 @@ async function rejectPayment() {
     .eq("id", selectedPayment.id);
 
   if (error) {
-    showMessage(
-      "Could not update payment: " + error.message,
-      "error"
-    );
+    showMessage("Could not update payment: " + error.message, "error");
     return;
   }
 
   showMessage("Payment marked pending.");
-
-  await openReview(selectedTeam.id);
+  await openReview(teamId, { preserveScroll: true });
 }
 
-
 /* =====================================
-   WHATSAPP HELPERS
+   WHATSAPP
 ===================================== */
 
 function whatsappUrl(phone, message) {
@@ -1267,15 +1021,11 @@ function whatsappUrl(phone, message) {
 
   if (!digits) return null;
 
-  return "https://wa.me/" +
-    digits +
-    "?text=" +
-    encodeURIComponent(message);
+  return "https://wa.me/" + digits + "?text=" + encodeURIComponent(message);
 }
 
-function openWhatsApp(message) {
-  const phone = selectedProfile?.phone;
-  const url = whatsappUrl(phone, message);
+function openWhatsApp(message, phone) {
+  const url = whatsappUrl(phone || selectedProfile?.phone, message);
 
   if (!url) {
     alert(
@@ -1288,7 +1038,6 @@ function openWhatsApp(message) {
   window.open(url, "_blank", "noopener,noreferrer");
 }
 
-
 /* =====================================
    APPROVE TEAM
 ===================================== */
@@ -1297,6 +1046,9 @@ async function approveTeam() {
   if (!selectedTeam) return;
 
   const teamId = selectedTeam.id;
+  const teamName = selectedTeam.team_name || "your team";
+  const leaderName = selectedProfile?.full_name || "Team Leader";
+  const leaderPhone = selectedProfile?.phone;
 
   const allVerified =
     selectedPlayers.length > 0 &&
@@ -1316,7 +1068,7 @@ async function approveTeam() {
     return;
   }
 
-  if (!confirm("Approve " + selectedTeam.team_name + "?")) return;
+  if (!confirm("Approve " + teamName + "?")) return;
 
   const { error } = await db
     .from("teams")
@@ -1324,15 +1076,9 @@ async function approveTeam() {
     .eq("id", teamId);
 
   if (error) {
-    showMessage(
-      "Could not approve team: " + error.message,
-      "error"
-    );
+    showMessage("Could not approve team: " + error.message, "error");
     return;
   }
-
-  const teamName = selectedTeam.team_name || "your team";
-  const leaderName = selectedProfile?.full_name || "Team Leader";
 
   const message =
     "Hello " + leaderName + ",\n\n" +
@@ -1344,13 +1090,10 @@ async function approveTeam() {
   showMessage("Team approved.");
 
   await loadTeams();
-
-  // Refresh the popup before opening WhatsApp.
   await openReview(teamId);
 
-  openWhatsApp(message);
+  openWhatsApp(message, leaderPhone);
 }
-
 
 /* =====================================
    REJECT TEAM
@@ -1361,15 +1104,14 @@ async function rejectTeam() {
 
   const teamId = selectedTeam.id;
   const teamName = selectedTeam.team_name || "your team";
+  const leaderName = selectedProfile?.full_name || "Team Leader";
+  const leaderPhone = selectedProfile?.phone;
 
   const reason =
     document.getElementById("rejectionReason")?.value.trim();
 
   if (!reason) {
-    showMessage(
-      "Please enter a rejection reason first.",
-      "error"
-    );
+    showMessage("Please enter a rejection reason first.", "error");
     return;
   }
 
@@ -1381,14 +1123,9 @@ async function rejectTeam() {
     .eq("id", teamId);
 
   if (error) {
-    showMessage(
-      "Could not reject team: " + error.message,
-      "error"
-    );
+    showMessage("Could not reject team: " + error.message, "error");
     return;
   }
-
-  const leaderName = selectedProfile?.full_name || "Team Leader";
 
   const message =
     "Hello " + leaderName + ",\n\n" +
@@ -1402,9 +1139,8 @@ async function rejectTeam() {
   await loadTeams();
   await openReview(teamId);
 
-  openWhatsApp(message);
+  openWhatsApp(message, leaderPhone);
 }
-
 
 /* =====================================
    DIAMOND TOP-UP ORDERS
@@ -1412,7 +1148,6 @@ async function rejectTeam() {
 
 async function loadTopups() {
   const box = document.getElementById("topupsList");
-
   box.textContent = "Loading top-up orders...";
 
   const { data, error } = await db
@@ -1436,12 +1171,10 @@ async function loadTopups() {
   }
 
   const orders = data || [];
-
   document.getElementById("topupCount").textContent = orders.length;
 
   if (!orders.length) {
-    box.innerHTML =
-      '<div class="empty">No top-up orders found.</div>';
+    box.innerHTML = '<div class="empty">No top-up orders found.</div>';
     return;
   }
 
@@ -1451,49 +1184,24 @@ async function loadTopups() {
         <strong>Order #${esc(order.id)}</strong>
         ${statusBadge(order.status || "pending")}
       </div>
-
       <p class="muted">
-        Player:
-        ${esc(
-          order.username ||
-          order.game_username ||
-          order.player_name ||
-          "—"
-        )}<br>
-
+        Player: ${esc(order.username || order.game_username || order.player_name || "—")}<br>
         Game User ID: ${esc(order.game_user_id || "—")}<br>
-
         Server ID: ${esc(order.server_id || "—")}<br>
-
-        Package:
-        ${esc(
-          order.package_name ||
-          order.diamond_amount ||
-          order.product_name ||
-          "—"
-        )}<br>
-
+        Package: ${esc(order.package_name || order.diamond_amount || order.product_name || "—")}<br>
         Amount: ₹${esc(order.amount ?? order.price ?? "—")}<br>
-
-        Created:
-        ${esc(
-          order.created_at
-            ? new Date(order.created_at).toLocaleString()
-            : "—"
-        )}
+        Created: ${esc(order.created_at ? new Date(order.created_at).toLocaleString() : "—")}
       </p>
     </div>
   `).join("");
 }
 
-
 /* =====================================
-   INITIALIZE ADMIN PANEL
+   INITIALIZE
 ===================================== */
 
 async function init() {
   const allowed = await checkAdmin();
-
   if (!allowed) return;
 
   await Promise.all([
