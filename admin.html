@@ -84,9 +84,10 @@ a { color: inherit; text-decoration: none; }
   line-height: 1.6;
   overflow-wrap: anywhere;
 }
-.notice.error { display: block; background: #361116; border: 1px solid #8d2631; color: #ffb9bf; }
-.notice.success { display: block; background: #102b1c; border: 1px solid #1e7545; color: #b6ffd3; }
-.notice.info { display: block; background: #191f2c; border: 1px solid #344767; color: #c8dcff; }
+.notice.error, .notice.success, .notice.info { display: block; }
+.notice.error { background: #361116; border: 1px solid #8d2631; color: #ffb9bf; }
+.notice.success { background: #102b1c; border: 1px solid #1e7545; color: #b6ffd3; }
+.notice.info { background: #191f2c; border: 1px solid #344767; color: #c8dcff; }
 
 .stats {
   display: grid;
@@ -134,7 +135,7 @@ a { color: inherit; text-decoration: none; }
   max-width: 100%;
 }
 .table-wrap { width: 100%; overflow-x: auto; }
-table { border-collapse: collapse; width: 100%; min-width: 850px; }
+table { border-collapse: collapse; width: 100%; min-width: 1050px; }
 th, td {
   padding: 13px 12px;
   text-align: left;
@@ -144,6 +145,7 @@ th, td {
 }
 th { background: #202020; color: #ddd; font-size: 12px; white-space: nowrap; }
 td { color: #eee; }
+
 .badge {
   display: inline-block;
   padding: 5px 9px;
@@ -238,8 +240,8 @@ td { color: #eee; }
 }
 </style>
 </head>
-
 <body>
+
 <header class="topbar">
   <a class="brand" href="index.html">REN <span>GAMING</span></a>
   <div class="top-actions">
@@ -266,10 +268,9 @@ td { color: #eee; }
       <div class="stat-card"><p>Pending Payments</p><h2 id="pendingPayments">0</h2></div>
     </div>
 
-    <!-- TEAM MANAGEMENT -->
     <section class="section">
       <div class="section-header">
-        <div><h2>Team Management</h2><p>Review registrations and manage teams.</p></div>
+        <div><h2>Team Management</h2><p>Review registrations, phone numbers and WhatsApp messages.</p></div>
         <div class="actions">
           <button class="button button-green" id="exportButton" type="button">Download Excel</button>
           <button class="button button-dark" id="refreshButton" type="button">Refresh Data</button>
@@ -277,7 +278,7 @@ td { color: #eee; }
       </div>
       <div class="section-content">
         <div class="toolbar">
-          <input id="teamSearch" class="field" type="search" placeholder="Search team name...">
+          <input id="teamSearch" class="field" type="search" placeholder="Search team name or phone...">
           <select id="teamStatusFilter" class="field">
             <option value="all">All statuses</option>
             <option value="pending">Pending</option>
@@ -287,25 +288,22 @@ td { color: #eee; }
         </div>
         <div class="table-wrap">
           <table>
-            <thead><tr><th>Team Name</th><th>Tournament ID</th><th>Status</th><th>Registered</th><th>Actions</th></tr></thead>
-            <tbody id="teamsTableBody"><tr><td colspan="5" class="empty">Loading teams...</td></tr></tbody>
+            <thead><tr><th>Team Name</th><th>Leader Phone</th><th>Tournament ID</th><th>Status</th><th>Registered</th><th>Actions</th></tr></thead>
+            <tbody id="teamsTableBody"><tr><td colspan="6" class="empty">Loading teams...</td></tr></tbody>
           </table>
         </div>
-        <p style="color:#aaa;font-size:12px;line-height:1.6;margin-top:12px">
-          Deleting a registration permanently removes the team and its player records.
-        </p>
+        <p style="color:#aaa;font-size:12px;line-height:1.6;margin-top:12px">WhatsApp messages are prepared for you; they are not sent automatically.</p>
       </div>
     </section>
 
-    <!-- TOURNAMENT PAYMENTS -->
     <section class="section">
       <div class="section-header">
-        <div><h2>Tournament Payments</h2><p>View receipts and approve or reject payment submissions.</p></div>
+        <div><h2>Tournament Payments</h2><p>View receipts and manage payment status.</p></div>
         <button class="button button-dark" id="refreshPaymentsButton" type="button">Refresh Payments</button>
       </div>
       <div class="section-content">
         <div class="toolbar">
-          <input id="paymentSearch" class="field" type="search" placeholder="Search team or transaction ID...">
+          <input id="paymentSearch" class="field" type="search" placeholder="Search team, phone or transaction ID...">
           <select id="paymentStatusFilter" class="field">
             <option value="all">All statuses</option>
             <option value="pending">Pending</option>
@@ -315,25 +313,15 @@ td { color: #eee; }
         </div>
         <div class="table-wrap">
           <table>
-            <thead>
-              <tr>
-                <th>Team</th><th>Amount</th><th>Method</th><th>Transaction ID</th>
-                <th>Receipt</th><th>Status</th><th>Submitted</th><th>Actions</th>
-              </tr>
-            </thead>
-            <tbody id="paymentsTableBody">
-              <tr><td colspan="8" class="empty">Loading payments...</td></tr>
-            </tbody>
+            <thead><tr><th>Team</th><th>Leader Phone</th><th>Amount</th><th>Method</th><th>Transaction ID</th><th>Receipt</th><th>Status</th><th>Submitted</th><th>Actions</th></tr></thead>
+            <tbody id="paymentsTableBody"><tr><td colspan="9" class="empty">Loading payments...</td></tr></tbody>
           </table>
         </div>
       </div>
     </section>
 
-    <!-- TOP-UP ORDERS -->
     <section class="section">
-      <div class="section-header">
-        <div><h2>Diamond Top-up Orders</h2><p>View orders submitted by customers.</p></div>
-      </div>
+      <div class="section-header"><div><h2>Diamond Top-up Orders</h2><p>View orders submitted by customers.</p></div></div>
       <div class="section-content">
         <div class="table-wrap">
           <table>
@@ -344,23 +332,13 @@ td { color: #eee; }
       </div>
     </section>
 
-    <!-- OTHER ADMIN TOOLS -->
     <section class="section">
       <div class="section-header"><div><h2>Admin Tools</h2><p>Open other management pages.</p></div></div>
       <div class="section-content">
         <div class="quick-links">
-          <a class="quick-link" href="admin-tournament-management.html">
-            <h3>Tournament Management</h3><p>Add, edit and manage tournament information.</p>
-            <span class="button button-red">Open Page →</span>
-          </a>
-          <a class="quick-link" href="admin-match-management.html">
-            <h3>Match Management</h3><p>Manage tournament matches and progress.</p>
-            <span class="button button-red">Open Page →</span>
-          </a>
-          <a class="quick-link" href="admin-player-verification.html">
-            <h3>Player Verification</h3><p>Review player verification submissions.</p>
-            <span class="button button-red">Open Page →</span>
-          </a>
+          <a class="quick-link" href="admin-tournament-management.html"><h3>Tournament Management</h3><p>Add, edit and manage tournament information.</p><span class="button button-red">Open Page →</span></a>
+          <a class="quick-link" href="admin-match-management.html"><h3>Match Management</h3><p>Manage tournament matches and progress.</p><span class="button button-red">Open Page →</span></a>
+          <a class="quick-link" href="admin-player-verification.html"><h3>Player Verification</h3><p>Review player verification submissions.</p><span class="button button-red">Open Page →</span></a>
         </div>
       </div>
     </section>
@@ -368,917 +346,1312 @@ td { color: #eee; }
 </main>
 
 <div id="playersModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="playersModalTitle">
-  <div class="modal-box">
-    <div class="modal-title">
-      <h2 id="playersModalTitle">Team Players</h2>
-      <button class="modal-close" id="closePlayersModal" type="button">Close</button>
-    </div>
-    <div id="playersModalContent" class="player-list">Loading players...</div>
-  </div>
+  <div class="modal-box"><div class="modal-title"><h2 id="playersModalTitle">Team Players</h2><button class="modal-close" id="closePlayersModal" type="button">Close</button></div><div id="playersModalContent" class="player-list">Loading players...</div></div>
 </div>
-
 <div id="receiptModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="receiptModalTitle">
-  <div class="modal-box">
-    <div class="modal-title">
-      <h2 id="receiptModalTitle">Payment Receipt</h2>
-      <button class="modal-close" id="closeReceiptModal" type="button">Close</button>
-    </div>
-    <div id="receiptModalContent" class="player-list">Loading receipt...</div>
-  </div>
+  <div class="modal-box"><div class="modal-title"><h2 id="receiptModalTitle">Payment Screenshot</h2><button class="modal-close" id="closeReceiptModal" type="button">Close</button></div><div id="receiptModalContent" class="player-list">Loading receipt...</div></div>
 </div>
 
 <footer class="footer">© <span id="currentYear"></span> Ren Gaming. Admin Dashboard.</footer>
-
 <script>
-"use strict";
+/* =========================================================
+   REN GAMING ADMIN DASHBOARD — PART 2
+   Supabase connection, authentication, teams and payments
+   WhatsApp messages are prepared only; you send them manually.
+========================================================= */
 
-/* SUPABASE CONFIGURATION */
 const SUPABASE_URL = "https://bixpvxkpnaqdifmvkhvp.supabase.co";
 const SUPABASE_KEY = "sb_publishable_XtzkrIFbBPTGUmoLHqHu5Q_XeznKoVI";
-
-/*
- IMPORTANT:
- Keep the tournament ID below set to the actual tournament UUID from
- your public.tournament table. Do not use a user's ID or a storage folder ID.
-*/
 const TOURNAMENT_ID = "8b5997f8-194a-4998-9915-6528dfbbcb44";
 
-/*
- Payment receipt files may be in either bucket. The first is the bucket
- confirmed to contain the receipt discussed in your error.
-*/
-const PAYMENT_BUCKETS = [
-  "tournament-payment-proofs",
-  "payment-receipts"
-];
-
 const supabaseClient = window.supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_KEY,
-  {
-    auth: {
-      persistSession: true,
-      autoRefreshToken: true,
-      detectSessionInUrl: true
-    }
-  }
+    SUPABASE_URL,
+    SUPABASE_KEY
 );
 
 let allTeams = [];
-let allTopups = [];
 let allPayments = [];
-let teamNameById = {};
-let currentAdminId = null;
+let allTopupOrders = [];
+let currentAdmin = null;
 
-const $ = id => document.getElementById(id);
+/* ---------- GENERAL HELPERS ---------- */
 
-function showNotice(message, type = "info") {
-  $("notice").textContent = message;
-  $("notice").className = "notice " + type;
-}
-
-function clearNotice() {
-  $("notice").textContent = "";
-  $("notice").className = "notice";
+function byId(id) {
+    return document.getElementById(id);
 }
 
 function escapeHTML(value) {
-  return String(value ?? "").replace(/[&<>"']/g, char => ({
-    "&": "&amp;",
-    "<": "&lt;",
-    ">": "&gt;",
-    '"': "&quot;",
-    "'": "&#39;"
-  })[char]);
+    return String(value ?? "").replace(/[&<>"']/g, char => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+    })[char]);
+}
+
+function showNotice(message, isError = false) {
+    alert(message);
+    console[isError ? "error" : "log"](message);
 }
 
 function formatDate(value) {
-  if (!value) return "—";
-  const date = new Date(value);
-  return Number.isNaN(date.getTime()) ? String(value) : date.toLocaleString();
-}
+    if (!value) return "—";
 
-function normalizeStatus(value) {
-  return String(value || "pending").trim().toLowerCase();
-}
+    const date = new Date(value);
 
-function statusBadge(status) {
-  const normalized = normalizeStatus(status);
-  let css = "badge-pending";
-
-  if (normalized === "approved" || normalized === "accepted") {
-    css = "badge-approved";
-  } else if (normalized === "rejected" || normalized === "declined") {
-    css = "badge-rejected";
-  }
-
-  return `<span class="badge ${css}">${escapeHTML(status || "pending")}</span>`;
-}
-
-function setLoadingRow(tbodyId, colspan, message) {
-  const element = $(tbodyId);
-  if (!element) return;
-
-  element.innerHTML =
-    `<tr><td colspan="${colspan}" class="empty">${escapeHTML(message)}</td></tr>`;
-}
-
-/* ADMIN AUTHENTICATION */
-async function checkAdmin() {
-  try {
-    const { data, error } = await supabaseClient.auth.getUser();
-
-    if (error || !data.user) {
-      window.location.replace("login.html");
-      return false;
+    if (Number.isNaN(date.getTime())) {
+        return escapeHTML(value);
     }
 
-    const user = data.user;
-    currentAdminId = user.id;
-    $("adminEmail").textContent = user.email || "Administrator";
-
-    const { data: profile, error: profileError } = await supabaseClient
-      .from("profiles")
-      .select("role")
-      .eq("id", user.id)
-      .maybeSingle();
-
-    if (profileError) {
-      throw new Error("Could not check admin role: " + profileError.message);
-    }
-
-    if (!profile || String(profile.role || "").trim().toLowerCase() !== "admin") {
-      $("loadingMessage").classList.add("hidden");
-      showNotice("Access denied. This account does not have the admin role.", "error");
-      return false;
-    }
-
-    $("loadingMessage").classList.add("hidden");
-    $("adminContent").classList.remove("hidden");
-    return true;
-
-  } catch (error) {
-    console.error(error);
-    $("loadingMessage").classList.add("hidden");
-    showNotice("Admin verification failed: " + error.message, "error");
-    return false;
-  }
+    return date.toLocaleString("en-IN", {
+        dateStyle: "medium",
+        timeStyle: "short"
+    });
 }
 
-/* LOAD TEAMS */
-async function loadTeams() {
-  setLoadingRow("teamsTableBody", 5, "Loading teams...");
+function formatMoney(value) {
+    const amount = Number(value || 0);
 
-  try {
-    const { data, error } = await supabaseClient
-      .from("teams")
-      .select("*")
-      .eq("tournament_id", TOURNAMENT_ID)
-      .order("created_at", { ascending: false });
-
-    if (error) throw error;
-
-    allTeams = data || [];
-    renderTeams();
-    updateStats();
-
-  } catch (error) {
-    console.error(error);
-    setLoadingRow("teamsTableBody", 5, "Could not load teams: " + error.message);
-    showNotice("Could not load teams. Check Supabase permissions and tournament ID. " + error.message, "error");
-  }
+    return amount.toLocaleString("en-IN", {
+        style: "currency",
+        currency: "INR",
+        maximumFractionDigits: 2
+    });
 }
 
-function renderTeams() {
-  const search = $("teamSearch").value.trim().toLowerCase();
-  const filter = $("teamStatusFilter").value;
+function getFirstValue(object, fields) {
+    if (!object) return "";
 
-  const filtered = allTeams.filter(team => {
-    const name = String(team.team_name || team.name || "").toLowerCase();
-    const status = normalizeStatus(team.status);
-    return name.includes(search) && (filter === "all" || status === filter);
-  });
+    for (const field of fields) {
+        const value = object[field];
 
-  if (!filtered.length) {
-    setLoadingRow("teamsTableBody", 5, "No matching teams found.");
-    updateStats();
-    return;
-  }
+        if (value !== null && value !== undefined &&
+            String(value).trim() !== "") {
+            return String(value).trim();
+        }
+    }
 
-  $("teamsTableBody").innerHTML = filtered.map(team => {
-    const name = team.team_name || team.name || "Unnamed team";
-    const status = normalizeStatus(team.status);
-
-    return `
-      <tr>
-        <td><strong>${escapeHTML(name)}</strong></td>
-        <td>${escapeHTML(team.tournament_id || "—")}</td>
-        <td>${statusBadge(status)}</td>
-        <td>${escapeHTML(formatDate(team.created_at))}</td>
-        <td>
-          <div class="actions">
-            <button class="button button-dark button-small"
-              data-action="players" data-id="${escapeHTML(team.id)}">Players</button>
-            ${status !== "approved" ? `
-              <button class="button button-green button-small"
-                data-action="approve" data-id="${escapeHTML(team.id)}">Approve</button>` : ""}
-            ${status !== "rejected" ? `
-              <button class="button button-danger button-small"
-                data-action="reject" data-id="${escapeHTML(team.id)}">Reject</button>` : ""}
-            <button class="button button-danger button-small"
-              data-action="delete" data-id="${escapeHTML(team.id)}">Delete Registration</button>
-          </div>
-        </td>
-      </tr>`;
-  }).join("");
-
-  updateStats();
+    return "";
 }
 
-/* APPROVE OR REJECT TEAM */
-async function updateTeamStatus(teamId, newStatus) {
-  if (!confirm(`Are you sure you want to ${newStatus} this team?`)) return;
-
-  try {
-    const { data, error } = await supabaseClient
-      .from("teams")
-      .update({ status: newStatus })
-      .eq("id", teamId)
-      .eq("tournament_id", TOURNAMENT_ID)
-      .select();
-
-    if (error) throw error;
-    if (!data || !data.length) {
-      throw new Error("No team updated. Check your database UPDATE policy.");
-    }
-
-    showNotice("Team " + newStatus + " successfully.", "success");
-    await loadTeams();
-
-  } catch (error) {
-    showNotice("Could not update team: " + error.message, "error");
-  }
+function getTeamName(team) {
+    return getFirstValue(team, [
+        "team_name",
+        "name",
+        "teamName",
+        "squad_name"
+    ]) || "Unnamed Team";
 }
 
-/* DELETE REGISTRATION */
-async function deleteTeamRegistration(teamId) {
-  const team = allTeams.find(item => String(item.id) === String(teamId));
-
-  if (!team) {
-    showNotice("Team not found. Refresh the page and try again.", "error");
-    return;
-  }
-
-  const name = team.team_name || team.name || "this team";
-
-  if (!confirm(
-    `DELETE REGISTRATION?\n\nTeam: ${name}\n\nThis permanently removes this team's registration and its player records. This action cannot be undone.`
-  )) return;
-
-  showNotice("Deleting registration and associated player records...", "info");
-
-  try {
-    const { error: playersError } = await supabaseClient
-      .from("team_players")
-      .delete()
-      .eq("team_id", teamId);
-
-    if (playersError) {
-      throw new Error("Could not delete player records. " + playersError.message);
-    }
-
-    const { data: deletedTeams, error: teamError } = await supabaseClient
-      .from("teams")
-      .delete()
-      .eq("id", teamId)
-      .eq("tournament_id", TOURNAMENT_ID)
-      .select("id");
-
-    if (teamError) throw teamError;
-
-    if (!deletedTeams || deletedTeams.length === 0) {
-      throw new Error("No team was deleted. Check the Supabase DELETE policy.");
-    }
-
-    showNotice(`Registration "${name}" and its player records were deleted.`, "success");
-    await loadTeams();
-
-  } catch (error) {
-    console.error("Delete registration failed:", error);
-    showNotice("Delete failed: " + error.message, "error");
-  }
+function getStatus(item) {
+    return getFirstValue(item, [
+        "status",
+        "payment_status",
+        "verification_status"
+    ]) || "pending";
 }
 
-/* VIEW PLAYER DETAILS */
-async function viewTeamPlayers(teamId) {
-  $("playersModalTitle").textContent = "Team Players";
-  $("playersModalContent").textContent = "Loading players...";
-  $("playersModal").classList.add("open");
+function normalizeStatus(status) {
+    return String(status || "").toLowerCase().trim();
+}
 
-  try {
-    const { data, error } = await supabaseClient
-      .from("team_players")
-      .select("*")
-      .eq("team_id", teamId);
+/* ---------- PHONE AND WHATSAPP ---------- */
 
-    if (error) throw error;
-
-    if (!data || !data.length) {
-      $("playersModalContent").textContent = "No player records found.";
-      return;
-    }
-
-    $("playersModalContent").innerHTML = data.map((player, index) => `
-      <div class="player-card">
-        <strong>${escapeHTML(player.username || player.player_name || player.name || "Unnamed player")}</strong><br>
-        Player Type: ${escapeHTML(player.player_type || "—")}<br>
-        Player Number: ${escapeHTML(player.player_number ?? index + 1)}<br>
-        Game User ID: ${escapeHTML(player.game_user_id || "—")}<br>
-        Server ID: ${escapeHTML(player.server_id || "—")}<br>
-        Verification Status: ${escapeHTML(player.verification_status || "—")}
-      </div>`).join("");
-
-  } catch (error) {
-    $("playersModalContent").textContent = "Could not load players: " + error.message;
-  }
+function getPhoneFromRecord(record) {
+    return getFirstValue(record, [
+        "leader_phone",
+        "phone_number",
+        "whatsapp_number",
+        "contact_number",
+        "phone",
+        "whatsapp",
+        "mobile"
+    ]);
 }
 
 /*
-  PAYMENT RECEIPT PATH HANDLING
-
-  Supports:
-  1. Relative storage paths saved in payment_screenshot_url.
-  2. Supabase public/signed/authenticated storage URLs.
-  3. Both receipt buckets, trying tournament-payment-proofs first.
-
-  Receipt objects remain private: this uses createSignedUrl, not a public URL.
+  India number handling:
+  - 10-digit Indian mobile number becomes 91 + number.
+  - Existing country code is retained.
+  - A number beginning with + has punctuation removed.
 */
-function parseReceiptLocation(savedValue) {
-  const value = String(savedValue || "").trim();
+function normalizeIndianPhone(phone) {
+    if (!phone) return "";
 
-  if (!value) {
-    throw new Error("No receipt path is saved for this payment.");
-  }
+    let digits = String(phone).replace(/\D/g, "");
 
-  if (/^https?:\/\//i.test(value)) {
-    if (!value.startsWith(SUPABASE_URL + "/storage/v1/object/")) {
-      throw new Error("The saved receipt URL is not from this Supabase project.");
+    if (digits.length === 10) {
+        digits = "91" + digits;
+    } else if (digits.length === 11 && digits.startsWith("0")) {
+        digits = "91" + digits.slice(1);
     }
 
-    const rest = value.split("/storage/v1/object/")[1]
-      .split("?")[0]
-      .replace(/^(public|sign|authenticated)\//, "");
-
-    const slash = rest.indexOf("/");
-
-    if (slash < 1) {
-      throw new Error("Could not identify the receipt storage bucket.");
+    // Basic international number length validation.
+    if (digits.length < 10 || digits.length > 15) {
+        return "";
     }
 
-    return {
-      bucket: decodeURIComponent(rest.slice(0, slash)),
-      path: decodeURIComponent(rest.slice(slash + 1)).replace(/^\/+/, "")
+    return digits;
+}
+
+function openWhatsApp(phone, message) {
+    const digits = normalizeIndianPhone(phone);
+
+    if (!digits) {
+        showNotice(
+            "No valid team leader phone number was found. " +
+            "Please check the phone number in your database.",
+            true
+        );
+        return;
+    }
+
+    const whatsappURL =
+        "https://wa.me/" + digits +
+        "?text=" + encodeURIComponent(message);
+
+    window.open(whatsappURL, "_blank", "noopener,noreferrer");
+}
+
+function teamWhatsAppMessage(team, decision) {
+    const teamName = getTeamName(team);
+
+    if (decision === "approved") {
+        return `Hello ${teamName}! Your team registration for Ren Gaming has been approved. Please stay connected with the tournament group for further updates. Thank you!`;
+    }
+
+    if (decision === "rejected") {
+        return `Hello ${teamName}. Your team registration for Ren Gaming has been rejected. Please contact the tournament admin for further details.`;
+    }
+
+    return `Hello ${teamName}! This is an update from Ren Gaming regarding your tournament registration.`;
+}
+
+function paymentWhatsAppMessage(payment, decision) {
+    const amount = formatMoney(payment.amount);
+    const transactionId =
+        getFirstValue(payment, ["transaction_id", "transaction_reference"]) ||
+        "Not provided";
+
+    if (decision === "approved") {
+        return `Hello! Your Ren Gaming tournament payment of ${amount} has been approved. Transaction ID: ${transactionId}. Thank you!`;
+    }
+
+    return `Hello! Your Ren Gaming tournament payment of ${amount} has been rejected. Transaction ID: ${transactionId}. Please contact the admin if you need help.`;
+}
+
+/* ---------- SUPABASE FETCH HELPERS ---------- */
+
+async function fetchTable(tableName, queryBuilder) {
+    try {
+        const result = await queryBuilder;
+
+        if (result.error) {
+            console.warn(`Could not load ${tableName}:`, result.error.message);
+            return [];
+        }
+
+        return result.data || [];
+    } catch (error) {
+        console.warn(`Error loading ${tableName}:`, error);
+        return [];
+    }
+}
+
+/* ---------- LOAD ADMIN PROFILE ---------- */
+
+async function checkAdminAccess() {
+    const { data, error } = await supabaseClient.auth.getUser();
+
+    if (error || !data?.user) {
+        showNotice(
+            "Please sign in with your admin account first.",
+            true
+        );
+        return false;
+    }
+
+    const user = data.user;
+
+    const profileResult = await supabaseClient
+        .from("profiles")
+        .select("id, full_name, phone, role")
+        .eq("id", user.id)
+        .maybeSingle();
+
+    if (profileResult.error) {
+        showNotice(
+            "Could not verify your admin profile. Check the profiles table and its permissions.",
+            true
+        );
+        return false;
+    }
+
+    const profile = profileResult.data;
+
+    if (!profile || String(profile.role || "").toLowerCase() !== "admin") {
+        showNotice(
+            "Access denied. This dashboard is for admin accounts only.",
+            true
+        );
+        return false;
+    }
+
+    currentAdmin = {
+        ...user,
+        ...profile
     };
-  }
 
-  /*
-    Relative paths in this project are stored as:
-    user-or-folder-id/team-or-payment-id/filename.jpg
-  */
-  return {
-    bucket: null,
-    path: value.replace(/^\/+/, "")
-  };
-}
+    const adminName = byId("adminName");
 
-async function createReceiptLink(savedValue) {
-  const location = parseReceiptLocation(savedValue);
-
-  const bucketsToTry = location.bucket
-    ? [location.bucket]
-    : PAYMENT_BUCKETS;
-
-  let lastError = null;
-
-  for (const bucket of bucketsToTry) {
-    const { data, error } = await supabaseClient
-      .storage
-      .from(bucket)
-      .createSignedUrl(location.path, 300);
-
-    if (!error && data && data.signedUrl) {
-      return {
-        signedUrl: data.signedUrl,
-        bucket
-      };
+    if (adminName) {
+        adminName.textContent =
+            profile.full_name || user.email || "Admin";
     }
 
-    lastError = error || new Error("Could not create a signed receipt link.");
-    console.warn("Receipt lookup failed in bucket:", bucket, lastError);
-  }
-
-  throw new Error(
-    "Receipt not found in the checked storage bucket(s): " +
-    bucketsToTry.join(", ") +
-    ". Last error: " +
-    (lastError?.message || "Unknown storage error") +
-    ". Check the exact object path and Storage SELECT policies."
-  );
+    return true;
 }
 
-/* LOAD TOURNAMENT PAYMENTS */
-async function loadPayments() {
-  setLoadingRow("paymentsTableBody", 8, "Loading payments...");
+/* ---------- LOAD TEAM LEADER PHONES ---------- */
 
-  try {
-    const { data, error } = await supabaseClient
-      .from("tournament_payments")
-      .select("*")
-      .eq("tournament_id", TOURNAMENT_ID)
-      .order("created_at", { ascending: false });
+async function enrichTeamsWithLeaderPhones(teams) {
+    if (!Array.isArray(teams) || teams.length === 0) {
+        return teams || [];
+    }
 
-    if (error) throw error;
+    const profileIds = [
+        ...new Set(
+            teams.map(team =>
+                getFirstValue(team, [
+                    "user_id",
+                    "leader_id",
+                    "created_by",
+                    "profile_id"
+                ])
+            ).filter(Boolean)
+        )
+    ];
 
-    allPayments = data || [];
-    teamNameById = {};
+    let profilesById = {};
 
-    const ids = [...new Set(allPayments.map(payment => payment.team_id).filter(Boolean))];
+    if (profileIds.length > 0) {
+        try {
+            const result = await supabaseClient
+                .from("profiles")
+                .select("id, full_name, phone")
+                .in("id", profileIds);
 
-    if (ids.length) {
-      const { data: teams, error: teamError } = await supabaseClient
+            if (!result.error && result.data) {
+                result.data.forEach(profile => {
+                    profilesById[profile.id] = profile;
+                });
+            }
+        } catch (error) {
+            console.warn("Could not retrieve leader profiles:", error);
+        }
+    }
+
+    return teams.map(team => {
+        const ownerId = getFirstValue(team, [
+            "user_id",
+            "leader_id",
+            "created_by",
+            "profile_id"
+        ]);
+
+        const profile = profilesById[ownerId] || {};
+
+        const phone =
+            getPhoneFromRecord(team) ||
+            getPhoneFromRecord(profile);
+
+        return {
+            ...team,
+            _leader_phone: phone,
+            _leader_name:
+                getFirstValue(profile, ["full_name", "name"]) ||
+                getFirstValue(team, [
+                    "leader_name",
+                    "captain_name",
+                    "full_name"
+                ])
+        };
+    });
+}
+
+/* ---------- LOAD TEAMS ---------- */
+
+async function loadTeams() {
+    const tbody = byId("teamsTableBody");
+
+    if (tbody) {
+        tbody.innerHTML =
+            '<tr><td colspan="10">Loading teams...</td></tr>';
+    }
+
+    let query = supabaseClient
         .from("teams")
-        .select("id,team_name,name")
-        .in("id", ids);
+        .select("*")
+        .order("created_at", { ascending: false });
 
-      if (teamError) throw teamError;
+    // Filter by tournament when the table has that column.
+    // If the query fails because the column is absent, retry without it.
+    let result = await query.eq("tournament_id", TOURNAMENT_ID);
 
-      (teams || []).forEach(team => {
-        teamNameById[team.id] = team.team_name || team.name || "Unnamed team";
-      });
+    if (result.error) {
+        console.warn(
+            "Teams query with tournament filter failed; retrying:",
+            result.error.message
+        );
+
+        result = await supabaseClient
+            .from("teams")
+            .select("*")
+            .order("created_at", { ascending: false });
     }
 
-    renderPayments();
-    updateStats();
-
-  } catch (error) {
-    console.error("Payment loading failed:", error);
-    setLoadingRow("paymentsTableBody", 8, "Could not load payments: " + error.message);
-    showNotice("Could not load payments: " + error.message, "error");
-  }
-}
-
-function renderPayments() {
-  const search = $("paymentSearch").value.trim().toLowerCase();
-  const filter = $("paymentStatusFilter").value;
-
-  const rows = allPayments.filter(payment => {
-    const teamName = String(teamNameById[payment.team_id] || "").toLowerCase();
-    const transactionId = String(payment.transaction_id || "").toLowerCase();
-    const status = normalizeStatus(payment.status);
-
-    return (teamName.includes(search) || transactionId.includes(search)) &&
-      (filter === "all" || status === filter);
-  });
-
-  if (!rows.length) {
-    setLoadingRow("paymentsTableBody", 8, "No matching payment records found.");
-    return;
-  }
-
-  $("paymentsTableBody").innerHTML = rows.map(payment => {
-    const status = normalizeStatus(payment.status);
-    const hasReceipt = Boolean(String(payment.payment_screenshot_url || "").trim());
-
-    return `
-      <tr>
-        <td>
-          <strong>${escapeHTML(teamNameById[payment.team_id] || "Team not found")}</strong><br>
-          <small style="color:#aaa">${escapeHTML(payment.team_id || "")}</small>
-        </td>
-        <td>${escapeHTML(payment.amount ?? "—")}</td>
-        <td>${escapeHTML(payment.payment_method || "UPI")}</td>
-        <td>${escapeHTML(payment.transaction_id || "—")}</td>
-        <td>
-          ${hasReceipt
-            ? `<button class="button button-dark button-small"
-                data-payment-action="receipt" data-id="${escapeHTML(payment.id)}">View Receipt</button>`
-            : "No receipt"}
-        </td>
-        <td>${statusBadge(status)}</td>
-        <td>${escapeHTML(formatDate(payment.created_at))}</td>
-        <td>
-          <div class="actions">
-            ${status !== "approved" ? `
-              <button class="button button-green button-small"
-                data-payment-action="approve" data-id="${escapeHTML(payment.id)}">Approve</button>` : ""}
-            ${status !== "rejected" ? `
-              <button class="button button-danger button-small"
-                data-payment-action="reject" data-id="${escapeHTML(payment.id)}">Reject</button>` : ""}
-          </div>
-        </td>
-      </tr>`;
-  }).join("");
-}
-
-/* VIEW A PRIVATE PAYMENT RECEIPT */
-async function viewPaymentReceipt(paymentId) {
-  const payment = allPayments.find(item => String(item.id) === String(paymentId));
-
-  if (!payment) {
-    showNotice("Payment record not found. Refresh and try again.", "error");
-    return;
-  }
-
-  $("receiptModalTitle").textContent =
-    "Payment Receipt — " + (teamNameById[payment.team_id] || "Team");
-
-  $("receiptModalContent").textContent = "Finding receipt and creating a secure link...";
-  $("receiptModal").classList.add("open");
-
-  try {
-    const result = await createReceiptLink(payment.payment_screenshot_url);
-
-    $("receiptModalContent").innerHTML = `
-      <img
-        class="receipt-image"
-        src="${escapeHTML(result.signedUrl)}"
-        alt="Uploaded payment receipt"
-      >
-      <p style="color:#aaa;font-size:12px;margin-top:12px">
-        Private receipt link expires in approximately 5 minutes.
-      </p>
-      <p style="margin-top:10px">
-        <a class="button button-red"
-          href="${escapeHTML(result.signedUrl)}"
-          target="_blank"
-          rel="noopener noreferrer">Open Image in New Tab</a>
-      </p>
-      <p style="color:#888;font-size:12px;margin-top:10px">
-        Storage bucket: ${escapeHTML(result.bucket)}
-      </p>
-    `;
-
-  } catch (error) {
-    console.error("Receipt opening failed:", error);
-
-    $("receiptModalContent").textContent =
-      "Could not open receipt: " + error.message;
-  }
-}
-
-/* APPROVE OR REJECT PAYMENT */
-async function updatePaymentStatus(paymentId, newStatus) {
-  const payment = allPayments.find(item => String(item.id) === String(paymentId));
-
-  if (!payment) {
-    showNotice("Payment record not found.", "error");
-    return;
-  }
-
-  let note = payment.admin_note || "";
-
-  if (newStatus === "rejected") {
-    const answer = prompt("Optional reason for rejecting this payment:", note);
-    if (answer === null) return;
-    note = answer.trim();
-  }
-
-  if (!confirm(`Are you sure you want to mark this payment as ${newStatus}?`)) {
-    return;
-  }
-
-  try {
-    const { data, error } = await supabaseClient
-      .from("tournament_payments")
-      .update({
-        status: newStatus,
-        verified_at: new Date().toISOString(),
-        admin_note: note || null
-      })
-      .eq("id", paymentId)
-      .eq("tournament_id", TOURNAMENT_ID)
-      .select("id,status");
-
-    if (error) throw error;
-
-    if (!data || !data.length) {
-      throw new Error("No payment updated. Check the UPDATE policy on tournament_payments.");
+    if (result.error) {
+        console.error("Could not load teams:", result.error);
+        if (tbody) {
+            tbody.innerHTML =
+                '<tr><td colspan="10">Could not load teams. Check Supabase permissions and table columns.</td></tr>';
+        }
+        return;
     }
 
-    showNotice("Payment " + newStatus + " successfully.", "success");
-    await loadPayments();
+    allTeams = await enrichTeamsWithLeaderPhones(result.data || []);
 
-  } catch (error) {
-    console.error(error);
-    showNotice("Could not update payment: " + error.message, "error");
-  }
+    renderTeams();
+    updateDashboardStats();
 }
 
-/* LOAD TOP-UP ORDERS */
-async function loadTopups() {
-  setLoadingRow("topupsTableBody", 6, "Loading top-up orders...");
+/* ---------- RENDER TEAMS ---------- */
 
-  try {
-    const { data, error } = await supabaseClient
-      .from("topup_orders")
-      .select("*")
-      .order("created_at", { ascending: false })
-      .limit(200);
+function renderTeams() {
+    const tbody = byId("teamsTableBody");
 
-    if (error) throw error;
-
-    allTopups = data || [];
-    renderTopups();
-    updateStats();
-
-  } catch (error) {
-    console.error("Top-up orders error:", error);
-    allTopups = [];
-    setLoadingRow("topupsTableBody", 6, "Top-up orders unavailable: " + error.message);
-    updateStats();
-  }
-}
-
-function renderTopups() {
-  if (!allTopups.length) {
-    setLoadingRow("topupsTableBody", 6, "No top-up orders found.");
-    return;
-  }
-
-  $("topupsTableBody").innerHTML = allTopups.map(order => `
-    <tr>
-      <td>${escapeHTML(order.id ?? order.order_id ?? "—")}</td>
-      <td>${escapeHTML(order.user_id ?? "—")}</td>
-      <td>${escapeHTML(order.package_name || order.package || order.product_name || "—")}</td>
-      <td>${escapeHTML(order.amount ?? order.price ?? order.total_amount ?? "—")}</td>
-      <td>${statusBadge(order.status || "pending")}</td>
-      <td>${escapeHTML(formatDate(order.created_at))}</td>
-    </tr>
-  `).join("");
-}
-
-/* UPDATE SUMMARY COUNTERS */
-function updateStats() {
-  $("totalTeams").textContent = allTeams.length;
-
-  $("pendingTeams").textContent =
-    allTeams.filter(team => normalizeStatus(team.status) === "pending").length;
-
-  $("approvedTeams").textContent =
-    allTeams.filter(team => normalizeStatus(team.status) === "approved").length;
-
-  $("totalTopups").textContent = allTopups.length;
-
-  $("pendingPayments").textContent =
-    allPayments.filter(payment => normalizeStatus(payment.status) === "pending").length;
-}
-
-/* EXPORT TEAMS AND PLAYERS TO EXCEL */
-async function exportTeamsToExcel() {
-  if (!window.XLSX) {
-    showNotice("Excel library failed to load. Refresh the page and try again.", "error");
-    return;
-  }
-
-  const button = $("exportButton");
-  button.disabled = true;
-  button.textContent = "Preparing Excel...";
-
-  try {
-    const { data: teams, error: teamsError } = await supabaseClient
-      .from("teams")
-      .select("*")
-      .eq("tournament_id", TOURNAMENT_ID)
-      .order("created_at", { ascending: true });
-
-    if (teamsError) {
-      throw new Error("Teams query failed: " + teamsError.message);
+    if (!tbody) {
+        console.warn("teamsTableBody was not found in the HTML.");
+        return;
     }
 
-    const teamList = teams || [];
-    const playerRows = [];
-    const teamIds = teamList.map(team => team.id).filter(Boolean);
+    if (!allTeams.length) {
+        tbody.innerHTML =
+            '<tr><td colspan="10">No teams found.</td></tr>';
+        return;
+    }
 
-    for (let i = 0; i < teamIds.length; i += 100) {
-      const batch = teamIds.slice(i, i + 100);
+    tbody.innerHTML = allTeams.map(team => {
+        const teamId = escapeHTML(team.id);
+        const teamName = escapeHTML(getTeamName(team));
+        const status = getStatus(team);
+        const statusText = escapeHTML(status);
+        const phone = team._leader_phone || "";
+        const phoneDisplay = phone
+            ? escapeHTML(phone)
+            : "Not available";
 
-      const { data: players, error } = await supabaseClient
+        const createdAt = formatDate(team.created_at);
+
+        const normalized = normalizeStatus(status);
+
+        const badgeClass =
+            normalized === "approved" ? "approved" :
+            normalized === "rejected" ? "rejected" :
+            "pending";
+
+        const whatsappButton = phone
+            ? `<button type="button"
+                    class="btn btn-whatsapp"
+                    onclick="messageTeam('${teamId}', '')">
+                    WhatsApp
+               </button>`
+            : '<span class="muted">No phone</span>';
+
+        const approveButton =
+            normalized === "approved"
+                ? ""
+                : `<button type="button"
+                        class="btn btn-approve"
+                        onclick="updateTeamStatus('${teamId}', 'approved')">
+                        Approve
+                   </button>`;
+
+        const rejectButton =
+            normalized === "rejected"
+                ? ""
+                : `<button type="button"
+                        class="btn btn-reject"
+                        onclick="updateTeamStatus('${teamId}', 'rejected')">
+                        Reject
+                   </button>`;
+
+        return `
+            <tr>
+                <td>${teamId}</td>
+                <td>${teamName}</td>
+                <td>${escapeHTML(team._leader_name || "—")}</td>
+                <td>${phoneDisplay}</td>
+                <td>
+                    <span class="status-badge ${badgeClass}">
+                        ${statusText}
+                    </span>
+                </td>
+                <td>${escapeHTML(createdAt)}</td>
+                <td>
+                    <div class="action-buttons">
+                        ${approveButton}
+                        ${rejectButton}
+                        ${whatsappButton}
+                        <button type="button"
+                            class="btn"
+                            onclick="viewTeamPlayers('${teamId}')">
+                            Players
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        `;
+    }).join("");
+}
+
+/* ---------- TEAM STATUS ---------- */
+
+async function updateTeamStatus(teamId, newStatus) {
+    const team = allTeams.find(item => String(item.id) === String(teamId));
+
+    if (!team) {
+        showNotice("Team not found.", true);
+        return;
+    }
+
+    const teamName = getTeamName(team);
+
+    if (!confirm(`Are you sure you want to ${newStatus} "${teamName}"?`)) {
+        return;
+    }
+
+    const { error } = await supabaseClient
+        .from("teams")
+        .update({ status: newStatus })
+        .eq("id", teamId);
+
+    if (error) {
+        console.error("Team status update failed:", error);
+        showNotice(
+            "Could not update team status. Check the teams table and admin permissions.",
+            true
+        );
+        return;
+    }
+
+    team.status = newStatus;
+
+    renderTeams();
+    updateDashboardStats();
+
+    showNotice(`Team "${teamName}" marked as ${newStatus}.`);
+
+    // Open WhatsApp only after an explicit admin action.
+    if (team._leader_phone) {
+        const shouldOpen = confirm(
+            `Open WhatsApp with a ${newStatus} message for ${teamName}?`
+        );
+
+        if (shouldOpen) {
+            openWhatsApp(
+                team._leader_phone,
+                teamWhatsAppMessage(team, newStatus)
+            );
+        }
+    }
+}
+
+function messageTeam(teamId, decision) {
+    const team = allTeams.find(item => String(item.id) === String(teamId));
+
+    if (!team) {
+        showNotice("Team not found.", true);
+        return;
+    }
+
+    const message = decision
+        ? teamWhatsAppMessage(team, decision)
+        : teamWhatsAppMessage(team, "general");
+
+    openWhatsApp(team._leader_phone, message);
+}
+
+/* ---------- LOAD TEAM PLAYERS ---------- */
+
+async function viewTeamPlayers(teamId) {
+    const team = allTeams.find(item => String(item.id) === String(teamId));
+
+    if (!team) {
+        showNotice("Team not found.", true);
+        return;
+    }
+
+    const result = await supabaseClient
         .from("team_players")
         .select("*")
-        .in("team_id", batch);
+        .eq("team_id", teamId);
 
-      if (error) {
-        throw new Error("Player query failed: " + error.message);
-      }
-
-      for (const player of (players || [])) {
-        const team = teamList.find(item => String(item.id) === String(player.team_id));
-
-        playerRows.push({
-          "Team Name": team ? (team.team_name || team.name || "") : "",
-          "Team ID": player.team_id || "",
-          "Tournament ID": team ? (team.tournament_id || "") : "",
-          "Team Status": team ? (team.status || "pending") : "",
-          "Player Number": player.player_number ?? "",
-          "Player Type": player.player_type || "",
-          "Player Name": player.username || player.player_name || player.name || "",
-          "Game User ID": player.game_user_id || "",
-          "Server ID": player.server_id || "",
-          "Verification Status": player.verification_status || ""
-        });
-      }
+    if (result.error) {
+        console.error("Could not load players:", result.error);
+        showNotice(
+            "Could not load team players. Check the team_players table.",
+            true
+        );
+        return;
     }
 
-    const teamRows = teamList.map(team => ({
-      "Team Name": team.team_name || team.name || "",
-      "Team ID": team.id || "",
-      "Tournament ID": team.tournament_id || "",
-      "User ID": team.user_id || "",
-      "Status": team.status || "pending",
-      "Registered At": team.created_at || ""
-    }));
+    const players = result.data || [];
 
-    const workbook = XLSX.utils.book_new();
+    const details = players.map((player, index) => {
+        const playerName = getFirstValue(player, [
+            "username",
+            "player_name",
+            "name"
+        ]) || "Unnamed Player";
 
-    XLSX.utils.book_append_sheet(
-      workbook,
-      XLSX.utils.json_to_sheet(teamRows.length ? teamRows : [{ Message: "No teams found." }]),
-      "Teams"
+        const role = getFirstValue(player, [
+            "player_type",
+            "role",
+            "position"
+        ]) || "—";
+
+        const gameId = getFirstValue(player, [
+            "game_user_id",
+            "user_id"
+        ]) || "—";
+
+        const serverId = getFirstValue(player, [
+            "server_id",
+            "zone_id"
+        ]) || "—";
+
+        return `${index + 1}. ${playerName}\nRole: ${role}\nGame ID: ${gameId}\nServer ID: ${serverId}`;
+    });
+
+    const message = details.length
+        ? details.join("\n\n")
+        : "No players found for this team.";
+
+    const modal = byId("playersModal");
+    const content = byId("playersModalContent");
+
+    if (modal && content) {
+        content.textContent = `${getTeamName(team)}\n\n${message}`;
+        modal.style.display = "flex";
+    } else {
+        alert(`${getTeamName(team)}\n\n${message}`);
+    }
+}
+
+function closePlayersModal() {
+    const modal = byId("playersModal");
+
+    if (modal) {
+        modal.style.display = "none";
+    }
+}
+
+/* ---------- LOAD TOURNAMENT PAYMENTS ---------- */
+
+async function loadPayments() {
+    const tbody = byId("paymentsTableBody");
+
+    if (tbody) {
+        tbody.innerHTML =
+            '<tr><td colspan="9">Loading payments...</td></tr>';
+    }
+
+    const result = await supabaseClient
+        .from("tournament_payments")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+    if (result.error) {
+        console.error("Could not load payments:", result.error);
+
+        if (tbody) {
+            tbody.innerHTML =
+                '<tr><td colspan="9">Could not load payments. Check the tournament_payments table.</td></tr>';
+        }
+
+        return;
+    }
+
+    allPayments = result.data || [];
+
+    // Add team name and leader phone when possible.
+    allPayments = allPayments.map(payment => {
+        const team = allTeams.find(item =>
+            String(item.id) === String(payment.team_id)
+        );
+
+        return {
+            ...payment,
+            _team_name: team ? getTeamName(team) : "",
+            _leader_phone: team ? team._leader_phone : ""
+        };
+    });
+
+    renderPayments();
+    updateDashboardStats();
+}
+
+/* ---------- RENDER PAYMENTS ---------- */
+
+function renderPayments() {
+    const tbody = byId("paymentsTableBody");
+
+    if (!tbody) {
+        console.warn("paymentsTableBody was not found in the HTML.");
+        return;
+    }
+
+    if (!allPayments.length) {
+        tbody.innerHTML =
+            '<tr><td colspan="9">No tournament payments found.</td></tr>';
+        return;
+    }
+
+    tbody.innerHTML = allPayments.map(payment => {
+        const paymentId = escapeHTML(payment.id);
+        const status = getStatus(payment);
+        const normalized = normalizeStatus(status);
+
+        const badgeClass =
+            normalized === "approved" ? "approved" :
+            normalized === "rejected" ? "rejected" :
+            "pending";
+
+        const phone = payment._leader_phone || "";
+
+        const whatsappButton = phone
+            ? `<button type="button"
+                    class="btn btn-whatsapp"
+                    onclick="messagePayment('${paymentId}', '')">
+                    WhatsApp
+               </button>`
+            : '<span class="muted">No phone</span>';
+
+        const screenshotButton = payment.payment_screenshot_url
+            ? `<button type="button"
+                    class="btn"
+                    onclick="viewPaymentScreenshot('${paymentId}')">
+                    View Proof
+               </button>`
+            : '<span class="muted">No proof</span>';
+
+        return `
+            <tr>
+                <td>${paymentId}</td>
+                <td>${escapeHTML(payment._team_name || payment.team_id || "—")}</td>
+                <td>${escapeHTML(phone || "Not available")}</td>
+                <td>${escapeHTML(formatMoney(payment.amount))}</td>
+                <td>${escapeHTML(payment.payment_method || "—")}</td>
+                <td>${escapeHTML(payment.transaction_id || "—")}</td>
+                <td>
+                    <span class="status-badge ${badgeClass}">
+                        ${escapeHTML(status)}
+                    </span>
+                </td>
+                <td>${escapeHTML(formatDate(payment.created_at))}</td>
+                <td>
+                    <div class="action-buttons">
+                        ${screenshotButton}
+                        <button type="button"
+                            class="btn btn-approve"
+                            onclick="updatePaymentStatus('${paymentId}', 'approved')">
+                            Approve
+                        </button>
+                        <button type="button"
+                            class="btn btn-reject"
+                            onclick="updatePaymentStatus('${paymentId}', 'rejected')">
+                            Reject
+                        </button>
+                        ${whatsappButton}
+                    </div>
+                </td>
+            </tr>
+        `;
+    }).join("");
+}
+
+/* ---------- PAYMENT STATUS ---------- */
+
+async function updatePaymentStatus(paymentId, newStatus) {
+    const payment = allPayments.find(item =>
+        String(item.id) === String(paymentId)
     );
 
-    XLSX.utils.book_append_sheet(
-      workbook,
-      XLSX.utils.json_to_sheet(playerRows.length ? playerRows : [{ Message: "No player records found." }]),
-      "Player Details"
+    if (!payment) {
+        showNotice("Payment record not found.", true);
+        return;
+    }
+
+    if (!confirm(`Are you sure you want to mark this payment as ${newStatus}?`)) {
+        return;
+    }
+
+    const updateData = {
+        status: newStatus
+    };
+
+    if (newStatus === "approved") {
+        updateData.verified_at = new Date().toISOString();
+    }
+
+    const result = await supabaseClient
+        .from("tournament_payments")
+        .update(updateData)
+        .eq("id", paymentId);
+
+    if (result.error) {
+        console.error("Payment update failed:", result.error);
+        showNotice(
+            "Could not update payment. Check the table columns and admin permissions.",
+            true
+        );
+        return;
+    }
+
+    payment.status = newStatus;
+
+    renderPayments();
+    updateDashboardStats();
+
+    showNotice(`Payment marked as ${newStatus}.`);
+
+    if (payment._leader_phone) {
+        const shouldOpen = confirm(
+            `Open WhatsApp with a ${newStatus} payment message?`
+        );
+
+        if (shouldOpen) {
+            openWhatsApp(
+                payment._leader_phone,
+                paymentWhatsAppMessage(payment, newStatus)
+            );
+        }
+    }
+}
+
+function messagePayment(paymentId, decision) {
+    const payment = allPayments.find(item =>
+        String(item.id) === String(paymentId)
     );
 
-    if (allPayments.length) {
-      const paymentRows = allPayments.map(payment => ({
-        "Payment ID": payment.id || "",
-        "Team Name": teamNameById[payment.team_id] || "",
-        "Team ID": payment.team_id || "",
-        "Amount": payment.amount ?? "",
-        "Payment Method": payment.payment_method || "",
-        "Transaction ID": payment.transaction_id || "",
-        "Status": payment.status || "",
-        "Receipt Path": payment.payment_screenshot_url || "",
-        "Created At": payment.created_at || ""
-      }));
-
-      XLSX.utils.book_append_sheet(
-        workbook,
-        XLSX.utils.json_to_sheet(paymentRows),
-        "Tournament Payments"
-      );
+    if (!payment) {
+        showNotice("Payment record not found.", true);
+        return;
     }
 
-    if (allTopups.length) {
-      const topupRows = allTopups.map(order => ({
-        "Order ID": order.id ?? order.order_id ?? "",
-        "User ID": order.user_id ?? "",
-        "Package": order.package_name || order.package || order.product_name || "",
-        "Amount": order.amount ?? order.price ?? order.total_amount ?? "",
-        "Status": order.status || "",
-        "Created At": order.created_at || ""
-      }));
+    const status = decision || normalizeStatus(getStatus(payment));
+    const message =
+        status === "approved" || status === "rejected"
+            ? paymentWhatsAppMessage(payment, status)
+            : `Hello! This is Ren Gaming regarding your tournament payment. Please contact the admin if you need assistance.`;
 
-      XLSX.utils.book_append_sheet(
-        workbook,
-        XLSX.utils.json_to_sheet(topupRows),
-        "Top-up Orders"
-      );
+    openWhatsApp(payment._leader_phone, message);
+}
+
+/* ---------- PAYMENT PROOF VIEWER ---------- */
+
+async function viewPaymentScreenshot(paymentId) {
+    const payment = allPayments.find(item =>
+        String(item.id) === String(paymentId)
+    );
+
+    if (!payment || !payment.payment_screenshot_url) {
+        showNotice("No payment proof is available for this record.", true);
+        return;
     }
 
-    const date = new Date().toISOString().slice(0, 10);
-    XLSX.writeFile(workbook, `Ren_Gaming_Admin_Export_${date}.xlsx`);
+    const value = payment.payment_screenshot_url;
+
+    // If this is already a public/ordinary URL, open it directly.
+    if (/^https?:\/\//i.test(value)) {
+        window.open(value, "_blank", "noopener,noreferrer");
+        return;
+    }
+
+    // Otherwise, try to create a signed URL from the known storage buckets.
+    const buckets = [
+        "tournament-payment-proofs",
+        "payment-receipts"
+    ];
+
+    for (const bucket of buckets) {
+        const path = value
+            .replace(/^\/+/, "")
+            .replace(new RegExp("^" + bucket + "/"), "");
+
+        const result = await supabaseClient.storage
+            .from(bucket)
+            .createSignedUrl(path, 300);
+
+        if (!result.error && result.data?.signedUrl) {
+            window.open(
+                result.data.signedUrl,
+                "_blank",
+                "noopener,noreferrer"
+            );
+            return;
+        }
+    }
 
     showNotice(
-      `Excel downloaded. Teams: ${teamRows.length}; player records: ${playerRows.length}.`,
-      "success"
+        "Could not open payment proof. Check the storage bucket name, file path, and storage permissions.",
+        true
     );
-
-  } catch (error) {
-    console.error("Excel export failed:", error);
-    showNotice("Excel export failed: " + error.message, "error");
-
-  } finally {
-    button.disabled = false;
-    button.textContent = "Download Excel";
-  }
 }
 
-/* REFRESH ALL DATA */
-async function refreshData() {
-  clearNotice();
+/* ---------- DASHBOARD STATISTICS ---------- */
 
-  await Promise.all([
-    loadTeams(),
-    loadTopups(),
-    loadPayments()
-  ]);
+function setTextIfExists(id, value) {
+    const element = byId(id);
+
+    if (element) {
+        element.textContent = String(value);
+    }
 }
 
-/* LOG OUT */
-async function logout() {
-  $("logoutButton").disabled = true;
+function updateDashboardStats() {
+    const totalTeams = allTeams.length;
 
-  try {
+    const pendingTeams = allTeams.filter(team =>
+        normalizeStatus(getStatus(team)) === "pending"
+    ).length;
+
+    const approvedTeams = allTeams.filter(team =>
+        normalizeStatus(getStatus(team)) === "approved"
+    ).length;
+
+    const pendingPayments = allPayments.filter(payment =>
+        normalizeStatus(getStatus(payment)) === "pending"
+    ).length;
+
+    const approvedPayments = allPayments.filter(payment =>
+        normalizeStatus(getStatus(payment)) === "approved"
+    ).length;
+
+    setTextIfExists("totalTeams", totalTeams);
+    setTextIfExists("pendingTeams", pendingTeams);
+    setTextIfExists("approvedTeams", approvedTeams);
+    setTextIfExists("pendingPayments", pendingPayments);
+    setTextIfExists("approvedPayments", approvedPayments);
+}
+
+/* ---------- SEARCH ---------- */
+
+function filterTable(inputId, tbodyId) {
+    const input = byId(inputId);
+    const tbody = byId(tbodyId);
+
+    if (!input || !tbody) return;
+
+    const query = input.value.toLowerCase().trim();
+
+    tbody.querySelectorAll("tr").forEach(row => {
+        row.style.display =
+            row.textContent.toLowerCase().includes(query)
+                ? ""
+                : "none";
+    });
+}
+
+/* ---------- LOAD TOP-UP ORDERS ---------- */
+
+async function loadTopupOrders() {
+    const tbody = byId("topupOrdersTableBody");
+
+    if (tbody) {
+        tbody.innerHTML =
+            '<tr><td colspan="8">Loading top-up orders...</td></tr>';
+    }
+
+    const result = await supabaseClient
+        .from("topup_orders")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+    if (result.error) {
+        console.warn("Could not load top-up orders:", result.error.message);
+
+        if (tbody) {
+            tbody.innerHTML =
+                '<tr><td colspan="8">Could not load top-up orders.</td></tr>';
+        }
+
+        return;
+    }
+
+    allTopupOrders = result.data || [];
+    renderTopupOrders();
+}
+
+function renderTopupOrders() {
+    const tbody = byId("topupOrdersTableBody");
+
+    if (!tbody) return;
+
+    if (!allTopupOrders.length) {
+        tbody.innerHTML =
+            '<tr><td colspan="8">No top-up orders found.</td></tr>';
+        return;
+    }
+
+    tbody.innerHTML = allTopupOrders.map(order => {
+        const orderId = escapeHTML(order.id);
+        const status = getStatus(order);
+
+        const badgeClass =
+            normalizeStatus(status) === "approved" ||
+            normalizeStatus(status) === "completed"
+                ? "approved"
+                : normalizeStatus(status) === "rejected"
+                    ? "rejected"
+                    : "pending";
+
+        return `
+            <tr>
+                <td>${orderId}</td>
+                <td>${escapeHTML(getFirstValue(order, ["customer_name", "full_name", "name"]) || "—")}</td>
+                <td>${escapeHTML(getFirstValue(order, ["phone", "phone_number", "whatsapp_number"]) || "—")}</td>
+                <td>${escapeHTML(getFirstValue(order, ["game_user_id", "user_id"]) || "—")}</td>
+                <td>${escapeHTML(getFirstValue(order, ["product_name", "diamond_package", "package_name"]) || "—")}</td>
+                <td>${escapeHTML(formatMoney(order.amount))}</td>
+                <td>
+                    <span class="status-badge ${badgeClass}">
+                        ${escapeHTML(status)}
+                    </span>
+                </td>
+                <td>${escapeHTML(formatDate(order.created_at))}</td>
+            </tr>
+        `;
+    }).join("");
+}
+
+/* ---------- EXPORT CSV ---------- */
+
+function downloadCSV(filename, rows) {
+    if (!rows || rows.length === 0) {
+        showNotice("There is no data to export.", true);
+        return;
+    }
+
+    const headers = [...new Set(rows.flatMap(row => Object.keys(row)))];
+
+    const csvEscape = value => {
+        const text = String(value ?? "");
+        return '"' + text.replace(/"/g, '""') + '"';
+    };
+
+    const csv = [
+        headers.map(csvEscape).join(","),
+        ...rows.map(row =>
+            headers.map(header => csvEscape(row[header])).join(",")
+        )
+    ].join("\r\n");
+
+    const blob = new Blob(["\uFEFF" + csv], {
+        type: "text/csv;charset=utf-8;"
+    });
+
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+
+    URL.revokeObjectURL(url);
+}
+
+function exportTeamsCSV() {
+    const rows = allTeams.map(team => ({
+        id: team.id,
+        team_name: getTeamName(team),
+        leader_name: team._leader_name || "",
+        leader_phone: team._leader_phone || "",
+        status: getStatus(team),
+        created_at: team.created_at || ""
+    }));
+
+    downloadCSV("ren-gaming-teams.csv", rows);
+}
+
+function exportPaymentsCSV() {
+    const rows = allPayments.map(payment => ({
+        id: payment.id,
+        team_name: payment._team_name || "",
+        leader_phone: payment._leader_phone || "",
+        amount: payment.amount,
+        payment_method: payment.payment_method || "",
+        transaction_id: payment.transaction_id || "",
+        status: getStatus(payment),
+        created_at: payment.created_at || "",
+        verified_at: payment.verified_at || ""
+    }));
+
+    downloadCSV("ren-gaming-payments.csv", rows);
+}
+
+/* ---------- REFRESH ---------- */
+
+async function refreshDashboard() {
+    await loadTeams();
+    await loadPayments();
+    await loadTopupOrders();
+}
+
+/* ---------- SIGN OUT ---------- */
+
+async function adminSignOut() {
     const { error } = await supabaseClient.auth.signOut();
-    if (error) throw error;
 
-    window.location.replace("login.html");
+    if (error) {
+        showNotice("Could not sign out: " + error.message, true);
+        return;
+    }
 
-  } catch (error) {
-    showNotice("Logout failed: " + error.message, "error");
-    $("logoutButton").disabled = false;
-  }
+    window.location.reload();
 }
 
-/* EVENT LISTENERS */
-$("teamSearch").addEventListener("input", renderTeams);
-$("teamStatusFilter").addEventListener("change", renderTeams);
-$("refreshButton").addEventListener("click", refreshData);
-$("refreshPaymentsButton").addEventListener("click", loadPayments);
-$("paymentSearch").addEventListener("input", renderPayments);
-$("paymentStatusFilter").addEventListener("change", renderPayments);
-$("exportButton").addEventListener("click", exportTeamsToExcel);
-$("logoutButton").addEventListener("click", logout);
+/* ---------- INITIALIZE ---------- */
 
-$("teamsTableBody").addEventListener("click", async event => {
-  const button = event.target.closest("button[data-action]");
-  if (!button) return;
+document.addEventListener("DOMContentLoaded", async () => {
+    const allowed = await checkAdminAccess();
 
-  const id = button.dataset.id;
-  const action = button.dataset.action;
+    if (!allowed) return;
 
-  button.disabled = true;
+    await loadTeams();
+    await loadPayments();
+    await loadTopupOrders();
 
-  try {
-    if (action === "players") await viewTeamPlayers(id);
-    else if (action === "approve") await updateTeamStatus(id, "approved");
-    else if (action === "reject") await updateTeamStatus(id, "rejected");
-    else if (action === "delete") await deleteTeamRegistration(id);
-  } finally {
-    button.disabled = false;
-  }
+    // Optional search inputs, if present in Part 1.
+    const teamSearch = byId("teamSearch");
+    if (teamSearch) {
+        teamSearch.addEventListener("input", () =>
+            filterTable("teamSearch", "teamsTableBody")
+        );
+    }
+
+    const paymentSearch = byId("paymentSearch");
+    if (paymentSearch) {
+        paymentSearch.addEventListener("input", () =>
+            filterTable("paymentSearch", "paymentsTableBody")
+        );
+    }
+
+    const refreshButton = byId("refreshDashboard");
+    if (refreshButton) {
+        refreshButton.addEventListener("click", refreshDashboard);
+    }
+
+    const signOutButton = byId("signOutButton");
+    if (signOutButton) {
+        signOutButton.addEventListener("click", adminSignOut);
+    }
+
+    const exportTeamsButton = byId("exportTeamsButton");
+    if (exportTeamsButton) {
+        exportTeamsButton.addEventListener("click", exportTeamsCSV);
+    }
+
+    const exportPaymentsButton = byId("exportPaymentsButton");
+    if (exportPaymentsButton) {
+        exportPaymentsButton.addEventListener("click", exportPaymentsCSV);
+    }
 });
 
-$("paymentsTableBody").addEventListener("click", async event => {
-  const button = event.target.closest("button[data-payment-action]");
-  if (!button) return;
-
-  const id = button.dataset.id;
-  const action = button.dataset.paymentAction;
-
-  button.disabled = true;
-
-  try {
-    if (action === "receipt") await viewPaymentReceipt(id);
-    else if (action === "approve") await updatePaymentStatus(id, "approved");
-    else if (action === "reject") await updatePaymentStatus(id, "rejected");
-  } finally {
-    button.disabled = false;
-  }
-});
-
-$("closeReceiptModal").addEventListener("click", () => {
-  $("receiptModal").classList.remove("open");
-});
-
-$("receiptModal").addEventListener("click", event => {
-  if (event.target === $("receiptModal")) {
-    $("receiptModal").classList.remove("open");
-  }
-});
-
-$("closePlayersModal").addEventListener("click", () => {
-  $("playersModal").classList.remove("open");
-});
-
-$("playersModal").addEventListener("click", event => {
-  if (event.target === $("playersModal")) {
-    $("playersModal").classList.remove("open");
-  }
-});
-
-document.addEventListener("keydown", event => {
-  if (event.key === "Escape") {
-    $("playersModal").classList.remove("open");
-    $("receiptModal").classList.remove("open");
-  }
-});
-
-/* START THE DASHBOARD */
-async function initializeAdminPage() {
-  $("currentYear").textContent = new Date().getFullYear();
-
-  const isAdmin = await checkAdmin();
-  if (!isAdmin) return;
-
-  await refreshData();
-}
-
-initializeAdminPage();
+// Make functions available to inline HTML buttons.
+window.updateTeamStatus = updateTeamStatus;
+window.messageTeam = messageTeam;
+window.viewTeamPlayers = viewTeamPlayers;
+window.closePlayersModal = closePlayersModal;
+window.updatePaymentStatus = updatePaymentStatus;
+window.messagePayment = messagePayment;
+window.viewPaymentScreenshot = viewPaymentScreenshot;
+window.refreshDashboard = refreshDashboard;
+window.adminSignOut = adminSignOut;
+window.exportTeamsCSV = exportTeamsCSV;
+window.exportPaymentsCSV = exportPaymentsCSV;
+window.filterTable = filterTable;
 </script>
+<!-- =====================================================
+     REN GAMING ADMIN DASHBOARD — PART 3
+     Final controls, modals, and closing HTML
+===================================================== -->
+
+<!-- Optional dashboard controls.
+     Keep only one copy of each element ID. -->
+
+<div class="dashboard-footer">
+    <p>© 2026 Ren Gaming | Admin Dashboard</p>
+    <p>WhatsApp messages are prepared for manual sending.</p>
+</div>
+
+<!-- Team Players Modal -->
+<div id="playersModal"
+     class="modal"
+     style="display:none;"
+     onclick="if(event.target === this) closePlayersModal()">
+
+    <div class="modal-content">
+        <button type="button"
+                class="modal-close"
+                onclick="closePlayersModal()">
+            ✕
+        </button>
+
+        <h2>Team Players</h2>
+
+        <pre id="playersModalContent"
+             style="white-space:pre-wrap; overflow-wrap:anywhere;"></pre>
+
+        <button type="button"
+                class="btn"
+                onclick="closePlayersModal()">
+            Close
+        </button>
+    </div>
+</div>
+
+<!-- Final styling -->
+<style>
+.dashboard-footer {
+    margin-top: 30px;
+    padding: 20px;
+    text-align: center;
+    color: #999;
+    border-top: 1px solid #292929;
+    font-size: 13px;
+}
+
+.action-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+}
+
+.btn-whatsapp {
+    background: #168b50;
+    color: #fff;
+    border: none;
+}
+
+.btn-approve {
+    background: #168b50;
+    color: #fff;
+    border: none;
+}
+
+.btn-reject {
+    background: #b52b35;
+    color: #fff;
+    border: none;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    text-transform: capitalize;
+}
+
+.status-badge.approved {
+    background: #173e2c;
+    color: #72e6a5;
+}
+
+.status-badge.rejected {
+    background: #4a1e22;
+    color: #ff9299;
+}
+
+.status-badge.pending {
+    background: #4a3719;
+    color: #ffd27c;
+}
+
+.muted {
+    color: #999;
+    font-size: 12px;
+}
+
+.modal {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: rgba(0, 0, 0, 0.82);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.modal-content {
+    width: min(600px, 100%);
+    max-height: 85vh;
+    overflow-y: auto;
+    background: #151515;
+    color: #f5f5f5;
+    border: 1px solid #383838;
+    border-radius: 12px;
+    padding: 24px;
+    position: relative;
+}
+
+.modal-close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: transparent;
+    color: #fff;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.modal-content pre {
+    padding: 15px;
+    border-radius: 8px;
+    background: #090909;
+    color: #ddd;
+    line-height: 1.7;
+}
+
+.btn {
+    cursor: pointer;
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-weight: 600;
+}
+
+.btn:hover {
+    filter: brightness(1.15);
+}
+
+@media (max-width: 700px) {
+    .action-buttons {
+        min-width: 150px;
+    }
+
+    .modal-content {
+        padding: 18px;
+    }
+}
+</style>
+
 </body>
 </html>
