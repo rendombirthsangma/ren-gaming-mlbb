@@ -902,6 +902,30 @@
                 justify-content: center;
             }
         }
+
+        /* LIVE TOURNAMENTS FROM ADMIN */
+        .live-tournaments-section { max-width:1200px; margin:0 auto; padding:65px 22px; }
+        .live-tournament-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:20px; }
+        .live-tournament-card { background:linear-gradient(145deg,#171717,#090909); border:1px solid var(--border); border-radius:13px; overflow:hidden; transition:.2s; }
+        .live-tournament-card:hover { transform:translateY(-4px); border-color:rgba(255,37,37,.65); }
+        .live-tournament-banner { width:100%; height:155px; object-fit:cover; display:block; background:#151515; }
+        .live-tournament-body { padding:20px; }
+        .live-tournament-top { display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:12px; }
+        .live-tournament-status { display:inline-block; border-radius:4px; padding:5px 9px; font-size:10px; font-weight:900; letter-spacing:.7px; }
+        .live-tournament-status.upcoming { background:rgba(255,193,7,.12); color:#ffd45a; border:1px solid rgba(255,193,7,.35); }
+        .live-tournament-status.ongoing { background:rgba(40,200,100,.12); color:#68e99b; border:1px solid rgba(40,200,100,.35); }
+        .live-tournament-card h3 { font-size:19px; margin-bottom:6px; }
+        .live-tournament-game { color:var(--gray); font-size:13px; margin-bottom:15px; }
+        .live-tournament-details { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:15px 0 18px; }
+        .live-tournament-detail { background:#101010; border:1px solid var(--border); border-radius:7px; padding:11px; }
+        .live-tournament-detail small { display:block; color:var(--gray); font-size:11px; margin-bottom:3px; }
+        .live-tournament-detail strong { color:#fff; font-size:17px; }
+        .live-tournament-date { color:var(--gray); font-size:12px; margin-bottom:14px; }
+        .live-tournament-description { color:#c8c8c8; font-size:13px; margin:10px 0 15px; overflow-wrap:anywhere; }
+        .live-tournament-empty { grid-column:1/-1; padding:28px; text-align:center; background:#101010; border:1px dashed #444; border-radius:12px; color:var(--gray); }
+        @media(max-width:850px) { .live-tournament-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+        @media(max-width:560px) { .live-tournament-grid { grid-template-columns:1fr; } .live-tournaments-section { padding:50px 18px; } }
+
     </style>
 </head>
 
@@ -973,6 +997,19 @@
                 </a>
 
             </div>
+        </div>
+    </section>
+
+
+    <!-- DYNAMIC TOURNAMENTS: CREATED IN ADMIN DASHBOARD -->
+    <section class="live-tournaments-section" id="admin-tournaments">
+        <div class="section-heading">
+            <span>JOIN THE BATTLE</span>
+            <h2>UPCOMING & ONGOING TOURNAMENTS</h2>
+            <p>Tournaments published from the Ren Gaming Admin Dashboard appear here automatically.</p>
+        </div>
+        <div class="live-tournament-grid" id="liveTournamentGrid">
+            <div class="live-tournament-empty">Loading tournaments...</div>
         </div>
     </section>
 
@@ -1561,6 +1598,76 @@
         }
     }
 
+
+    async function loadAdminTournaments() {
+        const grid = document.getElementById("liveTournamentGrid");
+        if (!grid) return;
+        grid.innerHTML = '<div class="live-tournament-empty">Loading tournaments...</div>';
+
+        try {
+            const { data, error } = await authClient
+                .from("tournament")
+                .select("id,name,game,description,banner_url,start_date,registration_deadline,entry_fee,prize,team_size,created_at")
+                .order("created_at", { ascending: false });
+
+            if (error) throw error;
+
+            if (!data || data.length === 0) {
+                grid.innerHTML = '<div class="live-tournament-empty">No tournaments have been published yet. Please check back soon!</div>';
+                return;
+            }
+
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            const tournaments = data.map(t => {
+                const start = t.start_date ? new Date(t.start_date + "T00:00:00") : null;
+                const status = start && start > today ? "UPCOMING" : "ONGOING";
+                return { ...t, displayStatus: status };
+            });
+
+            grid.innerHTML = tournaments.map(t => {
+                const safe = value => String(value ?? "").replace(/[&<>"']/g, ch => ({
+                    "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;"
+                }[ch]));
+                const money = value => {
+                    if (value === null || value === undefined || value === "") return "Not set";
+                    const n = Number(value);
+                    return Number.isFinite(n) ? "₹" + n.toLocaleString("en-IN") : safe(value);
+                };
+                const dateText = value => {
+                    if (!value) return "Not announced";
+                    const d = new Date(value + (String(value).length === 10 ? "T00:00:00" : ""));
+                    return Number.isNaN(d.getTime()) ? safe(value) : d.toLocaleDateString("en-IN", { day:"numeric", month:"short", year:"numeric" });
+                };
+                const statusClass = t.displayStatus.toLowerCase();
+                const banner = t.banner_url
+                    ? `<img class="live-tournament-banner" src="${safe(t.banner_url)}" alt="${safe(t.name)} banner" loading="lazy" onerror="this.style.display='none'">`
+                    : "";
+                return `<article class="live-tournament-card">
+                    ${banner}
+                    <div class="live-tournament-body">
+                        <div class="live-tournament-top">
+                            <span class="live-tournament-status ${statusClass}">${t.displayStatus}</span>
+                            <span style="color:#aaa;font-size:11px">${safe(t.team_size || "Team format not set")}</span>
+                        </div>
+                        <h3>${safe(t.name || "Untitled Tournament")}</h3>
+                        <p class="live-tournament-game">${safe(t.game || "Game not specified")}</p>
+                        <div class="live-tournament-details">
+                            <div class="live-tournament-detail"><small>🏆 PRIZE</small><strong>${money(t.prize)}</strong></div>
+                            <div class="live-tournament-detail"><small>🎟️ ENTRY FEE</small><strong>${money(t.entry_fee)}</strong></div>
+                        </div>
+                        <p class="live-tournament-date">📅 Starts: ${dateText(t.start_date)}<br>📝 Registration deadline: ${dateText(t.registration_deadline)}</p>
+                        ${t.description ? `<p class="live-tournament-description">${safe(t.description)}</p>` : ""}
+                        <a class="button button-primary" href="tournament-register.html">REGISTER NOW</a>
+                    </div>
+                </article>`;
+            }).join("");
+        } catch (error) {
+            console.error("Could not load tournaments:", error);
+            grid.innerHTML = '<div class="live-tournament-empty">Unable to load tournaments right now. Please check the Supabase table permissions and try refreshing.</div>';
+        }
+    }
+
     async function initializeRenGaming() {
         showLoggedOut();
 
@@ -1591,6 +1698,7 @@
     }
 
     initializeRenGaming();
+    loadAdminTournaments();
 </script>
 
 </body>
