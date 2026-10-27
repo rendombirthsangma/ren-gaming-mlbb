@@ -17,12 +17,15 @@
   --green:#167b3b;
 }
 * { box-sizing:border-box; }
+
 body {
   margin:0;
   font-family:Arial,sans-serif;
   background:var(--bg);
   color:var(--text);
 }
+body.modal-open { overflow:hidden; }
+
 header {
   padding:18px 5%;
   background:#101010;
@@ -35,6 +38,7 @@ header {
 }
 .logo { color:var(--red);font-size:22px;font-weight:900; }
 nav { display:flex;gap:8px;flex-wrap:wrap; }
+
 a,button { cursor:pointer;font-family:inherit; }
 nav a,button {
   color:white;
@@ -45,9 +49,12 @@ nav a,button {
   text-decoration:none;
 }
 button:hover,nav a:hover { border-color:var(--red); }
+button:disabled { opacity:.5;cursor:not-allowed; }
+
 .container { max-width:1250px;margin:30px auto;padding:0 18px; }
 h1 { margin:0 0 10px; }
 .subtitle { color:var(--muted);margin-bottom:25px; }
+
 .stats {
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
@@ -60,60 +67,182 @@ h1 { margin:0 0 10px; }
   border-radius:10px;
   padding:18px;
 }
-.stat span { color:var(--muted);font-size:12px;display:block; }
-.stat strong { display:block;color:var(--red);font-size:27px;margin-top:8px; }
+.stat span {
+  color:var(--muted);
+  font-size:12px;
+  display:block;
+}
+.stat strong {
+  display:block;
+  color:var(--red);
+  font-size:27px;
+  margin-top:8px;
+}
+
 .panel { margin-bottom:25px; }
 .panel-head {
-  display:flex;justify-content:space-between;align-items:center;
-  gap:12px;flex-wrap:wrap;margin-bottom:15px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  flex-wrap:wrap;
+  margin-bottom:15px;
 }
 .panel h2 { margin:0;font-size:21px; }
 .muted { color:var(--muted);font-size:13px;line-height:1.7; }
 .team-card,.topup-card { margin:12px 0; }
+
 .team-head {
-  display:flex;justify-content:space-between;align-items:flex-start;
-  gap:12px;flex-wrap:wrap;
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:12px;
+  flex-wrap:wrap;
 }
-.team-name { font-size:19px;font-weight:bold;overflow-wrap:anywhere; }
+.team-name {
+  font-size:19px;
+  font-weight:bold;
+  overflow-wrap:anywhere;
+}
 .badge {
-  display:inline-block;border-radius:5px;padding:5px 8px;
-  background:#343434;font-size:11px;text-transform:uppercase;
+  display:inline-block;
+  border-radius:5px;
+  padding:5px 8px;
+  background:#343434;
+  font-size:11px;
+  text-transform:uppercase;
 }
 .badge.pending { color:#ffd666;background:#3a2b00; }
 .badge.approved,.badge.verified { color:#83efaa;background:#10351b; }
 .badge.rejected { color:#ff9999;background:#451515; }
-.actions { display:flex;gap:8px;flex-wrap:wrap;margin-top:15px; }
+
+.actions {
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-top:15px;
+}
 .primary { background:#a80e0e;border-color:var(--red); }
 .good { background:#12351d;border-color:#236b37; }
 .danger { background:#351313;border-color:#762525; }
 .hidden { display:none!important; }
-.message { padding:12px;border-radius:7px;margin:15px 0;display:none;overflow-wrap:anywhere; }
+
+.message {
+  padding:12px;
+  border-radius:7px;
+  margin:15px 0;
+  display:none;
+  overflow-wrap:anywhere;
+}
 .message.show { display:block; }
-.message.success { background:#102814;border:1px solid #238636;color:#7ee787; }
-.message.error { background:#2b1010;border:1px solid var(--red);color:#ff9999; }
+.message.success {
+  background:#102814;
+  border:1px solid #238636;
+  color:#7ee787;
+}
+.message.error {
+  background:#2b1010;
+  border:1px solid var(--red);
+  color:#ff9999;
+}
+
 .player-card {
-  background:#191919;border:1px solid #333;border-radius:8px;
-  padding:15px;margin:12px 0;
+  background:#191919;
+  border:1px solid #333;
+  border-radius:8px;
+  padding:15px;
+  margin:12px 0;
 }
 .player-card h3 { margin:0 0 12px;color:#ff6666; }
 .player-grid {
-  display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  gap:12px;
 }
-label { display:block;color:var(--muted);font-size:12px;margin-bottom:5px; }
+label {
+  display:block;
+  color:var(--muted);
+  font-size:12px;
+  margin-bottom:5px;
+}
 input,select,textarea {
-  width:100%;padding:10px;background:#080808;color:white;
-  border:1px solid #444;border-radius:6px;font:inherit;
+  width:100%;
+  padding:10px;
+  background:#080808;
+  color:white;
+  border:1px solid #444;
+  border-radius:6px;
+  font:inherit;
 }
 textarea { min-height:90px;resize:vertical; }
 .field { margin:12px 0; }
-.payment-box { background:#191919;padding:15px;border-radius:8px;margin-top:15px; }
-.payment-box img { max-width:100%;max-height:450px;display:block;margin-top:12px;border-radius:6px; }
-.empty { color:#999;padding:18px;background:#101010;border-radius:8px; }
+
+.payment-box {
+  background:#191919;
+  padding:15px;
+  border-radius:8px;
+  margin-top:15px;
+}
+.payment-box img {
+  max-width:100%;
+  max-height:450px;
+  display:block;
+  margin-top:12px;
+  border-radius:6px;
+}
+.empty {
+  color:#999;
+  padding:18px;
+  background:#101010;
+  border-radius:8px;
+  overflow-wrap:anywhere;
+}
 hr { border:0;border-top:1px solid #333;margin:18px 0; }
+
+/* TEAM REVIEW POPUP */
+#reviewPanel {
+  display:none;
+  position:fixed;
+  inset:0;
+  z-index:9999;
+  margin:0;
+  padding:20px;
+  background:rgba(0,0,0,.88);
+  overflow-y:auto;
+  border:0;
+  border-radius:0;
+}
+#reviewPanel.review-open { display:block; }
+
+#reviewPanel .review-modal {
+  width:100%;
+  max-width:1000px;
+  margin:20px auto;
+  padding:22px;
+  background:#101010;
+  border:1px solid #444;
+  border-radius:12px;
+  box-shadow:0 20px 70px rgba(0,0,0,.6);
+}
+.review-modal-content {
+  max-height:72vh;
+  overflow-y:auto;
+  padding-right:6px;
+  overscroll-behavior:contain;
+  scrollbar-width:thin;
+}
+.review-modal-content:focus { outline:none; }
+
 @media(max-width:600px) {
   header { padding:15px; }
   .container { margin:20px auto; }
   .panel { padding:13px; }
+  #reviewPanel { padding:8px; }
+  #reviewPanel .review-modal {
+    margin:8px auto;
+    padding:14px;
+  }
+  .review-modal-content { max-height:78vh; }
 }
 </style>
 </head>
@@ -126,62 +255,95 @@ hr { border:0;border-top:1px solid #333;margin:18px 0; }
     <a href="index.html">HOME</a>
     <a href="admin-tournament-management.html">TOURNAMENTS</a>
     <a href="admin-match-management.html">MATCHES</a>
-    <button id="logoutBtn">LOGOUT</button>
+    <button id="logoutBtn" type="button">LOGOUT</button>
   </nav>
 </header>
 
 <main class="container">
   <h1>Admin Dashboard</h1>
-  <p class="subtitle">Manage registrations, verify players and payments, and review top-up orders.</p>
+  <p class="subtitle">
+    Manage registrations, verify players and payments, and review top-up orders.
+  </p>
 
-  <div id="message" class="message"></div>
+  <div id="message" class="message" role="status" aria-live="polite"></div>
 
   <div class="stats">
-    <div class="stat"><span>TOTAL TEAMS</span><strong id="totalTeams">0</strong></div>
-    <div class="stat"><span>PENDING TEAMS</span><strong id="pendingTeams">0</strong></div>
-    <div class="stat"><span>APPROVED TEAMS</span><strong id="approvedTeams">0</strong></div>
-    <div class="stat"><span>PENDING PLAYERS</span><strong id="pendingPlayers">0</strong></div>
-    <div class="stat"><span>TOP-UP ORDERS</span><strong id="topupCount">0</strong></div>
+    <div class="stat">
+      <span>TOTAL TEAMS</span>
+      <strong id="totalTeams">0</strong>
+    </div>
+    <div class="stat">
+      <span>PENDING TEAMS</span>
+      <strong id="pendingTeams">0</strong>
+    </div>
+    <div class="stat">
+      <span>APPROVED TEAMS</span>
+      <strong id="approvedTeams">0</strong>
+    </div>
+    <div class="stat">
+      <span>PENDING PLAYERS</span>
+      <strong id="pendingPlayers">0</strong>
+    </div>
+    <div class="stat">
+      <span>TOP-UP ORDERS</span>
+      <strong id="topupCount">0</strong>
+    </div>
   </div>
 
   <section class="panel">
     <div class="panel-head">
       <h2>🏆 Registered Teams</h2>
-      <button onclick="loadTeams()">REFRESH</button>
+      <button type="button" onclick="loadTeams()">REFRESH</button>
     </div>
-    <p class="muted">Select a team to review its leader, players and payment receipt.</p>
+    <p class="muted">
+      Select a team to review its leader, players and payment receipt.
+    </p>
     <div id="teamsList">Loading teams...</div>
   </section>
 
-  <section class="panel" id="reviewPanel">
-    <div class="panel-head">
-      <h2>🔍 Team Review</h2>
-      <button onclick="closeReview()">CLOSE</button>
+  <!-- REVIEW POPUP -->
+  <section class="panel" id="reviewPanel" aria-hidden="true">
+    <div class="review-modal">
+      <div class="panel-head">
+        <h2>🔍 Team Review</h2>
+        <button type="button" onclick="closeReview()">CLOSE ✕</button>
+      </div>
+      <div
+        id="reviewContent"
+        class="review-modal-content muted"
+        tabindex="0"
+      >Select a team above to see its details.</div>
     </div>
-    <div id="reviewContent" class="muted">Select a team above to see its details.</div>
   </section>
 
   <section class="panel">
     <div class="panel-head">
       <h2>💎 Diamond Top-Up Orders</h2>
-      <button onclick="loadTopups()">REFRESH</button>
+      <button type="button" onclick="loadTopups()">REFRESH</button>
     </div>
     <div id="topupsList">Loading top-up orders...</div>
   </section>
 </main>
 
 <script>
-/*
-  REN GAMING CONFIGURATION
-  Uses your existing Supabase project.
-*/
+"use strict";
+
+/* =====================================
+   REN GAMING SUPABASE CONFIGURATION
+===================================== */
+
 const SUPABASE_URL =
   "https://bixpvxkpnaqdifmvkhvp.supabase.co";
 
 const SUPABASE_KEY =
   "sb_publishable_XtzkrIFbBPTGUmoLHqHu5Q_XeznKoVI";
 
-const PAYMENT_BUCKET = "tournament-payment-proofs";
+/*
+  IMPORTANT:
+  Your registration page uploads receipts to payment-receipts.
+  The admin page must use the same bucket.
+*/
+const PAYMENT_BUCKET = "payment-receipts";
 
 const db = window.supabase.createClient(
   SUPABASE_URL,
@@ -193,38 +355,113 @@ let selectedTeam = null;
 let selectedPlayers = [];
 let selectedPayment = null;
 let selectedProfile = null;
+let reviewRequestNumber = 0;
+let messageTimer = null;
+
+
+/* =====================================
+   HELPER FUNCTIONS
+===================================== */
 
 function esc(value) {
   return String(value ?? "").replace(/[&<>"']/g, char => ({
-    "&":"&amp;",
-    "<":"&lt;",
-    ">":"&gt;",
-    '"':"&quot;",
-    "'":"&#39;"
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;"
   })[char]);
 }
 
-function showMessage(text, type="success") {
+function showMessage(text, type = "success") {
   const el = document.getElementById("message");
+
   el.textContent = text;
   el.className = "message show " + type;
-  window.scrollTo({top:0,behavior:"smooth"});
+
+  // Do not scroll the page to the top.
+  if (messageTimer) clearTimeout(messageTimer);
+
+  messageTimer = setTimeout(() => {
+    el.className = "message";
+    el.textContent = "";
+  }, 7000);
 }
 
 function hideMessage() {
   const el = document.getElementById("message");
   el.className = "message";
   el.textContent = "";
+
+  if (messageTimer) {
+    clearTimeout(messageTimer);
+    messageTimer = null;
+  }
 }
 
 function statusBadge(status) {
   const s = String(status || "pending").toLowerCase();
-  const css = ["approved","verified","rejected","pending"].includes(s) ? s : "";
+
+  const css = [
+    "approved",
+    "verified",
+    "rejected",
+    "pending"
+  ].includes(s) ? s : "";
+
   return `<span class="badge ${css}">${esc(s)}</span>`;
 }
 
+function openReviewModal() {
+  const panel = document.getElementById("reviewPanel");
+
+  panel.classList.add("review-open");
+  panel.setAttribute("aria-hidden", "false");
+  document.body.classList.add("modal-open");
+}
+
+function closeReview() {
+  reviewRequestNumber++;
+
+  selectedTeam = null;
+  selectedPlayers = [];
+  selectedPayment = null;
+  selectedProfile = null;
+
+  const panel = document.getElementById("reviewPanel");
+
+  panel.classList.remove("review-open");
+  panel.setAttribute("aria-hidden", "true");
+  document.body.classList.remove("modal-open");
+
+  document.getElementById("reviewContent").textContent =
+    "Select a team above to see its details.";
+}
+
+/* Close popup when clicking the dark background. */
+document.getElementById("reviewPanel").addEventListener("click", event => {
+  if (event.target.id === "reviewPanel") {
+    closeReview();
+  }
+});
+
+/* Close popup with Escape. */
+document.addEventListener("keydown", event => {
+  if (
+    event.key === "Escape" &&
+    document.getElementById("reviewPanel").classList.contains("review-open")
+  ) {
+    closeReview();
+  }
+});
+
+
+/* =====================================
+   ADMIN AUTHENTICATION
+===================================== */
+
 async function checkAdmin() {
-  const {data,error} = await db.auth.getUser();
+  const { data, error } = await db.auth.getUser();
 
   if (error || !data?.user) {
     location.href = "login.html";
@@ -233,13 +470,17 @@ async function checkAdmin() {
 
   currentUser = data.user;
 
-  const {data:profile,error:profileError} = await db
+  const { data: profile, error: profileError } = await db
     .from("profiles")
     .select("role")
-    .eq("id",currentUser.id)
+    .eq("id", currentUser.id)
     .maybeSingle();
 
-  if (profileError || !profile || String(profile.role).toLowerCase() !== "admin") {
+  if (
+    profileError ||
+    !profile ||
+    String(profile.role || "").toLowerCase() !== "admin"
+  ) {
     alert("Admin access required.");
     location.href = "dashboard.html";
     return false;
@@ -248,41 +489,53 @@ async function checkAdmin() {
   return true;
 }
 
-document.getElementById("logoutBtn").addEventListener("click",async()=>{
+document.getElementById("logoutBtn").addEventListener("click", async () => {
   await db.auth.signOut();
   location.href = "login.html";
 });
 
+
+/* =====================================
+   LOAD REGISTERED TEAMS
+===================================== */
+
 async function loadTeams() {
-  hideMessage();
   const box = document.getElementById("teamsList");
+
   box.textContent = "Loading teams...";
 
-  /*
-    Load teams from all tournaments so this page does not depend
-    on a hard-coded tournament ID.
-  */
-  const {data,error} = await db
+  const { data, error } = await db
     .from("teams")
     .select("*")
-    .order("created_at",{ascending:false});
+    .order("created_at", { ascending: false });
 
   if (error) {
-    console.error(error);
-    box.innerHTML = '<div class="empty">Could not load teams: '+esc(error.message)+'</div>';
+    console.error("Team loading error:", error);
+
+    box.innerHTML =
+      '<div class="empty">Could not load teams: ' +
+      esc(error.message) + '</div>';
+
     return;
   }
 
   const teams = data || [];
 
   document.getElementById("totalTeams").textContent = teams.length;
+
   document.getElementById("pendingTeams").textContent =
-    teams.filter(t => t.status === "pending").length;
+    teams.filter(t =>
+      String(t.status || "").toLowerCase() === "pending"
+    ).length;
+
   document.getElementById("approvedTeams").textContent =
-    teams.filter(t => t.status === "approved").length;
+    teams.filter(t =>
+      String(t.status || "").toLowerCase() === "approved"
+    ).length;
 
   if (!teams.length) {
-    box.innerHTML = '<div class="empty">No registered teams found.</div>';
+    box.innerHTML =
+      '<div class="empty">No registered teams found.</div>';
     return;
   }
 
@@ -290,39 +543,65 @@ async function loadTeams() {
     <div class="team-card">
       <div class="team-head">
         <div>
-          <div class="team-name">${esc(team.team_name || "Unnamed team")}</div>
+          <div class="team-name">
+            ${esc(team.team_name || "Unnamed team")}
+          </div>
           <div class="muted">
             Team ID: ${esc(team.id)}<br>
             Tournament ID: ${esc(team.tournament_id || "—")}<br>
-            Registered: ${esc(team.created_at ? new Date(team.created_at).toLocaleString() : "—")}
+            Registered:
+            ${esc(
+              team.created_at
+                ? new Date(team.created_at).toLocaleString()
+                : "—"
+            )}
           </div>
         </div>
         ${statusBadge(team.status)}
       </div>
+
       <div class="actions">
-        <button class="primary" onclick="openReview('${esc(team.id)}')">REVIEW TEAM</button>
+        <button
+          class="primary"
+          type="button"
+          onclick="openReview('${esc(team.id)}')"
+        >REVIEW TEAM</button>
       </div>
     </div>
   `).join("");
 }
 
+
+/* =====================================
+   OPEN TEAM REVIEW POPUP
+===================================== */
+
 async function openReview(teamId) {
   hideMessage();
+  openReviewModal();
+
+  const thisRequest = ++reviewRequestNumber;
   const content = document.getElementById("reviewContent");
+
+  content.scrollTop = 0;
   content.textContent = "Loading team details...";
+
   selectedTeam = null;
   selectedPlayers = [];
   selectedPayment = null;
   selectedProfile = null;
 
-  const {data:team,error:teamError} = await db
+  const { data: team, error: teamError } = await db
     .from("teams")
     .select("*")
-    .eq("id",teamId)
+    .eq("id", teamId)
     .single();
 
+  if (thisRequest !== reviewRequestNumber) return;
+
   if (teamError || !team) {
-    content.textContent = "Could not load team: " + (teamError?.message || "Not found");
+    content.textContent =
+      "Could not load team: " + (teamError?.message || "Not found");
     return;
   }
 
@@ -333,26 +612,41 @@ async function openReview(teamId) {
     paymentResult,
     profileResult
   ] = await Promise.all([
-    db.from("team_players").select("*").eq("team_id",teamId),
-    db.from("tournament_payments")
+    db
+      .from("team_players")
       .select("*")
-      .eq("team_id",teamId)
-      .order("created_at",{ascending:false})
+      .eq("team_id", teamId),
+
+    db
+      .from("tournament_payments")
+      .select("*")
+      .eq("team_id", teamId)
+      .order("created_at", { ascending: false })
       .limit(1),
-    db.from("profiles")
+
+    db
+      .from("profiles")
       .select("id,full_name,phone")
-      .eq("id",team.user_id)
+      .eq("id", team.user_id)
       .maybeSingle()
   ]);
 
+  if (thisRequest !== reviewRequestNumber) return;
+
   if (playersResult.error) {
-    content.textContent = "Could not load players: " + playersResult.error.message;
+    content.textContent =
+      "Could not load players: " + playersResult.error.message;
     return;
   }
 
   if (paymentResult.error) {
-    content.textContent = "Could not load payment: " + paymentResult.error.message;
+    content.textContent =
+      "Could not load payment: " + paymentResult.error.message;
     return;
+  }
+
+  if (profileResult.error) {
+    console.warn("Could not load team leader profile:", profileResult.error);
   }
 
   selectedPlayers = playersResult.data || [];
@@ -360,7 +654,15 @@ async function openReview(teamId) {
   selectedProfile = profileResult.data || null;
 
   renderReview();
+
+  // Keep the popup open. The page behind it does not scroll.
+  content.scrollTop = 0;
 }
+
+
+/* =====================================
+   RENDER TEAM REVIEW
+===================================== */
 
 function renderReview() {
   const t = selectedTeam;
@@ -372,7 +674,9 @@ function renderReview() {
 
   const allPlayersVerified =
     players.length > 0 &&
-    players.every(p => String(p.verification_status || "").toLowerCase() === "verified");
+    players.every(p =>
+      String(p.verification_status || "").toLowerCase() === "verified"
+    );
 
   const paymentVerified =
     payment &&
@@ -381,41 +685,73 @@ function renderReview() {
   const canApprove = allPlayersVerified && paymentVerified;
 
   document.getElementById("pendingPlayers").textContent =
-    players.filter(p => String(p.verification_status || "").toLowerCase() !== "verified").length;
+    players.filter(p =>
+      String(p.verification_status || "").toLowerCase() !== "verified"
+    ).length;
 
   let html = `
     <h3>${esc(t.team_name || "Team")}</h3>
+
     <p class="muted">
       Team status: ${esc(t.status || "pending")}<br>
       Leader: ${esc(profile?.full_name || "Name unavailable")}<br>
-      Registered phone: ${esc(profile?.phone || "No phone number saved")}<br>
+      WhatsApp / Phone: ${esc(profile?.phone || "No phone number saved")}<br>
       Team ID: ${esc(t.id)}
     </p>
+
     <hr>
     <h3>Players (${players.length})</h3>
   `;
 
   if (!players.length) {
-    html += '<div class="empty">No player records found for this team.</div>';
+    html += `
+      <div class="empty">
+        No player records found for this team.
+      </div>
+    `;
   }
 
-  html += players.map((p,index) => `
+  html += players.map((p, index) => `
     <div class="player-card">
-      <h3>${esc(p.player_type || "Player")} ${esc(p.player_number || index+1)}</h3>
+      <h3>
+        ${esc(p.player_type || "Player")}
+        ${esc(p.player_number || index + 1)}
+      </h3>
+
       <div class="player-grid">
-        <div><label>Username</label><strong>${esc(p.username || "—")}</strong></div>
-        <div><label>Game User ID</label><strong>${esc(p.game_user_id || "—")}</strong></div>
-        <div><label>Server ID</label><strong>${esc(p.server_id || "—")}</strong></div>
-        <div><label>Verification status</label>${statusBadge(p.verification_status)}</div>
+        <div>
+          <label>Username</label>
+          <strong>${esc(p.username || "—")}</strong>
+        </div>
+
+        <div>
+          <label>Game User ID</label>
+          <strong>${esc(p.game_user_id || "—")}</strong>
+        </div>
+
+        <div>
+          <label>Server ID</label>
+          <strong>${esc(p.server_id || "—")}</strong>
+        </div>
+
+        <div>
+          <label>Verification status</label>
+          ${statusBadge(p.verification_status)}
+        </div>
       </div>
-      <div class="field">
-        <label>Verification note</label>
-        <input id="note-${esc(p.id)}" placeholder="Optional note for this player"
-          value="${esc(p.verification_message || "")}">
-      </div>
+
       <div class="actions">
-        <button class="good" onclick="verifyPlayer('${esc(p.id)}')">VERIFY PLAYER</button>
-        <button class="danger" onclick="unverifyPlayer('${esc(p.id)}')">MARK UNVERIFIED</button>
+        <button
+          class="good"
+          type="button"
+          onclick="verifyPlayer('${esc(p.id)}')"
+        >VERIFY PLAYER</button>
+
+        <button
+          class="danger"
+          type="button"
+          onclick="unverifyPlayer('${esc(p.id)}')"
+        >MARK UNVERIFIED</button>
       </div>
     </div>
   `).join("");
@@ -423,21 +759,54 @@ function renderReview() {
   html += `<hr><h3>💳 Payment Verification</h3>`;
 
   if (!payment) {
-    html += '<div class="empty">No payment record found. A payment must be submitted before the team can be approved.</div>';
+    html += `
+      <div class="empty">
+        No payment record found. A payment must be submitted
+        before the team can be approved.
+      </div>
+    `;
   } else {
     html += `
       <div class="payment-box">
-        <p><label>Transaction ID</label><strong>${esc(payment.transaction_id || "Not provided")}</strong></p>
-        <p style="margin-top:10px"><label>Amount</label><strong>₹${esc(payment.amount ?? "—")}</strong></p>
-        <p style="margin-top:10px"><label>Payment status</label>${statusBadge(payment.status)}</p>
-        <div id="receiptArea" class="muted">Loading receipt...</div>
+        <p>
+          <label>Transaction ID</label>
+          <strong>${esc(payment.transaction_id || "Not provided")}</strong>
+        </p>
+
+        <p style="margin-top:10px">
+          <label>Amount</label>
+          <strong>₹${esc(payment.amount ?? "—")}</strong>
+        </p>
+
+        <p style="margin-top:10px">
+          <label>Payment status</label>
+          ${statusBadge(payment.status)}
+        </p>
+
+        <div id="receiptArea" class="muted">
+          Loading receipt...
+        </div>
+
         <div class="field">
           <label>Admin payment note</label>
-          <textarea id="paymentNote" placeholder="Optional payment verification note">${esc(payment.admin_note || "")}</textarea>
+          <textarea
+            id="paymentNote"
+            placeholder="Optional payment verification note"
+          >${esc(payment.admin_note || "")}</textarea>
         </div>
+
         <div class="actions">
-          <button class="good" onclick="verifyPayment()">VERIFY PAYMENT</button>
-          <button class="danger" onclick="rejectPayment()">MARK PAYMENT UNVERIFIED</button>
+          <button
+            class="good"
+            type="button"
+            onclick="verifyPayment()"
+          >VERIFY PAYMENT</button>
+
+          <button
+            class="danger"
+            type="button"
+            onclick="rejectPayment()"
+          >MARK PAYMENT UNVERIFIED</button>
         </div>
       </div>
     `;
@@ -446,32 +815,71 @@ function renderReview() {
   html += `<hr><h3>Team Decision</h3>`;
 
   if (!allPlayersVerified) {
-    html += '<p class="muted">Approval is locked: verify every player first.</p>';
+    html += `
+      <p class="muted">
+        Approval is locked: verify every player first.
+      </p>
+    `;
   } else if (!paymentVerified) {
-    html += '<p class="muted">Approval is locked: verify the payment first.</p>';
+    html += `
+      <p class="muted">
+        Approval is locked: verify the payment first.
+      </p>
+    `;
   } else {
-    html += '<p class="muted">All players and payment are verified. The team can now be approved.</p>';
+    html += `
+      <p class="muted">
+        All players and payment are verified.
+        The team can now be approved.
+      </p>
+    `;
   }
 
-  if (String(t.status).toLowerCase() === "approved") {
-    html += '<p class="muted">This team is already approved.</p>';
+  if (String(t.status || "").toLowerCase() === "approved") {
+    html += `
+      <p class="muted">This team is already approved.</p>
+    `;
   } else {
     html += `
       <div class="actions">
-        ${canApprove ? `<button class="primary" onclick="approveTeam()">APPROVE TEAM</button>` : ""}
-        <button class="danger" onclick="rejectTeam()">REJECT TEAM</button>
+        ${
+          canApprove
+            ? `<button
+                 class="primary"
+                 type="button"
+                 onclick="approveTeam()"
+               >APPROVE TEAM</button>`
+            : ""
+        }
+
+        <button
+          class="danger"
+          type="button"
+          onclick="rejectTeam()"
+        >REJECT TEAM</button>
       </div>
+
       <div class="field">
         <label>Rejection reason (required when rejecting)</label>
-        <textarea id="rejectionReason" placeholder="Explain what the team needs to correct"></textarea>
+        <textarea
+          id="rejectionReason"
+          placeholder="Explain what the team needs to correct"
+        ></textarea>
       </div>
     `;
   }
 
   document.getElementById("reviewContent").innerHTML = html;
 
-  if (payment) loadPaymentReceipt(payment);
+  if (payment) {
+    loadPaymentReceipt(payment);
+  }
 }
+
+
+/* =====================================
+   PAYMENT RECEIPT
+===================================== */
 
 async function loadPaymentReceipt(payment) {
   const area = document.getElementById("receiptArea");
@@ -485,23 +893,32 @@ async function loadPaymentReceipt(payment) {
   }
 
   if (/^https?:\/\//i.test(path)) {
+    const safeUrl = esc(path);
+
     area.innerHTML = `
       <p>Payment receipt:</p>
-      <a href="${esc(path)}" target="_blank" rel="noopener">OPEN RECEIPT</a>
-      ${/\.(png|jpe?g|webp)(\?|$)/i.test(path)
-        ? `<img src="${esc(path)}" alt="Payment receipt">`
-        : ""}
+      <a href="${safeUrl}" target="_blank" rel="noopener noreferrer">
+        OPEN RECEIPT
+      </a>
+      ${
+        /\.(png|jpe?g|webp)(\?|$)/i.test(path)
+          ? `<img src="${safeUrl}" alt="Payment receipt">`
+          : ""
+      }
     `;
+
     return;
   }
 
-  const {data,error} = await db.storage
+  const { data, error } = await db.storage
     .from(PAYMENT_BUCKET)
-    .createSignedUrl(path,3600);
+    .createSignedUrl(path, 3600);
 
   if (error || !data?.signedUrl) {
-    area.textContent = "Unable to open receipt. Check the storage bucket and admin storage permissions.";
-    console.error(error);
+    area.textContent =
+      "Unable to open receipt. Check the storage bucket and admin storage permissions.";
+
+    console.error("Receipt loading error:", error);
     return;
   }
 
@@ -510,225 +927,338 @@ async function loadPaymentReceipt(payment) {
 
   area.innerHTML = `
     <p>Payment receipt:</p>
-    <a href="${esc(url)}" target="_blank" rel="noopener">OPEN RECEIPT</a>
-    ${isImage ? `<img src="${esc(url)}" alt="Payment receipt">` : ""}
+
+    <a href="${esc(url)}" target="_blank" rel="noopener noreferrer">
+      OPEN RECEIPT
+    </a>
+
+    ${
+      isImage
+        ? `<img src="${esc(url)}" alt="Payment receipt">`
+        : ""
+    }
   `;
 }
 
+
+/* =====================================
+   VERIFY PLAYER
+   No verification note field.
+===================================== */
+
 async function verifyPlayer(playerId) {
-  const player = selectedPlayers.find(p => String(p.id) === String(playerId));
+  if (!selectedTeam) return;
+
+  const player = selectedPlayers.find(
+    p => String(p.id) === String(playerId)
+  );
+
   if (!player) return;
 
-  const note = document.getElementById("note-" + playerId)?.value.trim() || "Verified by Ren Gaming admin.";
-
-  const {error} = await db.from("team_players").update({
-    verification_status:"verified",
-    verified_at:new Date().toISOString(),
-    verification_message:note
-  }).eq("id",playerId);
+  const { error } = await db
+    .from("team_players")
+    .update({
+      verification_status: "verified",
+      verified_at: new Date().toISOString()
+    })
+    .eq("id", playerId);
 
   if (error) {
-    showMessage("Could not verify player: " + error.message,"error");
+    showMessage(
+      "Could not verify player: " + error.message,
+      "error"
+    );
     return;
   }
 
   showMessage("Player verified.");
+
+  // Refresh the popup without scrolling the main page.
   await openReview(selectedTeam.id);
 }
 
-async function unverifPlayerUpdate(playerId) {
-  const note = document.getElementById("note-" + playerId)?.value.trim() || "Not verified yet.";
 
-  const {error} = await db.from("team_players").update({
-    verification_status:"unverified",
-    verified_at:null,
-    verification_message:note
-  }).eq("id",playerId);
+/* =====================================
+   MARK PLAYER UNVERIFIED
+===================================== */
+
+async function unverifyPlayer(playerId) {
+  if (!selectedTeam) return;
+
+  const { error } = await db
+    .from("team_players")
+    .update({
+      verification_status: "unverified",
+      verified_at: null
+    })
+    .eq("id", playerId);
 
   if (error) {
-    showMessage("Could not update player: " + error.message,"error");
+    showMessage(
+      "Could not update player: " + error.message,
+      "error"
+    );
     return;
   }
 
   showMessage("Player marked unverified.");
+
   await openReview(selectedTeam.id);
 }
 
-async function unverifyPlayer(playerId) {
-  await unverifPlayerUpdate(playerId);
-}
+
+/* =====================================
+   VERIFY PAYMENT
+===================================== */
 
 async function verifyPayment() {
-  if (!selectedPayment) return;
+  if (!selectedPayment || !selectedTeam) return;
 
-  const note = document.getElementById("paymentNote")?.value.trim() || "Payment verified by admin.";
+  const note =
+    document.getElementById("paymentNote")?.value.trim() ||
+    "Payment verified by admin.";
 
-  const {error} = await db.from("tournament_payments").update({
-    status:"verified",
-    admin_note:note,
-    verified_at:new Date().toISOString()
-  }).eq("id",selectedPayment.id);
+  const { error } = await db
+    .from("tournament_payments")
+    .update({
+      status: "verified",
+      admin_note: note,
+      verified_at: new Date().toISOString()
+    })
+    .eq("id", selectedPayment.id);
 
   if (error) {
-    showMessage("Could not verify payment: " + error.message,"error");
+    showMessage(
+      "Could not verify payment: " + error.message,
+      "error"
+    );
     return;
   }
 
   showMessage("Payment verified.");
+
   await openReview(selectedTeam.id);
 }
 
+
+/* =====================================
+   MARK PAYMENT PENDING
+===================================== */
+
 async function rejectPayment() {
-  if (!selectedPayment) return;
+  if (!selectedPayment || !selectedTeam) return;
 
-  const note = document.getElementById("paymentNote")?.value.trim() || "Payment needs further review.";
+  const note =
+    document.getElementById("paymentNote")?.value.trim() ||
+    "Payment needs further review.";
 
-  const {error} = await db.from("tournament_payments").update({
-    status:"pending",
-    admin_note:note,
-    verified_at:null
-  }).eq("id",selectedPayment.id);
+  const { error } = await db
+    .from("tournament_payments")
+    .update({
+      status: "pending",
+      admin_note: note,
+      verified_at: null
+    })
+    .eq("id", selectedPayment.id);
 
   if (error) {
-    showMessage("Could not update payment: " + error.message,"error");
+    showMessage(
+      "Could not update payment: " + error.message,
+      "error"
+    );
     return;
   }
 
   showMessage("Payment marked pending.");
+
   await openReview(selectedTeam.id);
 }
 
-function whatsappUrl(phone,message) {
-  const digits = String(phone || "").replace(/\D/g,"");
+
+/* =====================================
+   WHATSAPP HELPERS
+===================================== */
+
+function whatsappUrl(phone, message) {
+  const digits = String(phone || "").replace(/\D/g, "");
+
   if (!digits) return null;
-  return "https://wa.me/" + digits + "?text=" + encodeURIComponent(message);
+
+  return "https://wa.me/" +
+    digits +
+    "?text=" +
+    encodeURIComponent(message);
 }
 
 function openWhatsApp(message) {
   const phone = selectedProfile?.phone;
-
-  const url = whatsappUrl(phone,message);
+  const url = whatsappUrl(phone, message);
 
   if (!url) {
-    alert("No valid team leader phone number was found in profiles.phone. Update the leader's phone number, including country code, before sending the WhatsApp message.");
+    alert(
+      "No valid team leader phone number was found in profiles.phone. " +
+      "Save the leader's number with country code before sending WhatsApp."
+    );
     return;
   }
 
-  window.open(url,"_blank","noopener,noreferrer");
+  window.open(url, "_blank", "noopener,noreferrer");
 }
+
+
+/* =====================================
+   APPROVE TEAM
+===================================== */
 
 async function approveTeam() {
   if (!selectedTeam) return;
 
-  const allVerified = selectedPlayers.length > 0 &&
-    selectedPlayers.every(p => String(p.verification_status || "").toLowerCase() === "verified");
+  const teamId = selectedTeam.id;
 
-  const paymentVerified = selectedPayment &&
+  const allVerified =
+    selectedPlayers.length > 0 &&
+    selectedPlayers.every(p =>
+      String(p.verification_status || "").toLowerCase() === "verified"
+    );
+
+  const paymentVerified =
+    selectedPayment &&
     String(selectedPayment.status || "").toLowerCase() === "verified";
 
   if (!allVerified || !paymentVerified) {
-    showMessage("Approval blocked. Verify every player and the payment first.","error");
+    showMessage(
+      "Approval blocked. Verify every player and the payment first.",
+      "error"
+    );
     return;
   }
 
   if (!confirm("Approve " + selectedTeam.team_name + "?")) return;
 
-  const {error} = await db.from("teams").update({
-    status:"approved"
-  }).eq("id",selectedTeam.id);
+  const { error } = await db
+    .from("teams")
+    .update({ status: "approved" })
+    .eq("id", teamId);
 
   if (error) {
-    showMessage("Could not approve team: " + error.message,"error");
+    showMessage(
+      "Could not approve team: " + error.message,
+      "error"
+    );
     return;
   }
 
+  const teamName = selectedTeam.team_name || "your team";
+  const leaderName = selectedProfile?.full_name || "Team Leader";
+
   const message =
-    "Hello " + (selectedProfile?.full_name || "Team Leader") + ",\n\n" +
-    "Your team \"" + selectedTeam.team_name + "\" has been APPROVED for the Ren Gaming tournament.\n\n" +
+    "Hello " + leaderName + ",\n\n" +
+    'Your team "' + teamName +
+    '" has been APPROVED for the Ren Gaming tournament.\n\n' +
     "Please stay connected with the tournament group for match updates.\n\n" +
     "Thank you,\nRen Gaming";
 
-  showMessage("Team approved. WhatsApp will open if a valid leader phone number is saved.");
-  openWhatsApp(message);
+  showMessage("Team approved.");
+
   await loadTeams();
-  await openReview(selectedTeam.id);
+
+  // Refresh the popup before opening WhatsApp.
+  await openReview(teamId);
+
+  openWhatsApp(message);
 }
+
+
+/* =====================================
+   REJECT TEAM
+===================================== */
 
 async function rejectTeam() {
   if (!selectedTeam) return;
 
-  const reason = document.getElementById("rejectionReason")?.value.trim();
+  const teamId = selectedTeam.id;
+  const teamName = selectedTeam.team_name || "your team";
+
+  const reason =
+    document.getElementById("rejectionReason")?.value.trim();
 
   if (!reason) {
-    showMessage("Please enter a rejection reason first.","error");
+    showMessage(
+      "Please enter a rejection reason first.",
+      "error"
+    );
     return;
   }
 
-  if (!confirm("Reject " + selectedTeam.team_name + "?")) return;
+  if (!confirm("Reject " + teamName + "?")) return;
 
-  /*
-    The existing teams schema may not contain a rejection_reason column.
-    Save status first. Then try to save the reason separately if the
-    column exists; do not silently pretend the reason was saved.
-  */
-  const {error} = await db.from("teams").update({
-    status:"rejected"
-  }).eq("id",selectedTeam.id);
+  const { error } = await db
+    .from("teams")
+    .update({ status: "rejected" })
+    .eq("id", teamId);
 
   if (error) {
-    showMessage("Could not reject team: " + error.message,"error");
+    showMessage(
+      "Could not reject team: " + error.message,
+      "error"
+    );
     return;
   }
 
+  const leaderName = selectedProfile?.full_name || "Team Leader";
+
   const message =
-    "Hello " + (selectedProfile?.full_name || "Team Leader") + ",\n\n" +
-    "Your team \"" + selectedTeam.team_name + "\" registration needs correction.\n\n" +
+    "Hello " + leaderName + ",\n\n" +
+    'Your team "' + teamName +
+    '" registration needs correction.\n\n' +
     "Reason: " + reason + "\n\n" +
     "Please contact Ren Gaming if you need clarification.";
 
-  showMessage("Team rejected. WhatsApp will open if the leader's phone number is saved.");
-  openWhatsApp(message);
+  showMessage("Team rejected.");
+
   await loadTeams();
-  await openReview(selectedTeam.id);
+  await openReview(teamId);
+
+  openWhatsApp(message);
 }
 
-function closeReview() {
-  selectedTeam = null;
-  selectedPlayers = [];
-  selectedPayment = null;
-  selectedProfile = null;
-  document.getElementById("reviewContent").textContent =
-    "Select a team above to see its details.";
-}
+
+/* =====================================
+   DIAMOND TOP-UP ORDERS
+===================================== */
 
 async function loadTopups() {
   const box = document.getElementById("topupsList");
+
   box.textContent = "Loading top-up orders...";
 
-  /*
-    This assumes your top-up table is named topup_orders.
-    If your actual table uses another name, the error message will tell us.
-  */
-  const {data,error} = await db
+  const { data, error } = await db
     .from("topup_orders")
     .select("*")
-    .order("created_at",{ascending:false})
+    .order("created_at", { ascending: false })
     .limit(100);
 
   if (error) {
-    console.error("Top-up loading error:",error);
-    box.innerHTML =
-      '<div class="empty">Could not load top-up orders. Check the table name and permissions. Details: ' +
-      esc(error.message) + '</div>';
+    console.error("Top-up loading error:", error);
+
+    box.innerHTML = `
+      <div class="empty">
+        Could not load top-up orders. Check the table name and permissions.
+        Details: ${esc(error.message)}
+      </div>
+    `;
+
     document.getElementById("topupCount").textContent = "—";
     return;
   }
 
   const orders = data || [];
+
   document.getElementById("topupCount").textContent = orders.length;
 
   if (!orders.length) {
-    box.innerHTML = '<div class="empty">No top-up orders found.</div>';
+    box.innerHTML =
+      '<div class="empty">No top-up orders found.</div>';
     return;
   }
 
@@ -738,24 +1268,55 @@ async function loadTopups() {
         <strong>Order #${esc(order.id)}</strong>
         ${statusBadge(order.status || "pending")}
       </div>
+
       <p class="muted">
-        Player: ${esc(order.username || order.game_username || order.player_name || "—")}<br>
+        Player:
+        ${esc(
+          order.username ||
+          order.game_username ||
+          order.player_name ||
+          "—"
+        )}<br>
+
         Game User ID: ${esc(order.game_user_id || "—")}<br>
+
         Server ID: ${esc(order.server_id || "—")}<br>
-        Package: ${esc(order.package_name || order.diamond_amount || order.product_name || "—")}<br>
+
+        Package:
+        ${esc(
+          order.package_name ||
+          order.diamond_amount ||
+          order.product_name ||
+          "—"
+        )}<br>
+
         Amount: ₹${esc(order.amount ?? order.price ?? "—")}<br>
-        Created: ${esc(order.created_at ? new Date(order.created_at).toLocaleString() : "—")}
+
+        Created:
+        ${esc(
+          order.created_at
+            ? new Date(order.created_at).toLocaleString()
+            : "—"
+        )}
       </p>
     </div>
   `).join("");
 }
 
+
+/* =====================================
+   INITIALIZE ADMIN PANEL
+===================================== */
+
 async function init() {
   const allowed = await checkAdmin();
+
   if (!allowed) return;
 
-  await loadTeams();
-  await loadTopups();
+  await Promise.all([
+    loadTeams(),
+    loadTopups()
+  ]);
 }
 
 init();
