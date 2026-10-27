@@ -848,10 +848,12 @@ async function loadPaymentReceipt(payment) {
   if (requestId !== receiptRequestNumber) return;
 
   if (error || !data?.signedUrl) {
-    console.error("Receipt URL generation failed:", {
-      path,
-      error
-    });
+   console.error("Receipt URL generation failed:", {
+    path: path,
+    message: error?.message,
+    statusCode: error?.statusCode,
+    error: error
+});
 
     area.innerHTML = `
       <div class="empty">
