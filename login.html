@@ -5,317 +5,186 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login | Ren Gaming</title>
     <link rel="stylesheet" href="css/style.css">
-
     <style>
         body {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: #050505;
-            margin: 0;
+            min-height: 100vh; display: flex; align-items: center;
+            justify-content: center; background: #050505; margin: 0;
             font-family: Arial, sans-serif;
         }
-
-        .login-page {
-            width: 100%;
-            max-width: 430px;
-            padding: 20px;
-            box-sizing: border-box;
-        }
-
+        .login-page { width: 100%; max-width: 430px; padding: 20px; box-sizing: border-box; }
         .login-card {
-            background: #111;
-            border: 1px solid #292929;
-            padding: 40px 30px;
-            border-radius: 12px;
-            text-align: center;
+            background: #111; border: 1px solid #292929; padding: 40px 30px;
+            border-radius: 12px; text-align: center;
         }
-
         .login-logo {
-            width: 70px;
-            height: 70px;
-            margin: 0 auto 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: #e50914;
-            color: white;
-            font-size: 28px;
-            font-weight: 900;
-            border-radius: 12px;
+            width: 70px; height: 70px; margin: 0 auto 20px; display: flex;
+            align-items: center; justify-content: center; background: #e50914;
+            color: white; font-size: 28px; font-weight: 900; border-radius: 12px;
         }
-
-        .login-card h1 {
-            color: white;
-            margin-bottom: 8px;
-        }
-
-        .login-card p {
-            color: #999;
-            margin-bottom: 30px;
-            line-height: 1.6;
-        }
-
+        .login-card h1 { color: white; margin-bottom: 8px; }
+        .login-card p { color: #999; margin-bottom: 30px; line-height: 1.6; }
         .google-btn {
-            width: 100%;
-            padding: 14px;
-            border: 1px solid #444;
-            background: white;
-            color: #111;
-            border-radius: 6px;
-            font-size: 15px;
-            font-weight: 700;
-            cursor: pointer;
+            width: 100%; padding: 14px; border: 1px solid #444; background: white;
+            color: #111; border-radius: 6px; font-size: 15px; font-weight: 700; cursor: pointer;
         }
-
-        .google-btn:hover {
-            background: #eee;
-        }
-
-        .google-btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-
+        .google-btn:hover { background: #eee; }
+        .google-btn:disabled { opacity: .6; cursor: not-allowed; }
         .message {
-            margin-top: 20px;
-            font-size: 14px;
-            color: #aaa;
-            min-height: 20px;
-            overflow-wrap: anywhere;
-            line-height: 1.5;
+            margin-top: 20px; font-size: 14px; color: #aaa; min-height: 20px;
+            overflow-wrap: anywhere; line-height: 1.5;
         }
-
-        .back-home {
-            display: inline-block;
-            margin-top: 25px;
-            color: #e50914;
-            text-decoration: none;
-        }
-
-        .back-home:hover {
-            text-decoration: underline;
-        }
+        .back-home { display: inline-block; margin-top: 25px; color: #e50914; text-decoration: none; }
+        .back-home:hover { text-decoration: underline; }
     </style>
 </head>
-
 <body>
-    <main class="login-page">
-        <section class="login-card">
-            <div class="login-logo">RG</div>
+<main class="login-page">
+    <section class="login-card">
+        <div class="login-logo">RG</div>
+        <h1>Welcome to Ren Gaming</h1>
+        <p>Sign in to join tournaments and manage your account.</p>
+        <button id="googleLogin" class="google-btn" type="button">Continue with Google</button>
+        <div id="loginMessage" class="message" role="status" aria-live="polite"></div>
+        <a href="index.html" class="back-home">← Back to Ren Gaming</a>
+    </section>
+</main>
 
-            <h1>Welcome to Ren Gaming</h1>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+(() => {
+    const SUPABASE_URL = "https://bixpvxkpnaqdifmvkhvp.supabase.co";
+    const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_XtzkrIFbBPTGUmoLHqHu5Q_XeznKoVI";
 
-            <p>
-                Sign in to join tournaments
-                and manage your account.
-            </p>
+    const message = document.getElementById("loginMessage");
+    const button = document.getElementById("googleLogin");
 
-            <button
-                id="googleLogin"
-                class="google-btn"
-                type="button">
-                Continue with Google
-            </button>
+    if (!window.supabase) {
+        message.textContent = "Login service failed to load. Please refresh and try again.";
+        button.disabled = true;
+        return;
+    }
 
-            <div
-                id="loginMessage"
-                class="message"
-                role="status"
-                aria-live="polite">
-            </div>
-
-            <a href="index.html" class="back-home">
-                ← Back to Ren Gaming
-            </a>
-        </section>
-    </main>
-
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-    <script>
-        // SUPABASE CONFIGURATION
-
-        const SUPABASE_URL =
-            "https://bixpvxkpnaqdifmvkhvp.supabase.co";
-
-        const SUPABASE_PUBLISHABLE_KEY =
-            "sb_publishable_XtzkrIFbBPTGUmoLHqHu5Q_XeznKoVI";
-
-        const supabaseClient = window.supabase.createClient(
-            SUPABASE_URL,
-            SUPABASE_PUBLISHABLE_KEY,
-            {
-                auth: {
-                    flowType: "pkce",
-                    persistSession: true,
-                    autoRefreshToken: true,
-                    detectSessionInUrl: true
-                }
-            }
-        );
-
-        const googleLogin =
-            document.getElementById("googleLogin");
-
-        const loginMessage =
-            document.getElementById("loginMessage");
-
-        let redirecting = false;
-
-        // GOOGLE LOGIN CALLBACK URL
-
-        const redirectUrl =
-            new URL("login.html", window.location.href).href;
-
-        // SEND USER TO THE CORRECT PAGE
-
-        async function redirectUser(user) {
-            if (!user || redirecting) {
-                return;
-            }
-
-            redirecting = true;
-            googleLogin.disabled = true;
-
-            loginMessage.textContent =
-                "Checking your account...";
-
-            try {
-                const { data: profile, error } =
-                    await supabaseClient
-                        .from("profiles")
-                        .select("role")
-                        .eq("id", user.id)
-                        .maybeSingle();
-
-                if (error) {
-                    throw new Error(
-                        "Unable to check your account role: " +
-                        error.message
-                    );
-                }
-
-                if (!profile) {
-                    throw new Error(
-                        "Your profile was not found. Please contact the administrator."
-                    );
-                }
-
-                loginMessage.textContent =
-                    "Login successful! Redirecting...";
-
-                // Admin goes to admin panel.
-                // All other users go to user dashboard.
-
-                if (
-                    String(profile.role || "")
-                        .trim()
-                        .toLowerCase() === "admin"
-                ) {
-                    window.location.replace("admin.html");
-                } else {
-                    window.location.replace("index.html");
-                }
-
-            } catch (error) {
-                console.error("Account redirect error:", error);
-
-                loginMessage.textContent =
-                    error.message ||
-                    "Unable to open your dashboard. Please try again.";
-
-                googleLogin.disabled = false;
-                redirecting = false;
+    const supabaseClient = window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_PUBLISHABLE_KEY,
+        {
+            auth: {
+                flowType: "pkce",
+                persistSession: true,
+                autoRefreshToken: true,
+                detectSessionInUrl: true
             }
         }
+    );
 
-        // GOOGLE SIGN-IN BUTTON
+    let redirecting = false;
+    const redirectUrl = new URL("login.html", window.location.href).href;
 
-        googleLogin.addEventListener("click", async function () {
-            googleLogin.disabled = true;
+    async function redirectUser(user) {
+        if (!user || redirecting) return;
+        redirecting = true;
+        button.disabled = true;
+        message.textContent = "Login successful. Opening your account...";
 
-            loginMessage.textContent =
-                "Opening Google login...";
-
-            try {
-                const { error } =
-                    await supabaseClient.auth.signInWithOAuth({
-                        provider: "google",
-                        options: {
-                            redirectTo: redirectUrl
-                        }
-                    });
-
-                if (error) {
-                    throw error;
-                }
-
-            } catch (error) {
-                console.error("Google sign-in error:", error);
-
-                loginMessage.textContent =
-                    error.message ||
-                    "Unable to start Google login.";
-
-                googleLogin.disabled = false;
-            }
-        });
-
-        // HANDLE RETURN FROM GOOGLE
-
-        async function initializeLogin() {
-            const url = new URL(window.location.href);
-
-            if (url.searchParams.has("error")) {
-                const description =
-                    url.searchParams.get("error_description") ||
-                    url.searchParams.get("error");
-
-                loginMessage.textContent =
-                    "Google login error: " +
-                    description.replace(/\+/g, " ");
-
-                return;
-            }
-
-            // Wait for Supabase to finish restoring the session.
-            const { data, error } =
-                await supabaseClient.auth.getSession();
+        try {
+            // Missing profile rows should not block a legitimate public login.
+            // Only an explicit role='admin' in the profiles table grants admin routing.
+            const { data: profile, error } = await supabaseClient
+                .from("profiles")
+                .select("role")
+                .eq("id", user.id)
+                .maybeSingle();
 
             if (error) {
-                console.error("Session check error:", error);
-                loginMessage.textContent =
-                    "Unable to check your login session.";
+                console.warn("Could not read profile role; continuing as public user:", error.message);
+            }
+
+            const role = String(profile?.role || "").trim().toLowerCase();
+
+            if (role === "admin") {
+                window.location.replace("admin.html");
                 return;
             }
 
-            if (data.session?.user) {
-                await redirectUser(data.session.user);
-            } else {
-                loginMessage.textContent =
-                    "Sign in with Google to continue.";
-            }
-        }
+            // Regular users can continue even if a profile row has not been created yet.
+            // Best-effort profile creation; RLS may reject this, which should not block login.
+            if (!profile && user.id) {
+                const metadataName =
+                    user.user_metadata?.full_name ||
+                    user.user_metadata?.name ||
+                    user.user_metadata?.preferred_username ||
+                    "";
 
-        // ALSO HANDLE SESSION CHANGES
+                const { error: insertError } = await supabaseClient
+                    .from("profiles")
+                    .upsert({
+                        id: user.id,
+                        full_name: metadataName,
+                        role: "user"
+                    }, { onConflict: "id", ignoreDuplicates: true });
 
-        supabaseClient.auth.onAuthStateChange(
-            (event, session) => {
-                if (
-                    event === "SIGNED_IN" &&
-                    session?.user
-                ) {
-                    // Run after the auth callback finishes.
-                    setTimeout(() => {
-                        redirectUser(session.user);
-                    }, 0);
+                if (insertError) {
+                    console.warn("Profile auto-creation was not permitted; public login will continue:", insertError.message);
                 }
             }
-        );
 
-        initializeLogin();
-    </script>
+            window.location.replace("index.html");
+        } catch (error) {
+            // A profile-table/RLS issue must not trap a public user on the login page.
+            console.error("Login redirect check encountered an issue:", error);
+            window.location.replace("index.html");
+        }
+    }
+
+    button.addEventListener("click", async () => {
+        button.disabled = true;
+        message.textContent = "Opening Google login...";
+        try {
+            const { error } = await supabaseClient.auth.signInWithOAuth({
+                provider: "google",
+                options: { redirectTo: redirectUrl }
+            });
+            if (error) throw error;
+        } catch (error) {
+            console.error("Google sign-in error:", error);
+            message.textContent = error.message || "Unable to start Google login. Please try again.";
+            button.disabled = false;
+        }
+    });
+
+    async function initializeLogin() {
+        const url = new URL(window.location.href);
+
+        if (url.searchParams.has("error")) {
+            const description = url.searchParams.get("error_description") || url.searchParams.get("error");
+            message.textContent = "Google login error: " + description.replace(/\+/g, " ");
+            return;
+        }
+
+        message.textContent = "Checking your login session...";
+        const { data, error } = await supabaseClient.auth.getSession();
+
+        if (error) {
+            console.error("Session check error:", error);
+            message.textContent = "Unable to check your login session. Please refresh and try again.";
+            return;
+        }
+
+        if (data.session?.user) {
+            await redirectUser(data.session.user);
+        } else {
+            message.textContent = "Sign in with Google to continue.";
+        }
+    }
+
+    supabaseClient.auth.onAuthStateChange((event, session) => {
+        if (event === "SIGNED_IN" && session?.user) {
+            setTimeout(() => redirectUser(session.user), 0);
+        }
+    });
+
+    initializeLogin();
+})();
+</script>
 </body>
 </html>
