@@ -374,13 +374,15 @@
         if ((count||0) >= maxTeams) throw new Error("This tournament has reached its maximum team limit.");
       }
 
-      const {data:team,error:teamError} = await supabaseClient.from("teams").insert({
-        user_id:CURRENT_USER.id,
-        team_name:document.getElementById("team-name").value.trim(),
-        leader_phone:document.getElementById("leader-phone").value.trim(),
-        tournament_id:CURRENT_TOURNAMENT_ID,
-        status:"pending"
-      }).select("id,team_name,leader_phone").single();
+      const {data:team,error:teamError} = await supabaseClient.from("teams")```javascript
+.insert({
+  user_id: user.id,
+  team_name: teamName,
+  leader_phone: leaderPhone,
+  tournament_id: tournamentId,
+  status: "pending"
+})
+```.select("id,team_name,leader_phone").single();
       if (teamError) throw new Error("Unable to save team: " + teamError.message);
       teamCreated = true;
 
