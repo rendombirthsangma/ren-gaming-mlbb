@@ -925,6 +925,17 @@
         .live-tournament-empty { grid-column:1/-1; padding:28px; text-align:center; background:#101010; border:1px dashed #444; border-radius:12px; color:var(--gray); }
         @media(max-width:850px) { .live-tournament-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } }
         @media(max-width:560px) { .live-tournament-grid { grid-template-columns:1fr; } .live-tournaments-section { padding:50px 18px; } }
+        .tournament-card-actions { display:flex; flex-wrap:wrap; gap:8px; margin-top:16px; }
+        .tournament-card-actions .button { flex:1 1 125px; padding:10px 11px; font-size:11px; }
+        .button-disabled { opacity:.55; cursor:not-allowed; filter:grayscale(1); }
+        .contact-section { background:#080808; border-top:1px solid var(--border); }
+        .contact-grid { max-width:1000px; margin:0 auto; display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:14px; }
+        .contact-card { padding:20px 14px; text-align:center; background:#111; border:1px solid var(--border); border-radius:10px; overflow-wrap:anywhere; }
+        .contact-card strong { display:block; margin:8px 0 5px; color:#fff; }
+        .contact-card a { color:#ff7777; font-size:13px; }
+        .security-note { max-width:900px; margin:25px auto 0; padding:17px; text-align:center; color:var(--gray); background:#101010; border:1px solid rgba(255,37,37,.25); border-radius:9px; font-size:13px; }
+        @media(max-width:800px) { .contact-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+        @media(max-width:480px) { .contact-grid { grid-template-columns:1fr; } .tournament-card-actions .button { flex-basis:100%; } }
 
     </style>
 </head>
@@ -941,7 +952,7 @@
 
         <div class="nav-links">
             <a href="index.html">Home</a>
-            <a href="#tournament">Tournament Details</a>
+            <a href="#admin-tournaments">Tournaments</a>
             <a href="#features">Features</a>
             <a href="#game">Our Game</a>
             <a href="#live">Live Stream</a>
@@ -984,7 +995,7 @@
 
             <div class="hero-buttons">
 
-                <a href="#tournament" class="button button-primary">
+                <a href="#admin-tournaments" class="button button-primary">
                     VIEW TOURNAMENT
                 </a>
 
@@ -1011,332 +1022,6 @@
         <div class="live-tournament-grid" id="liveTournamentGrid">
             <div class="live-tournament-empty">Loading tournaments...</div>
         </div>
-    </section>
-
-    <!-- STATS -->
-
-    <section class="stats">
-        <div class="stats-grid">
-
-            <div class="stat">
-                <h2>5v5</h2>
-                <p>Team Battles</p>
-            </div>
-
-            <div class="stat">
-                <h2>₹30,000</h2>
-                <p>Main Prize Pool</p>
-            </div>
-
-            <div class="stat">
-                <h2>₹2,000</h2>
-                <p>Special Individual Rewards</p>
-            </div>
-
-        </div>
-    </section>
-
-    <!-- NORTH-EAST ESPORTS TOURNAMENT -->
-
-    <section class="tournament-section" id="tournament">
-        <div class="tournament-container">
-
-            <div class="section-heading">
-                <span>COMPETE FOR GLORY</span>
-                <h2>NORTH-EAST eSPORTS</h2>
-                <p>
-                    Take your place on the battlefield in MOBA Legends 5v5
-                    and compete for the main prizes and special awards.
-                </p>
-            </div>
-
-            <p class="organizer-note">
-                <strong>Organizer:</strong> North-East eSports Community.
-                Ren Gaming provides the tournament website and livestreaming.
-                Match schedules will be announced in the official community group.
-            </p>
-
-            <div class="tournament-info-grid">
-
-                <div class="tournament-info-card">
-                    <span class="tournament-icon">🎮</span>
-                    <h3>Game</h3>
-                    <p>MOBA Legends 5v5</p>
-                </div>
-
-                <div class="tournament-info-card">
-                    <span class="tournament-icon">💰</span>
-                    <h3>Entry Fee Per Team</h3>
-                    <p class="tournament-amount">₹1,000</p>
-                </div>
-
-                <div class="tournament-info-card prize-highlight">
-                    <span class="tournament-icon">🏆</span>
-                    <h3>Main Prize Pool</h3>
-                    <p class="tournament-amount">₹30,000</p>
-                </div>
-
-            </div>
-
-            <h3 class="prize-heading">🏆 MAIN TOURNAMENT PRIZES</h3>
-
-            <div class="prize-grid">
-
-                <div class="prize-card first-prize">
-                    <span>🥇</span>
-                    <h3>1st Place</h3>
-                    <p>₹20,000</p>
-                </div>
-
-                <div class="prize-card second-prize">
-                    <span>🥈</span>
-                    <h3>2nd Place</h3>
-                    <p>₹10,000</p>
-                </div>
-
-            </div>
-
-            <h3 class="special-rewards-heading">
-                ⭐ SPECIAL INDIVIDUAL REWARDS
-            </h3>
-
-            <div class="prize-grid">
-
-                <div class="prize-card special-prize">
-                    <span>🎯</span>
-                    <h3>Best Killer</h3>
-                    <p>₹1,000</p>
-                    <small>Final-round performance only</small>
-                </div>
-
-                <div class="prize-card special-prize">
-                    <span>🤝</span>
-                    <h3>Best Assist</h3>
-                    <p>₹1,000</p>
-                    <small>Final-round performance only</small>
-                </div>
-
-            </div>
-
-            <p class="reward-note">
-                Best Killer and Best Assist are separate from the ₹30,000 main
-                prize pool. Each award is worth ₹1,000. Players remain eligible
-                whether their team wins or loses the final. Only final-round
-                performance counts.
-            </p>
-
-            <!-- MAIN RULES -->
-
-            <div class="rules-panel">
-
-                <div class="section-heading">
-                    <span>IMPORTANT INFORMATION</span>
-                    <h2>MAIN TOURNAMENT RULES</h2>
-                    <p>
-                        Every team must understand and follow the tournament rules.
-                    </p>
-                </div>
-
-                <div class="rules-list">
-
-                    <div class="rule-item">
-                        <span class="rule-number">01</span>
-                        <div>
-                            <h4>Match Format</h4>
-                            <p>
-                                Regular matches are Best of 1 (BO1).
-                                Quarter-finals, semi-finals, and the final
-                                are Best of 3 (BO3).
-                            </p>
-                        </div>
-                    </div>
-
-                    <div class="rule-item">
-                        <span class="rule-number">02</span>
-                        <div>
-                            <h4>Match Schedule</h4>
-                            <p>
-                                There is no fixed match time. Dates and times
-                                will be announced in the official community group.
-                            </p>
-                        </div>
-                    </div>
-
-                    <div class="rule-item">
-                        <span class="rule-number">03</span>
-                        <div>
-                            <h4>Room Entry Deadline</h4>
-                            <p>
-                                Teams must enter the match room within 15 minutes
-                                of the announced match time. Failure to enter
-                                within the deadline results in disqualification.
-                            </p>
-                        </div>
-                    </div>
-
-                    <div class="rule-item">
-                        <span class="rule-number">04</span>
-                        <div>
-                            <h4>Player Replacement</h4>
-                            <p>
-                                Registered players cannot be changed freely.
-                                The replacement fee is ₹50 per player.
-                                Replacements must follow the organizer's procedure.
-                            </p>
-                        </div>
-                    </div>
-
-                    <div class="rule-item">
-                        <span class="rule-number">05</span>
-                        <div>
-                            <h4>First-Round Rejoin</h4>
-                            <p>
-                                An eliminated team may request to rejoin for
-                                ₹500 per team before the first round ends.
-                                Organizer approval is required.
-                            </p>
-                        </div>
-                    </div>
-
-                    <div class="rule-item">
-                        <span class="rule-number">06</span>
-                        <div>
-                            <h4>Second-Round Rejoin</h4>
-                            <p>
-                                An eliminated team may request to rejoin for
-                                ₹600 per team before the second round ends.
-                                Organizer approval is required.
-                            </p>
-                        </div>
-                    </div>
-
-                    <div class="rule-item">
-                        <span class="rule-number">07</span>
-                        <div>
-                            <h4>Rejoin Deadline</h4>
-                            <p>
-                                Rejoining must be completed before the relevant
-                                round ends. There is no rejoin option after
-                                the second round.
-                            </p>
-                        </div>
-                    </div>
-
-                    <div class="rule-item">
-                        <span class="rule-number">08</span>
-                        <div>
-                            <h4>Fair Play</h4>
-                            <p>
-                                Cheating, hacking, unauthorized tools, and
-                                deliberately disrupting matches are prohibited.
-                                Teams must follow the hoster's instructions.
-                            </p>
-                        </div>
-                    </div>
-
-                    <div class="rule-item">
-                        <span class="rule-number">09</span>
-                        <div>
-                            <h4>Special Awards</h4>
-                            <p>
-                                Best Killer and Best Assist each receive ₹1,000.
-                                Awards are based only on final-round performance,
-                                regardless of whether the player's team wins or loses.
-                            </p>
-                        </div>
-                    </div>
-
-                    <div class="rule-item">
-                        <span class="rule-number">10</span>
-                        <div>
-                            <h4>Official Instructions</h4>
-                            <p>
-                                Teams must follow official announcements and
-                                instructions from the North-East eSports Community
-                                and assigned match hosters.
-                            </p>
-                        </div>
-                    </div>
-
-                </div>
-
-                <div class="rules-buttons">
-
-                    <a href="north-east-esports-rules.pdf"
-                       target="_blank"
-                       rel="noopener noreferrer"
-                       class="button button-primary">
-                        📖 VIEW FULL RULES PDF
-                    </a>
-
-                    <a href="north-east-esports-rules.pdf"
-                       download="North-East-eSports-Tournament-Rules.pdf"
-                       class="button button-secondary">
-                        ⬇ DOWNLOAD RULES PDF
-                    </a>
-
-                </div>
-
-                <p class="rules-note">
-                    These are summary rules. Please read the complete official
-                    rules PDF. Official rules and announcements issued by the
-                    North-East eSports Community take precedence.
-                </p>
-
-            </div>
-
-            <div class="tournament-register-button">
-                <a href="tournament-register.html" class="button button-primary">
-                    REGISTER YOUR TEAM
-                </a>
-            </div>
-
-        </div>
-    </section>
-
-    <!-- FEATURES -->
-
-    <section class="section" id="features">
-
-        <div class="section-heading">
-            <span>WHY REN GAMING?</span>
-            <h2>YOUR GAMING JOURNEY STARTS HERE</h2>
-            <p>
-                Join the community, follow matches, and prepare for your next battle.
-            </p>
-        </div>
-
-        <div class="features-grid">
-
-            <div class="feature-card">
-                <div class="feature-icon">🏆</div>
-                <h3>Join Tournaments</h3>
-                <p>
-                    Register your team and compete against other teams
-                    for exciting prizes.
-                </p>
-            </div>
-
-            <div class="feature-card">
-                <div class="feature-icon">⚔️</div>
-                <h3>Build Your Team</h3>
-                <p>
-                    Bring your teammates together, prepare your strategies,
-                    and fight for victory.
-                </p>
-            </div>
-
-            <div class="feature-card">
-                <div class="feature-icon">🎮</div>
-                <h3>Gaming Community</h3>
-                <p>
-                    Follow tournament updates, watch matches, and connect
-                    with the gaming community.
-                </p>
-            </div>
-
-        </div>
-
     </section>
 
     <!-- LIVE STREAM -->
@@ -1397,6 +1082,52 @@
 
     </section>
 
+
+    <!-- FEATURES -->
+
+    <section class="section" id="features">
+
+        <div class="section-heading">
+            <span>WHY REN GAMING?</span>
+            <h2>YOUR GAMING JOURNEY STARTS HERE</h2>
+            <p>
+                Join the community, follow matches, and prepare for your next battle.
+            </p>
+        </div>
+
+        <div class="features-grid">
+
+            <div class="feature-card">
+                <div class="feature-icon">🏆</div>
+                <h3>Join Tournaments</h3>
+                <p>
+                    Register your team and compete against other teams
+                    for exciting prizes.
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">⚔️</div>
+                <h3>Build Your Team</h3>
+                <p>
+                    Bring your teammates together, prepare your strategies,
+                    and fight for victory.
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">🎮</div>
+                <h3>Gaming Community</h3>
+                <p>
+                    Follow tournament updates, watch matches, and connect
+                    with the gaming community.
+                </p>
+            </div>
+
+        </div>
+
+    </section>
+
     <!-- GAME -->
 
     <section class="game-section" id="game">
@@ -1416,7 +1147,7 @@
                 </p>
 
                 <div style="margin-top:25px;">
-                    <a href="tournament-register.html"
+                    <a href="#admin-tournaments"
                        class="button button-primary">
                         REGISTER NOW
                     </a>
@@ -1430,6 +1161,22 @@
 
         </div>
 
+    </section>
+
+    <!-- CONTACT & SECURITY -->
+    <section class="section contact-section" id="contact">
+        <div class="section-heading">
+            <span>WE ARE HERE TO HELP</span>
+            <h2>CONTACT REN GAMING</h2>
+            <p>Questions about tournaments, registration, or match schedules? Contact us through our official channels.</p>
+        </div>
+        <div class="contact-grid">
+            <div class="contact-card"><span style="font-size:28px">💬</span><strong>WhatsApp 1</strong><a href="https://wa.me/917005913684" target="_blank" rel="noopener noreferrer">7005913684</a></div>
+            <div class="contact-card"><span style="font-size:28px">💬</span><strong>WhatsApp 2</strong><a href="https://wa.me/918638129770" target="_blank" rel="noopener noreferrer">8638129770</a></div>
+            <div class="contact-card"><span style="font-size:28px">📸</span><strong>Instagram</strong><a href="https://www.instagram.com/ren_chisik03/" target="_blank" rel="noopener noreferrer">@ren_chisik03</a></div>
+            <div class="contact-card"><span style="font-size:28px">✉️</span><strong>Email</strong><a href="mailto:rendombirthsangma@gmail.com">rendombirthsangma@gmail.com</a></div>
+        </div>
+        <div class="security-note"><strong style="color:#ff7777">🔒 Your Security Matters</strong><br>Ren Gaming takes reasonable steps to protect account information. Never share your password or OTP with anyone. For your safety, use only official Ren Gaming contact channels.</div>
     </section>
 
     <!-- CALL TO ACTION -->
@@ -1470,7 +1217,9 @@
 
         <div class="footer-links">
             <a href="index.html">Home</a>
-            <a href="#tournament">Tournament Details</a>
+            <a href="#admin-tournaments">Tournaments</a>
+            <a href="#live">Live Stream</a>
+            <a href="#contact">Contact</a>
             <a href="tournament-register.html">Register</a>
             <a href="https://www.youtube.com/@Rendombirth"
                target="_blank"
@@ -1604,67 +1353,95 @@
         if (!grid) return;
         grid.innerHTML = '<div class="live-tournament-empty">Loading tournaments...</div>';
 
+        // UUIDs are used internally to select the correct records. They are not
+        // printed in the tournament cards or shown as visible text.
+        const tournamentSettings = {
+            "8b5997f8-194a-4998-9915-6528dfbbcb44": {
+                publicName: "North-East India eSport Tournament",
+                status: "UPCOMING",
+                registrationOpen: true,
+                rulesPdf: "north-east-esports-rules.pdf",
+                rulesDownloadName: "north-east-esports-rules.pdf"
+            },
+            "8780bade-5ffc-4888-8edb-fb1f589abc3e": {
+                publicName: "ren-gaming-tournament",
+                status: "ONGOING",
+                registrationOpen: false,
+                rulesPdf: "REN_GAMING_MLBB_Tournament_Rules.pdf",
+                rulesDownloadName: "REN_GAMING_MLBB_Tournament_Rules.pdf"
+            }
+        };
+
+        const safe = value => String(value ?? "").replace(/[&<>"']/g, ch => ({
+            "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;"
+        }[ch]));
+        const money = value => {
+            if (value === null || value === undefined || value === "") return "Not set";
+            const n = Number(value);
+            return Number.isFinite(n) ? "₹" + n.toLocaleString("en-IN") : safe(value);
+        };
+        const dateText = value => {
+            if (!value) return "Not announced";
+            const d = new Date(value + (String(value).length === 10 ? "T00:00:00" : ""));
+            return Number.isNaN(d.getTime()) ? safe(value) : d.toLocaleDateString("en-IN", { day:"numeric", month:"short", year:"numeric" });
+        };
+
         try {
             const { data, error } = await authClient
                 .from("tournament")
-                .select("id,name,game,description,banner_url,start_date,registration_deadline,entry_fee,prize,team_size,created_at")
-                .order("created_at", { ascending: false });
+                .select("id,name,game,description,banner_url,start_date,registration_deadline,entry_fee,prize,team_size,registration_open,created_at")
+                .in("id", Object.keys(tournamentSettings));
 
             if (error) throw error;
 
-            if (!data || data.length === 0) {
-                grid.innerHTML = '<div class="live-tournament-empty">No tournaments have been published yet. Please check back soon!</div>';
+            const records = data || [];
+            const ordered = Object.keys(tournamentSettings)
+                .map(id => {
+                    const record = records.find(item => String(item.id).toLowerCase() === id.toLowerCase());
+                    if (!record) return null;
+                    return { ...record, ...tournamentSettings[id] };
+                })
+                .filter(Boolean);
+
+            if (!ordered.length) {
+                grid.innerHTML = '<div class="live-tournament-empty">Tournament details are temporarily unavailable. Please check back soon.</div>';
                 return;
             }
 
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
-            const tournaments = data.map(t => {
-                const start = t.start_date ? new Date(t.start_date + "T00:00:00") : null;
-                const status = start && start > today ? "UPCOMING" : "ONGOING";
-                return { ...t, displayStatus: status };
-            });
-
-            grid.innerHTML = tournaments.map(t => {
-                const safe = value => String(value ?? "").replace(/[&<>"']/g, ch => ({
-                    "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;"
-                }[ch]));
-                const money = value => {
-                    if (value === null || value === undefined || value === "") return "Not set";
-                    const n = Number(value);
-                    return Number.isFinite(n) ? "₹" + n.toLocaleString("en-IN") : safe(value);
-                };
-                const dateText = value => {
-                    if (!value) return "Not announced";
-                    const d = new Date(value + (String(value).length === 10 ? "T00:00:00" : ""));
-                    return Number.isNaN(d.getTime()) ? safe(value) : d.toLocaleDateString("en-IN", { day:"numeric", month:"short", year:"numeric" });
-                };
-                const statusClass = t.displayStatus.toLowerCase();
+            grid.innerHTML = ordered.map(t => {
+                const statusClass = t.status.toLowerCase();
                 const banner = t.banner_url
-                    ? `<img class="live-tournament-banner" src="${safe(t.banner_url)}" alt="${safe(t.name)} banner" loading="lazy" onerror="this.style.display='none'">`
+                    ? `<img class="live-tournament-banner" src="${safe(t.banner_url)}" alt="Tournament banner" loading="lazy" onerror="this.style.display='none'">`
                     : "";
+                const registerButton = t.registrationOpen
+                    ? `<a class="button button-primary" href="tournament-register.html?tournament_id=${encodeURIComponent(t.id)}">REGISTER NOW</a>`
+                    : `<button class="button button-primary button-disabled" type="button" disabled aria-disabled="true">REGISTRATION CLOSED</button>`;
                 return `<article class="live-tournament-card">
                     ${banner}
                     <div class="live-tournament-body">
                         <div class="live-tournament-top">
-                            <span class="live-tournament-status ${statusClass}">${t.displayStatus}</span>
+                            <span class="live-tournament-status ${statusClass}">${t.status}</span>
                             <span style="color:#aaa;font-size:11px">${safe(t.team_size || "Team format not set")}</span>
                         </div>
-                        <h3>${safe(t.name || "Untitled Tournament")}</h3>
-                        <p class="live-tournament-game">${safe(t.game || "Game not specified")}</p>
+                        <h3>${safe(t.publicName)}</h3>
+                        <p class="live-tournament-game">${safe(t.game || "MOBA Legends 5v5")}</p>
                         <div class="live-tournament-details">
                             <div class="live-tournament-detail"><small>🏆 PRIZE</small><strong>${money(t.prize)}</strong></div>
                             <div class="live-tournament-detail"><small>🎟️ ENTRY FEE</small><strong>${money(t.entry_fee)}</strong></div>
                         </div>
                         <p class="live-tournament-date">📅 Starts: ${dateText(t.start_date)}<br>📝 Registration deadline: ${dateText(t.registration_deadline)}</p>
                         ${t.description ? `<p class="live-tournament-description">${safe(t.description)}</p>` : ""}
-                        <a class="button button-primary" href="tournament-register.html">REGISTER NOW</a>
+                        <div class="tournament-card-actions">
+                            ${registerButton}
+                            <a class="button button-secondary" href="${safe(t.rulesPdf)}" target="_blank" rel="noopener noreferrer">VIEW RULES PDF</a>
+                            <a class="button button-secondary" href="${safe(t.rulesPdf)}" download="${safe(t.rulesDownloadName)}">DOWNLOAD PDF</a>
+                        </div>
                     </div>
                 </article>`;
             }).join("");
         } catch (error) {
             console.error("Could not load tournaments:", error);
-            grid.innerHTML = '<div class="live-tournament-empty">Unable to load tournaments right now. Please check the Supabase table permissions and try refreshing.</div>';
+            grid.innerHTML = '<div class="live-tournament-empty">Unable to load tournaments. Please check Supabase table permissions and confirm both tournament records exist.</div>';
         }
     }
 
