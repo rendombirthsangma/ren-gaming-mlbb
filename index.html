@@ -1014,18 +1014,6 @@
     </section>
 
 
-    <!-- DYNAMIC TOURNAMENTS: CREATED IN ADMIN DASHBOARD -->
-    <section class="live-tournaments-section" id="admin-tournaments">
-        <div class="section-heading">
-            <span>JOIN THE BATTLE</span>
-            <h2>UPCOMING & ONGOING TOURNAMENTS</h2>
-            <p>Tournaments published from the Ren Gaming Admin Dashboard appear here automatically.</p>
-        </div>
-        <div class="live-tournament-grid" id="liveTournamentGrid">
-            <div class="live-tournament-empty">Loading tournaments...</div>
-        </div>
-    </section>
-
     <!-- LIVE STREAM -->
 
     <section class="live-section" id="live">
@@ -1082,6 +1070,19 @@
 
         </div>
 
+    </section>
+
+
+    <!-- DYNAMIC TOURNAMENTS: CREATED IN ADMIN DASHBOARD -->
+    <section class="live-tournaments-section" id="admin-tournaments">
+        <div class="section-heading">
+            <span>JOIN THE BATTLE</span>
+            <h2>UPCOMING & ONGOING TOURNAMENTS</h2>
+            <p>Tournaments published from the Ren Gaming Admin Dashboard appear here automatically.</p>
+        </div>
+        <div class="live-tournament-grid" id="liveTournamentGrid">
+            <div class="live-tournament-empty">Loading tournaments...</div>
+        </div>
     </section>
 
 
@@ -1355,22 +1356,16 @@
         if (!grid) return;
         grid.innerHTML = '<div class="live-tournament-empty">Loading tournaments...</div>';
 
-        // UUIDs are used internally to select the correct records. They are not
-        // printed in the tournament cards or shown as visible text.
-        const tournamentSettings = {
+        // These optional presentation settings apply to known tournaments only.
+        // Every row published in public.tournament can still appear automatically.
+        const knownSettings = {
             "8b5997f8-194a-4998-9915-6528dfbbcb44": {
                 publicName: "North-East India eSport Tournament",
-                status: "UPCOMING",
-                registrationOpen: true,
-                rulesPdf: "north-east-esports-rules.pdf",
-                rulesDownloadName: "north-east-esports-rules.pdf"
+                rulesPdf: "north-east-esports-rules.pdf"
             },
             "8780bade-5ffc-4888-8edb-fb1f589abc3e": {
                 publicName: "ren-gaming-tournament",
-                status: "ONGOING",
-                registrationOpen: false,
-                rulesPdf: "REN_GAMING_MLBB_Tournament_Rules.pdf",
-                rulesDownloadName: "REN_GAMING_MLBB_Tournament_Rules.pdf"
+                rulesPdf: "REN_GAMING_MLBB_Tournament_Rules.pdf"
             }
         };
 
@@ -1392,25 +1387,30 @@
             const { data, error } = await authClient
                 .from("tournament")
                 .select("id,name,game,description,banner_url,start_date,registration_deadline,entry_fee,prize,team_size,registration_open,created_at")
-                .in("id", Object.keys(tournamentSettings));
+                .order("created_at", { ascending: false });
 
             if (error) throw error;
 
-            const records = data || [];
-            const ordered = Object.keys(tournamentSettings)
-                .map(id => {
-                    const record = records.find(item => String(item.id).toLowerCase() === id.toLowerCase());
-                    if (!record) return null;
-                    return { ...record, ...tournamentSettings[id] };
-                })
-                .filter(Boolean);
+            const records = (data || []).map(record => {
+                const settings = knownSettings[String(record.id).toLowerCase()] || {};
+                const deadlinePassed = record.registration_deadline
+                    ? new Date(record.registration_deadline + (String(record.registration_deadline).length === 10 ? "T23:59:59" : "")) < new Date()
+                    : false;
+                const registrationOpen = typeof record.registration_open === "boolean"
+                    ? record.registration_open
+                    : !deadlinePassed;
+                const startDate = record.start_date ? new Date(record.start_date) : null;
+                const hasStarted = startDate && !Number.isNaN(startDate.getTime()) && startDate <= new Date();
+                const status = hasStarted ? "ONGOING" : "UPCOMING";
+                return { ...record, ...settings, publicName: settings.publicName || record.name || "Ren Gaming Tournament", registrationOpen, status };
+            });
 
-            if (!ordered.length) {
-                grid.innerHTML = '<div class="live-tournament-empty">Tournament details are temporarily unavailable. Please check back soon.</div>';
+            if (!records.length) {
+                grid.innerHTML = '<div class="live-tournament-empty">No tournaments have been published yet. Please check back soon.</div>';
                 return;
             }
 
-            grid.innerHTML = ordered.map(t => {
+            grid.innerHTML = records.map(t => {
                 const statusClass = t.status.toLowerCase();
                 const banner = t.banner_url
                     ? `<img class="live-tournament-banner" src="${safe(t.banner_url)}" alt="Tournament banner" loading="lazy" onerror="this.style.display='none'">`
@@ -1418,6 +1418,10 @@
                 const registerButton = t.registrationOpen
                     ? `<a class="button button-primary" href="tournament-register.html?tournament_id=${encodeURIComponent(t.id)}">REGISTER NOW</a>`
                     : `<button class="button button-primary button-disabled" type="button" disabled aria-disabled="true">REGISTRATION CLOSED</button>`;
+                const rulesButton = t.rulesPdf
+                    ? `<a class="button button-secondary" href="${safe(t.rulesPdf)}" target="_blank" rel="noopener noreferrer">VIEW RULES PDF</a>
+                       <a class="button button-secondary" href="${safe(t.rulesPdf)}" download>DOWNLOAD PDF</a>`
+                    : "";
                 return `<article class="live-tournament-card">
                     ${banner}
                     <div class="live-tournament-body">
@@ -1433,17 +1437,13 @@
                         </div>
                         <p class="live-tournament-date">📅 Starts: ${dateText(t.start_date)}<br>📝 Registration deadline: ${dateText(t.registration_deadline)}</p>
                         ${t.description ? `<p class="live-tournament-description">${safe(t.description)}</p>` : ""}
-                        <div class="tournament-card-actions">
-                            ${registerButton}
-                            <a class="button button-secondary" href="${safe(t.rulesPdf)}" target="_blank" rel="noopener noreferrer">VIEW RULES PDF</a>
-                            <a class="button button-secondary" href="${safe(t.rulesPdf)}" download="${safe(t.rulesDownloadName)}">DOWNLOAD PDF</a>
-                        </div>
+                        <div class="tournament-card-actions">${registerButton}${rulesButton}</div>
                     </div>
                 </article>`;
             }).join("");
         } catch (error) {
             console.error("Could not load tournaments:", error);
-            grid.innerHTML = '<div class="live-tournament-empty">Unable to load tournaments. Please check Supabase table permissions and confirm both tournament records exist.</div>';
+            grid.innerHTML = '<div class="live-tournament-empty">Unable to load tournaments. Please check Supabase table permissions and confirm the public.tournament table is accessible.</div>';
         }
     }
 
