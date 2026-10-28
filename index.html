@@ -932,7 +932,9 @@
         .contact-grid { max-width:1000px; margin:0 auto; display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:14px; }
         .contact-card { padding:20px 14px; text-align:center; background:#111; border:1px solid var(--border); border-radius:10px; overflow-wrap:anywhere; }
         .contact-card strong { display:block; margin:8px 0 5px; color:#fff; }
-        .contact-card a { color:#ff7777; font-size:13px; }
+        .contact-card a { color:#fff; background:#c90000; border:1px solid #ff3333; border-radius:7px; font-size:14px; font-weight:800; display:inline-block; margin-top:8px; padding:10px 14px; text-decoration:none; transition:background .2s, transform .2s; }
+        .contact-card a:hover { background:#f00000; transform:translateY(-2px); }
+        .contact-card .contact-number { display:block; color:#ff7777; font-size:17px; font-weight:800; margin-top:5px; }
         .security-note { max-width:900px; margin:25px auto 0; padding:17px; text-align:center; color:var(--gray); background:#101010; border:1px solid rgba(255,37,37,.25); border-radius:9px; font-size:13px; }
         @media(max-width:800px) { .contact-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } }
         @media(max-width:480px) { .contact-grid { grid-template-columns:1fr; } .tournament-card-actions .button { flex-basis:100%; } }
@@ -1171,9 +1173,9 @@
             <p>Questions about tournaments, registration, or match schedules? Contact us through our official channels.</p>
         </div>
         <div class="contact-grid">
-            <div class="contact-card"><span style="font-size:28px">💬</span><strong>WhatsApp 1</strong><a href="https://wa.me/917005913684" target="_blank" rel="noopener noreferrer">7005913684</a></div>
-            <div class="contact-card"><span style="font-size:28px">💬</span><strong>WhatsApp 2</strong><a href="https://wa.me/918638129770" target="_blank" rel="noopener noreferrer">8638129770</a></div>
-            <div class="contact-card"><span style="font-size:28px">📸</span><strong>Instagram</strong><a href="https://www.instagram.com/ren_chisik03/" target="_blank" rel="noopener noreferrer">@ren_chisik03</a></div>
+            <div class="contact-card"><span style="font-size:28px">💬</span><strong>WhatsApp 1</strong><span class="contact-number">7005913684</span><a href="https://wa.me/917005913684" target="_blank" rel="noopener noreferrer" aria-label="Open WhatsApp chat with 7005913684">MESSAGE ON WHATSAPP</a></div>
+            <div class="contact-card"><span style="font-size:28px">💬</span><strong>WhatsApp 2</strong><span class="contact-number">8638129770</span><a href="https://wa.me/918638129770" target="_blank" rel="noopener noreferrer" aria-label="Open WhatsApp chat with 8638129770">MESSAGE ON WHATSAPP</a></div>
+            <div class="contact-card"><span style="font-size:28px">📸</span><strong>Instagram</strong><span class="contact-number">@ren_chisik03</span><a href="https://www.instagram.com/ren_chisik03/" target="_blank" rel="noopener noreferrer" aria-label="Open Ren Gaming Instagram profile">OPEN INSTAGRAM</a></div>
             <div class="contact-card"><span style="font-size:28px">✉️</span><strong>Email</strong><a href="mailto:rendombirthsangma@gmail.com">rendombirthsangma@gmail.com</a></div>
         </div>
         <div class="security-note"><strong style="color:#ff7777">🔒 Your Security Matters</strong><br>Ren Gaming takes reasonable steps to protect account information. Never share your password or OTP with anyone. For your safety, use only official Ren Gaming contact channels.</div>
