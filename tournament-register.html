@@ -1160,17 +1160,17 @@
          */
         const { data: team, error: teamError } = await supabaseClient
           .from("teams")
-          ```javascript
-.insert({
-  user_id: user.id,
-  team_name: teamName,
-  leader_phone: leaderPhone,
-  tournament_id: tournamentId,
-  status: "pending"
-})
-```
-          .select("id, team_name, tournament_id, status")
-          .single();
+        const { data: team, error: teamError } = await supabaseClient
+  .from("teams")
+  .insert({
+    user_id: user.id,
+    team_name: teamName,
+    leader_phone: leaderPhone,
+    tournament_id: tournamentId,
+    status: "pending"
+  })
+  .select("id, team_name, tournament_id, status")
+  .single();
 
         if (teamError) {
           throw new Error(
