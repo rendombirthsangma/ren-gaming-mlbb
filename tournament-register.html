@@ -64,10 +64,24 @@
 
     .brand {
       color: white;
+      display: flex;
+      align-items: center;
+      gap: 10px;
       font-size: 23px;
       font-weight: 900;
       letter-spacing: 1px;
       text-decoration: none;
+    }
+
+    .brand-logo {
+      width: 44px;
+      height: 44px;
+      flex: 0 0 44px;
+      object-fit: contain;
+      border-radius: 50%;
+      border: 1px solid var(--red);
+      background: #050505;
+      box-shadow: 0 0 12px rgba(255, 48, 59, .25);
     }
 
     .brand span {
@@ -306,6 +320,28 @@
       margin-bottom: 20px;
     }
 
+    .secure-payment-note {
+      margin: 0 0 20px;
+      padding: 12px 14px;
+      border: 1px solid #245b3b;
+      border-radius: 9px;
+      background: #0c1d13;
+      color: #b9f3cc;
+      font-size: 12px;
+      text-align: left;
+    }
+
+    .footer-contact {
+      margin-top: 12px;
+      line-height: 1.9;
+    }
+
+    .footer-contact a {
+      color: #25d366;
+      text-decoration: none;
+      font-weight: 700;
+    }
+
     .upload-box {
       border: 1px dashed #555;
       border-radius: 10px;
@@ -468,7 +504,10 @@
 
 <body>
   <header class="navbar">
-    <a class="brand" href="index.html">REN <span>GAMING</span></a>
+    <a class="brand" href="index.html" aria-label="REN GAMING Home">
+      <img class="brand-logo" src="ren-gaming-rg.png" alt="Ren Gaming RG logo">
+      <span>REN <span>GAMING</span></span>
+    </a>
     <a class="nav-link" href="index.html">BACK TO HOME</a>
   </header>
 
@@ -597,6 +636,15 @@
             enter the transaction reference and upload a screenshot.
           </p>
 
+          <div class="secure-payment-note">
+            <strong>🔒 Secure Payment Reminder</strong><br>
+            Pay only through the QR code shown on this page and check the
+            payment details in your UPI app before confirming. Never share
+            your UPI PIN or OTP with anyone. Ren Gaming will never ask you
+            to share them. Your registration will be confirmed after payment
+            verification.
+          </div>
+
           <div class="field">
             <label for="transactionId">
               Transaction Reference / UTR <span class="required">*</span>
@@ -703,6 +751,10 @@
   <footer>
     <strong>REN GAMING</strong><br>
     Official Tournament Registration Portal
+    <div class="footer-contact">
+      <strong>Contact Us</strong><br>
+      WhatsApp: <a href="https://wa.me/918638129770" target="_blank" rel="noopener noreferrer">+91 86381 29770</a>
+    </div>
   </footer>
 
   <script>
