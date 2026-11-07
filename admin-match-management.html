@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Ren Gaming — Match Management</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:Arial,sans-serif;background:#080808;color:#fff;min-height:100vh}
@@ -35,7 +36,9 @@ textarea{min-height:80px}
 .success{display:block;background:#102814;border:1px solid #238636;color:#7ee787}
 .error{display:block;background:#2b1010;border:1px solid #ff1e1e;color:#ff7777}
 .note{color:#888;font-size:13px;line-height:1.5;margin-top:12px}
-.match-list{display:grid;gap:15px}
+.match-list{display:grid;gap:24px}
+.round-group{display:grid;gap:13px}
+.round-group-heading{font-size:24px;font-weight:900;letter-spacing:1px;color:#fff;text-transform:uppercase;padding:14px 17px;border-left:5px solid #e31313;background:linear-gradient(90deg,rgba(227,19,19,.18),rgba(17,17,17,.9));border-radius:7px;margin:0}
 .match-item{background:#0b0b0b;border:1px solid #292929;border-radius:8px;padding:18px}
 .match-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
 .match-name{font-size:18px;font-weight:bold}
@@ -120,6 +123,14 @@ textarea{min-height:80px}
             <option value="ongoing">Ongoing</option>
             <option value="completed">Completed</option>
             <option value="cancelled">Cancelled</option>
+          </select>
+        </div>
+
+        <div class="field full">
+          <label for="show_on_home">Homepage Visibility</label>
+          <select id="show_on_home">
+            <option value="true">Show on homepage</option>
+            <option value="false">Hide from homepage</option>
           </select>
         </div>
 
@@ -286,6 +297,7 @@ function fillForm(m){
   $("team2_id").value=m.team2_id??m.team_b_id??m.team2??"";
   $("match_date").value=localDate(m.match_date??m.scheduled_at??m.start_time);
   $("status").value=m.status??"scheduled";
+  $("show_on_home").value=(m.show_on_home===false?"false":"true");
   $("team1_score").value=m.team1_score??m.score1??"";
   $("team2_score").value=m.team2_score??m.score2??"";
   refreshTeamDropdowns($("team1_id").value,$("team2_id").value,m.winner_id??"");
@@ -316,6 +328,7 @@ function buildPayload(){
     scheduled_at:isoDate("match_date"),
     start_time:isoDate("match_date"),
     status:$("status").value,
+    show_on_home:$("show_on_home").value==="true",
     team1_score:$("team1_score").value===""?null:Number($("team1_score").value),
     score1:$("team1_score").value===""?null:Number($("team1_score").value),
     team2_score:$("team2_score").value===""?null:Number($("team2_score").value),
@@ -333,6 +346,7 @@ function buildPayload(){
     team2_id:["team2_id","team_b_id","team2"],
     match_date:["match_date","scheduled_at","start_time"],
     status:["status"],
+    show_on_home:["show_on_home"],
     team1_score:["team1_score","score1"],
     team2_score:["team2_score","score2"],
     winner_id:["winner_id"],
@@ -368,7 +382,21 @@ async function loadMatches(){
     return;
   }
 
-  box.innerHTML=currentMatches.map(m=>{
+  const sortedMatches=[...currentMatches].sort((a,b)=>{
+    const da=a.match_date??a.scheduled_at??a.start_time;
+    const db=b.match_date??b.scheduled_at??b.start_time;
+    const ta=da?new Date(da).getTime():Number.MAX_SAFE_INTEGER;
+    const tb=db?new Date(db).getTime():Number.MAX_SAFE_INTEGER;
+    return ta-tb;
+  });
+  const roundGroups=new Map();
+  sortedMatches.forEach(m=>{
+    const round=String(m.round_name??m.round??"Round not set").trim()||"Round not set";
+    if(!roundGroups.has(round))roundGroups.set(round,[]);
+    roundGroups.get(round).push(m);
+  });
+
+  const renderMatch=m=>{
     const teamA=m.team1_id??m.team_a_id??m.team1??"Not assigned";
     const teamB=m.team2_id??m.team_b_id??m.team2??"Not assigned";
     const date=m.match_date??m.scheduled_at??m.start_time;
@@ -376,6 +404,9 @@ async function loadMatches(){
     const statusClass=["scheduled","ongoing","completed","cancelled"].includes(status)?status:"scheduled";
     const scoreA=m.team1_score??m.score1;
     const scoreB=m.team2_score??m.score2;
+    const teamARecord=approvedTeams.find(t=>String(t.id)===String(teamA));
+    const teamBRecord=approvedTeams.find(t=>String(t.id)===String(teamB));
+    const winnerRecord=m.winner_id?approvedTeams.find(t=>String(t.id)===String(m.winner_id)):null;
 
     return `<article class="match-item">
       <div class="match-head">
@@ -384,28 +415,37 @@ async function loadMatches(){
           <div class="meta">
             Tournament: ${esc(m.tournament_id??"Not set")}<br>
             Group: ${esc(m.group_name??m.group??"Not set")}<br>
-            Round: ${esc(m.round_name??m.round??"Not set")}<br>
-            Team 1: ${esc(approvedTeams.find(t=>String(t.id)===String(teamA))?teamName(approvedTeams.find(t=>String(t.id)===String(teamA))):teamA)}<br>
-            Team 2: ${esc(approvedTeams.find(t=>String(t.id)===String(teamB))?teamName(approvedTeams.find(t=>String(t.id)===String(teamB))):teamB)}<br>
+            Team 1: ${esc(teamARecord?teamName(teamARecord):teamA)}<br>
+            Team 2: ${esc(teamBRecord?teamName(teamBRecord):teamB)}<br>
             Score: ${esc(scoreA??"—")} – ${esc(scoreB??"—")}<br>
-            Winner: ${esc(m.winner_id?(approvedTeams.find(t=>String(t.id)===String(m.winner_id))?teamName(approvedTeams.find(t=>String(t.id)===String(m.winner_id))):m.winner_id):"Not decided")}<br>
-            Date: ${esc(date?new Date(date).toLocaleString():"Not set")}
+            Winner: ${esc(m.winner_id?(winnerRecord?teamName(winnerRecord):m.winner_id):"Not decided")}<br>
+            Date & Time: ${esc(date?new Date(date).toLocaleString("en-IN"):"Not set")}<br>
+            Homepage: ${m.show_on_home===false?"Hidden":"Visible"}
           </div>
         </div>
         <span class="badge status-${statusClass}">${esc(status)}</span>
       </div>
       <div class="item-actions">
         <button class="secondary" type="button" data-edit="${esc(m.id)}">EDIT</button>
+        <button class="secondary" type="button" data-visibility="${esc(m.id)}">${m.show_on_home===false?"SHOW ON HOME PAGE":"HIDE FROM HOME PAGE"}</button>
         <button class="danger" type="button" data-delete="${esc(m.id)}">DELETE</button>
       </div>
     </article>`;
-  }).join("");
+  };
+
+  box.innerHTML=[...roundGroups.entries()].map(([round,items])=>
+    `<section class="round-group"><h2 class="round-group-heading">${esc(round)}</h2>${items.map(renderMatch).join("")}</section>`
+  ).join("");
 
   box.querySelectorAll("[data-edit]").forEach(btn=>{
     btn.addEventListener("click",()=>{
       const match=currentMatches.find(m=>String(m.id)===btn.dataset.edit);
       if(match)fillForm(match);
     });
+  });
+
+  box.querySelectorAll("[data-visibility]").forEach(btn=>{
+    btn.addEventListener("click",()=>toggleHomepageVisibility(btn.dataset.visibility));
   });
 
   box.querySelectorAll("[data-delete]").forEach(btn=>{
@@ -444,64 +484,4 @@ $("matchForm").addEventListener("submit",async e=>{
 
   const payload=buildPayload();
   if(!payload.tournament_id||!payload.team1_id||!payload.team2_id){
-    message("Your matches table is missing one or more required columns: tournament_id, team1_id, or team2_id. The page needs to be adjusted to your database schema.");
-    return;
-  }
-
-  busy=true;
-  $("saveBtn").disabled=true;
-  $("saveBtn").textContent=editingId?"SAVING...":"CREATING...";
-
-  const result=editingId
-    ?await db.from("matches").update(payload).eq("id",editingId)
-    :await db.from("matches").insert(payload);
-
-  busy=false;
-  $("saveBtn").disabled=false;
-  $("saveBtn").textContent=editingId?"SAVE CHANGES":"CREATE MATCH";
-
-  if(result.error){
-    console.error("Save match error:",result.error);
-    message("Could not save match: "+result.error.message);
-    return;
-  }
-
-  message(editingId?"Match updated successfully.":"Match created successfully.","success");
-  resetForm();
-  await loadMatches();
-});
-
-async function deleteMatch(id){
-  const m=currentMatches.find(x=>String(x.id)===String(id));
-  if(!confirm("Delete this match?"+(m?"\nMatch ID: "+m.id:"")+"\nThis cannot be undone."))return;
-
-  const {error}=await db.from("matches").delete().eq("id",id);
-  if(error){
-    console.error(error);
-    message("Could not delete match: "+error.message);
-    return;
-  }
-
-  message("Match deleted successfully.","success");
-  resetForm();
-  await loadMatches();
-}
-
-$("team1_id").addEventListener("change",()=>refreshTeamDropdowns($("team1_id").value,$("team2_id").value,$("winner_id").value));
-$("team2_id").addEventListener("change",()=>refreshTeamDropdowns($("team1_id").value,$("team2_id").value,$("winner_id").value));
-$("cancelBtn").addEventListener("click",resetForm);
-$("refreshBtn").addEventListener("click",async()=>{await loadApprovedTeams();await loadMatches();});
-$("logoutBtn").addEventListener("click",async()=>{
-  await db.auth.signOut();
-  window.location.href="login.html";
-});
-
-(async()=>{
-  if(await checkAdmin()){
-    await loadApprovedTeams();
-    await loadMatches();
-  }
-})();
-</script>
-</body>
-</html>
+    message("Your matches table is missing one or more required columns: tournament_id, team1_id, or team2_id. The page needs to 
