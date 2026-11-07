@@ -919,6 +919,34 @@
         .live-tournament-empty { grid-column:1/-1; padding:28px; text-align:center; background:#101010; border:1px dashed #444; border-radius:12px; color:var(--gray); }
         @media(max-width:850px) { .live-tournament-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } }
         @media(max-width:560px) { .live-tournament-grid { grid-template-columns:1fr; } .live-tournaments-section { padding:50px 18px; } }
+
+        /* MATCH SCHEDULE & RESULTS */
+        .homepage-matches-section { max-width:1200px; margin:0 auto; padding:65px 22px; }
+        .homepage-match-date-group { margin:0 0 30px; }
+        .homepage-match-round-group { margin:0 0 20px; }
+        .homepage-match-round-heading { display:flex;align-items:center;gap:12px;margin:0 0 13px;padding:13px 16px;border-left:5px solid var(--red);border-radius:7px;background:linear-gradient(90deg,rgba(255,37,37,.16),rgba(17,17,17,.75));color:#fff;font-size:21px;font-weight:900;letter-spacing:1px;text-transform:uppercase; }
+        .homepage-match-date-heading { display:flex; align-items:center; gap:12px; margin:0 0 14px; color:#fff; font-size:17px; font-weight:900; }
+        .homepage-match-date-heading:after { content:""; height:1px; flex:1; background:var(--border); }
+        .homepage-match-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:18px; }
+        .homepage-match-card { background:linear-gradient(145deg,#171717,#090909); border:1px solid var(--border); border-radius:13px; padding:20px; transition:.2s; }
+        .homepage-match-card:hover { transform:translateY(-3px); border-color:rgba(255,37,37,.6); }
+        .homepage-match-top { display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom:15px; }
+        .homepage-match-round { color:#ff7777; font-size:12px; font-weight:900; letter-spacing:.7px; }
+        .homepage-match-status { display:inline-block; border-radius:4px; padding:5px 9px; font-size:10px; font-weight:900; letter-spacing:.6px; text-transform:uppercase; }
+        .homepage-match-status.scheduled { background:rgba(255,193,7,.12); color:#ffd45a; border:1px solid rgba(255,193,7,.35); }
+        .homepage-match-status.ongoing { background:rgba(40,200,100,.12); color:#68e99b; border:1px solid rgba(40,200,100,.35); }
+        .homepage-match-status.completed { background:rgba(150,150,150,.12); color:#ddd; border:1px solid rgba(180,180,180,.3); }
+        .homepage-match-status.cancelled { background:rgba(255,37,37,.12); color:#ff8888; border:1px solid rgba(255,37,37,.35); }
+        .homepage-match-teams { display:grid; grid-template-columns:minmax(0,1fr) auto minmax(0,1fr); align-items:center; gap:10px; padding:15px 0; border-top:1px solid var(--border); border-bottom:1px solid var(--border); }
+        .homepage-match-team { min-width:0; color:#fff; font-size:15px; font-weight:900; overflow-wrap:anywhere; }
+        .homepage-match-team:last-child { text-align:right; }
+        .homepage-match-vs { color:var(--red); font-size:12px; font-weight:900; }
+        .homepage-match-details { display:flex; flex-wrap:wrap; gap:8px 18px; margin-top:13px; color:var(--gray); font-size:12px; }
+        .homepage-match-details strong { color:#fff; font-weight:700; }
+        .homepage-match-result { margin-top:13px; padding:10px 12px; background:rgba(255,37,37,.08); border:1px solid rgba(255,37,37,.2); border-radius:7px; color:#ffb0b0; font-size:13px; }
+        .homepage-match-empty { grid-column:1/-1; padding:28px; text-align:center; background:#101010; border:1px dashed #444; border-radius:12px; color:var(--gray); }
+        @media(max-width:700px) { .homepage-match-grid { grid-template-columns:1fr; } }
+
         .tournament-card-actions { display:flex; flex-wrap:wrap; gap:8px; margin-top:16px; }
         .tournament-card-actions .button { flex:1 1 125px; padding:10px 11px; font-size:11px; }
         .button-disabled { opacity:.55; cursor:not-allowed; filter:grayscale(1); }
@@ -949,6 +977,7 @@
         <div class="nav-links">
             <a href="index.html">Home</a>
             <a href="#admin-tournaments">Tournaments</a>
+            <a href="#matches">Matches</a>
             <a href="#features">Features</a>
             <a href="#game">Our Game</a>
             <a href="#live">Live Stream</a>
@@ -1076,6 +1105,21 @@
         </div>
         <div class="live-tournament-grid" id="liveTournamentGrid">
             <div class="live-tournament-empty">Loading tournaments...</div>
+        </div>
+    </section>
+
+
+
+
+    <!-- MATCH SCHEDULE & RESULTS FROM ADMIN MATCH MANAGEMENT -->
+    <section class="homepage-matches-section" id="matches">
+        <div class="section-heading">
+            <span>FOLLOW THE COMPETITION</span>
+            <h2>MATCH SCHEDULE & RESULTS</h2>
+            <p>Upcoming matches, live match status, and completed results from Ren Gaming Match Management.</p>
+        </div>
+        <div class="homepage-match-grid" id="homepageMatchGrid">
+            <div class="homepage-match-empty">Loading matches...</div>
         </div>
     </section>
 
@@ -1215,6 +1259,7 @@
         <div class="footer-links">
             <a href="index.html">Home</a>
             <a href="#admin-tournaments">Tournaments</a>
+            <a href="#matches">Matches</a>
             <a href="#live">Live Stream</a>
             <a href="#contact">Contact</a>
             <a href="tournament-register.html">Register</a>
@@ -1442,6 +1487,127 @@
         }
     }
 
+    async function loadHomepageMatches() {
+        const grid = document.getElementById("homepageMatchGrid");
+        if (!grid) return;
+        grid.innerHTML = '<div class="homepage-match-empty">Loading matches...</div>';
+
+        const escapeHtml = value => String(value ?? "").replace(/[&<>"']/g, ch => ({
+            "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;"
+        }[ch]));
+        const getDateValue = match => match.match_date ?? match.scheduled_at ?? match.start_time;
+        const dateKey = value => {
+            if (!value) return "unscheduled";
+            const d = new Date(value);
+            if (Number.isNaN(d.getTime())) return "unscheduled";
+            return new Intl.DateTimeFormat("en-CA", {timeZone:"Asia/Kolkata", year:"numeric", month:"2-digit", day:"2-digit"}).format(d);
+        };
+        const dateHeading = key => {
+            if (key === "unscheduled") return "Date Not Set";
+            const d = new Date(key + "T00:00:00+05:30");
+            return d.toLocaleDateString("en-IN", {day:"numeric", month:"long", year:"numeric", timeZone:"Asia/Kolkata"});
+        };
+        const formatDate = value => {
+            if (!value) return "Date not set";
+            const d = new Date(value);
+            return Number.isNaN(d.getTime()) ? "Date not set" : d.toLocaleDateString("en-IN", {day:"numeric", month:"short", year:"numeric", timeZone:"Asia/Kolkata"});
+        };
+        const formatTime = value => {
+            if (!value) return "Time not set";
+            const d = new Date(value);
+            return Number.isNaN(d.getTime()) ? "Time not set" : d.toLocaleTimeString("en-IN", {hour:"numeric", minute:"2-digit", timeZone:"Asia/Kolkata"});
+        };
+
+        try {
+            const { data: matches, error } = await authClient
+                .from("matches")
+                .select("*")
+                .eq("show_on_home", true)
+                .limit(200);
+            if (error) throw error;
+
+            if (!matches || matches.length === 0) {
+                grid.innerHTML = '<div class="homepage-match-empty">No matches are currently published. Please check back later.</div>';
+                return;
+            }
+
+            const teamIds = [...new Set(matches.flatMap(match => [
+                match.team1_id ?? match.team_a_id ?? match.team1,
+                match.team2_id ?? match.team_b_id ?? match.team2,
+                match.winner_id ?? match.winner_team_id
+            ]).filter(Boolean).map(String))];
+            const tournamentIds = [...new Set(matches.map(match => match.tournament_id).filter(Boolean).map(String))];
+            const teamMap = {}, tournamentMap = {};
+
+            if (teamIds.length) {
+                const { data: teams, error: teamsError } = await authClient.from("teams").select("*").in("id", teamIds);
+                if (teamsError) console.warn("Could not load match team names:", teamsError.message);
+                (teams || []).forEach(team => { teamMap[String(team.id)] = team.team_name || team.name || team.teamName || team.ign || "Team"; });
+            }
+            if (tournamentIds.length) {
+                const { data: tournaments, error: tournamentsError } = await authClient.from("tournament").select("id,name").in("id", tournamentIds);
+                if (tournamentsError) console.warn("Could not load tournament names:", tournamentsError.message);
+                (tournaments || []).forEach(t => { tournamentMap[String(t.id)] = t.name || "Ren Gaming Tournament"; });
+            }
+
+            const groups = {};
+            [...matches].sort((a,b) => {
+                const da = getDateValue(a) ? new Date(getDateValue(a)).getTime() : Number.MAX_SAFE_INTEGER;
+                const db = getDateValue(b) ? new Date(getDateValue(b)).getTime() : Number.MAX_SAFE_INTEGER;
+                return da-db;
+            }).forEach(match => {
+                const key = dateKey(getDateValue(match));
+                (groups[key] ||= []).push(match);
+            });
+
+            grid.innerHTML = Object.entries(groups).map(([key, groupMatches]) => {
+                const roundGroups = {};
+                groupMatches.forEach(match => {
+                    const roundName = String(match.round_name ?? match.round ?? "Round not set").trim() || "Round not set";
+                    (roundGroups[roundName] ||= []).push(match);
+                });
+                const roundSections = Object.entries(roundGroups).map(([roundName, roundMatches]) => {
+                const cards = roundMatches.map(match => {
+                    const aId = match.team1_id ?? match.team_a_id ?? match.team1;
+                    const bId = match.team2_id ?? match.team_b_id ?? match.team2;
+                    const teamA = teamMap[String(aId)] || "Team 1";
+                    const teamB = teamMap[String(bId)] || "Team 2";
+                    const status = String(match.status || "scheduled").toLowerCase();
+                    const safeStatus = ["scheduled","ongoing","completed","cancelled"].includes(status) ? status : "scheduled";
+                    const round = match.round_name ?? match.round ?? "Match";
+                    const group = match.group_name ?? match.group;
+                    const matchNo = match.match_number;
+                    const scoreA = match.team1_score ?? match.score1;
+                    const scoreB = match.team2_score ?? match.score2;
+                    const hasScore = scoreA !== null && scoreA !== undefined || scoreB !== null && scoreB !== undefined;
+                    const winnerId = match.winner_id ?? match.winner_team_id;
+                    const winnerName = winnerId ? (teamMap[String(winnerId)] || "Winner decided") : "";
+                    const tournamentName = tournamentMap[String(match.tournament_id)] || "Ren Gaming";
+                    const dateValue = getDateValue(match);
+                    return `<article class="homepage-match-card">
+                        <div class="homepage-match-top"><div>
+                            <div class="homepage-match-round">${matchNo ? "MATCH " + escapeHtml(matchNo) : "MATCH"}</div>
+                            <div style="color:#999;font-size:11px;margin-top:4px">${escapeHtml(tournamentName)}${group ? " • " + escapeHtml(group) : ""}</div>
+                        </div><span class="homepage-match-status ${safeStatus}">${escapeHtml(safeStatus)}</span></div>
+                        <div class="homepage-match-teams"><div class="homepage-match-team">${escapeHtml(teamA)}</div><div class="homepage-match-vs">VS</div><div class="homepage-match-team">${escapeHtml(teamB)}</div></div>
+                        <div class="homepage-match-details">
+                            <span>📅 <strong>${escapeHtml(formatDate(dateValue))}</strong></span>
+                            <span>🕒 <strong>${escapeHtml(formatTime(dateValue))}</strong></span>
+                            ${hasScore ? `<span>Score: <strong>${escapeHtml(scoreA ?? "—")} – ${escapeHtml(scoreB ?? "—")}</strong></span>` : ""}
+                        </div>
+                        ${winnerName ? `<div class="homepage-match-result">🏆 Winner: <strong>${escapeHtml(winnerName)}</strong></div>` : ""}
+                    </article>`;
+                }).join("");
+                return `<section class="homepage-match-round-group"><h3 class="homepage-match-round-heading">${escapeHtml(roundName)}</h3><div class="homepage-match-grid">${cards}</div></section>`;
+                }).join("");
+                return `<section class="homepage-match-date-group"><h3 class="homepage-match-date-heading">📅 ${escapeHtml(dateHeading(key))}</h3>${roundSections}</section>`;
+            }).join("");
+        } catch (error) {
+            console.error("Could not load homepage matches:", error);
+            grid.innerHTML = '<div class="homepage-match-empty">Unable to load matches. Please check that the matches table has a show_on_home column and public SELECT permission.</div>';
+        }
+    }
+
     async function initializeRenGaming() {
         showLoggedOut();
 
@@ -1473,6 +1639,7 @@
 
     initializeRenGaming();
     loadAdminTournaments();
+    loadHomepageMatches();
 </script>
 
 </body>
