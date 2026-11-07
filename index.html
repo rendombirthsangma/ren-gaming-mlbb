@@ -75,14 +75,18 @@
             white-space: nowrap;
         }
 
-        .logo-image {
+        .logo-icon {
             width: 43px;
             height: 43px;
-            display: block;
-            object-fit: contain;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg,#ff3535,#8c0000);
             border-radius: 10px;
+            color: white;
+            font-size: 22px;
+            font-weight: 900;
             box-shadow: 0 0 18px rgba(255,37,37,0.25);
-            flex: 0 0 auto;
         }
 
         .logo span {
@@ -821,7 +825,7 @@
                 font-size: 19px;
             }
 
-            .logo-image {
+            .logo-icon {
                 width: 38px;
                 height: 38px;
             }
@@ -910,11 +914,6 @@
         .live-tournament-status { display:inline-block; border-radius:4px; padding:5px 9px; font-size:10px; font-weight:900; letter-spacing:.7px; }
         .live-tournament-status.upcoming { background:rgba(255,193,7,.12); color:#ffd45a; border:1px solid rgba(255,193,7,.35); }
         .live-tournament-status.ongoing { background:rgba(40,200,100,.12); color:#68e99b; border:1px solid rgba(40,200,100,.35); }
-        .live-tournament-status.completed { background:rgba(130,130,130,.15); color:#ddd; border:1px solid rgba(180,180,180,.35); }
-        .live-tournament-status.cancelled { background:rgba(255,60,60,.12); color:#ff8585; border:1px solid rgba(255,60,60,.35); }
-        .live-tournament-registration { display:inline-block; margin-top:8px; padding:5px 9px; border-radius:4px; font-size:10px; font-weight:900; letter-spacing:.5px; }
-        .live-tournament-registration.open { color:#68e99b; background:rgba(40,200,100,.10); border:1px solid rgba(40,200,100,.3); }
-        .live-tournament-registration.closed { color:#ff8585; background:rgba(255,60,60,.10); border:1px solid rgba(255,60,60,.3); }
         .live-tournament-card h3 { font-size:19px; margin-bottom:6px; }
         .live-tournament-game { color:var(--gray); font-size:13px; margin-bottom:15px; }
         .live-tournament-details { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:15px 0 18px; }
@@ -933,7 +932,9 @@
         .contact-grid { max-width:1000px; margin:0 auto; display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:14px; }
         .contact-card { padding:20px 14px; text-align:center; background:#111; border:1px solid var(--border); border-radius:10px; overflow-wrap:anywhere; }
         .contact-card strong { display:block; margin:8px 0 5px; color:#fff; }
-        .contact-card a { color:#ff7777; font-size:15px; font-weight:700; display:inline-block; margin-top:2px; }
+        .contact-card a { color:#fff; background:#c90000; border:1px solid #ff3333; border-radius:7px; font-size:14px; font-weight:800; display:inline-block; margin-top:8px; padding:10px 14px; text-decoration:none; transition:background .2s, transform .2s; }
+        .contact-card a:hover { background:#f00000; transform:translateY(-2px); }
+        .contact-card .contact-number { display:block; color:#ff7777; font-size:17px; font-weight:800; margin-top:5px; }
         .security-note { max-width:900px; margin:25px auto 0; padding:17px; text-align:center; color:var(--gray); background:#101010; border:1px solid rgba(255,37,37,.25); border-radius:9px; font-size:13px; }
         @media(max-width:800px) { .contact-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } }
         @media(max-width:480px) { .contact-grid { grid-template-columns:1fr; } .tournament-card-actions .button { flex-basis:100%; } }
@@ -947,7 +948,7 @@
     <nav class="navbar">
 
         <a href="index.html" class="logo">
-            <img class="logo-image" src="ren-gaming-rg.png" alt="Ren Gaming RG logo">
+            <div class="logo-icon">RG</div>
             <div>REN <span>GAMING</span></div>
         </a>
 
@@ -957,7 +958,7 @@
             <a href="#features">Features</a>
             <a href="#game">Our Game</a>
             <a href="#live">Live Stream</a>
-            <a href="login.html?redirect=tournament-register.html">Register</a>
+            <a href="tournament-register.html">Register</a>
         </div>
 
         <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
@@ -1012,18 +1013,6 @@
         </div>
     </section>
 
-
-    <!-- DYNAMIC TOURNAMENTS: CREATED IN ADMIN DASHBOARD -->
-    <section class="live-tournaments-section" id="admin-tournaments">
-        <div class="section-heading">
-            <span>JOIN THE BATTLE</span>
-            <h2>REN GAMING TOURNAMENTS</h2>
-            <p>Tournaments published from the Ren Gaming Admin Dashboard appear here automatically.</p>
-        </div>
-        <div class="live-tournament-grid" id="liveTournamentGrid">
-            <div class="live-tournament-empty">Loading tournaments...</div>
-        </div>
-    </section>
 
     <!-- LIVE STREAM -->
 
@@ -1081,6 +1070,19 @@
 
         </div>
 
+    </section>
+
+
+    <!-- DYNAMIC TOURNAMENTS: CREATED IN ADMIN DASHBOARD -->
+    <section class="live-tournaments-section" id="admin-tournaments">
+        <div class="section-heading">
+            <span>JOIN THE BATTLE</span>
+            <h2>UPCOMING & ONGOING TOURNAMENTS</h2>
+            <p>Tournaments published from the Ren Gaming Admin Dashboard appear here automatically.</p>
+        </div>
+        <div class="live-tournament-grid" id="liveTournamentGrid">
+            <div class="live-tournament-empty">Loading tournaments...</div>
+        </div>
     </section>
 
 
@@ -1172,9 +1174,9 @@
             <p>Questions about tournaments, registration, or match schedules? Contact us through our official channels.</p>
         </div>
         <div class="contact-grid">
-            <div class="contact-card"><span style="font-size:28px">💬</span><strong>WhatsApp</strong><a href="https://wa.me/917005913684" target="_blank" rel="noopener noreferrer">7005913684</a></div>
-            <div class="contact-card"><span style="font-size:28px">💬</span><strong>WhatsApp</strong><a href="https://wa.me/918638129770" target="_blank" rel="noopener noreferrer">8638129770</a></div>
-            <div class="contact-card"><span style="font-size:28px">📸</span><strong>Instagram</strong><a href="https://www.instagram.com/ren_chisik03/" target="_blank" rel="noopener noreferrer">@ren_chisik03</a></div>
+            <div class="contact-card"><span style="font-size:28px">💬</span><strong>WhatsApp 1</strong><span class="contact-number">7005913684</span><a href="https://wa.me/917005913684" target="_blank" rel="noopener noreferrer" aria-label="Open WhatsApp chat with 7005913684">MESSAGE ON WHATSAPP</a></div>
+            <div class="contact-card"><span style="font-size:28px">💬</span><strong>WhatsApp 2</strong><span class="contact-number">8638129770</span><a href="https://wa.me/918638129770" target="_blank" rel="noopener noreferrer" aria-label="Open WhatsApp chat with 8638129770">MESSAGE ON WHATSAPP</a></div>
+            <div class="contact-card"><span style="font-size:28px">📸</span><strong>Instagram</strong><span class="contact-number">@ren_chisik03</span><a href="https://www.instagram.com/ren_chisik03/" target="_blank" rel="noopener noreferrer" aria-label="Open Ren Gaming Instagram profile">OPEN INSTAGRAM</a></div>
             <div class="contact-card"><span style="font-size:28px">✉️</span><strong>Email</strong><a href="mailto:rendombirthsangma@gmail.com">rendombirthsangma@gmail.com</a></div>
         </div>
         <div class="security-note"><strong style="color:#ff7777">🔒 Your Security Matters</strong><br>Ren Gaming takes reasonable steps to protect account information. Never share your password or OTP with anyone. For your safety, use only official Ren Gaming contact channels.</div>
@@ -1207,7 +1209,7 @@
     <div class="footer-content">
 
         <a href="index.html" class="logo">
-            <img class="logo-image" src="ren-gaming-rg.png" alt="Ren Gaming RG logo">
+            <div class="logo-icon">RG</div>
             <div>REN <span>GAMING</span></div>
         </a>
 
@@ -1221,7 +1223,7 @@
             <a href="#admin-tournaments">Tournaments</a>
             <a href="#live">Live Stream</a>
             <a href="#contact">Contact</a>
-            <a href="login.html?redirect=tournament-register.html">Register</a>
+            <a href="tournament-register.html">Register</a>
             <a href="https://www.youtube.com/@Rendombirth"
                target="_blank"
                rel="noopener noreferrer">YouTube</a>
@@ -1352,92 +1354,97 @@
     async function loadAdminTournaments() {
         const grid = document.getElementById("liveTournamentGrid");
         if (!grid) return;
-
         grid.innerHTML = '<div class="live-tournament-empty">Loading tournaments...</div>';
 
-        // Keep only the rules-file mapping here. Status and registration state
-        // always come directly from the Supabase admin settings.
-        const rulesFiles = {
-            "8b5997f8-194a-4998-9915-6528dfbbcb44": "north-east-esports-rules.pdf",
-            "8780bade-5ffc-4888-8edb-fb1f589abc3e": "REN_GAMING_MLBB_Tournament_Rules.pdf"
+        // These optional presentation settings apply to known tournaments only.
+        // Every row published in public.tournament can still appear automatically.
+        const knownSettings = {
+            "8b5997f8-194a-4998-9915-6528dfbbcb44": {
+                publicName: "North-East India eSport Tournament",
+                rulesPdf: "north-east-esports-rules.pdf"
+            },
+            "8780bade-5ffc-4888-8edb-fb1f589abc3e": {
+                publicName: "ren-gaming-tournament",
+                rulesPdf: "REN_GAMING_MLBB_Tournament_Rules.pdf"
+            }
         };
 
         const safe = value => String(value ?? "").replace(/[&<>"']/g, ch => ({
             "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;"
         }[ch]));
-
         const money = value => {
             if (value === null || value === undefined || value === "") return "Not set";
             const n = Number(value);
             return Number.isFinite(n) ? "₹" + n.toLocaleString("en-IN") : safe(value);
         };
-
         const dateText = value => {
             if (!value) return "Not announced";
-            const d = new Date(String(value).length === 10 ? value + "T00:00:00" : value);
-            return Number.isNaN(d.getTime()) ? safe(value) : d.toLocaleDateString("en-IN", {
-                day:"numeric", month:"short", year:"numeric"
-            });
+            const d = new Date(value + (String(value).length === 10 ? "T00:00:00" : ""));
+            return Number.isNaN(d.getTime()) ? safe(value) : d.toLocaleDateString("en-IN", { day:"numeric", month:"short", year:"numeric" });
         };
 
         try {
             const { data, error } = await authClient
                 .from("tournament")
-                .select("id,name,game,description,banner_url,start_date,registration_deadline,entry_fee,prize,team_size,status,registration_open,created_at")
+                .select("id,name,game,description,banner_url,start_date,registration_deadline,entry_fee,prize,team_size,registration_open,show_on_home,created_at")
+                .eq("show_on_home", true)
                 .order("created_at", { ascending: false });
 
             if (error) throw error;
 
-            const tournaments = data || [];
-            if (!tournaments.length) {
-                grid.innerHTML = '<div class="live-tournament-empty">No tournaments have been published yet.</div>';
+            const records = (data || []).map(record => {
+                const settings = knownSettings[String(record.id).toLowerCase()] || {};
+                const deadlinePassed = record.registration_deadline
+                    ? new Date(record.registration_deadline + (String(record.registration_deadline).length === 10 ? "T23:59:59" : "")) < new Date()
+                    : false;
+                const registrationOpen = typeof record.registration_open === "boolean"
+                    ? record.registration_open
+                    : !deadlinePassed;
+                const startDate = record.start_date ? new Date(record.start_date) : null;
+                const hasStarted = startDate && !Number.isNaN(startDate.getTime()) && startDate <= new Date();
+                const status = hasStarted ? "ONGOING" : "UPCOMING";
+                return { ...record, ...settings, publicName: settings.publicName || record.name || "Ren Gaming Tournament", registrationOpen, status };
+            });
+
+            if (!records.length) {
+                grid.innerHTML = '<div class="live-tournament-empty">No tournaments have been published yet. Please check back soon.</div>';
                 return;
             }
 
-            grid.innerHTML = tournaments.map(t => {
-                const rawStatus = String(t.status || "upcoming").trim().toLowerCase();
-                const allowedStatuses = ["upcoming", "ongoing", "completed", "cancelled"];
-                const status = allowedStatuses.includes(rawStatus) ? rawStatus : "upcoming";
-                const statusLabel = status.toUpperCase();
-                const registrationOpen = t.registration_open === true;
+            grid.innerHTML = records.map(t => {
+                const statusClass = t.status.toLowerCase();
                 const banner = t.banner_url
-                    ? `<img class="live-tournament-banner" src="${safe(t.banner_url)}" alt="${safe(t.name || "Tournament")} banner" loading="lazy" onerror="this.style.display='none'">`
+                    ? `<img class="live-tournament-banner" src="${safe(t.banner_url)}" alt="Tournament banner" loading="lazy" onerror="this.style.display='none'">`
                     : "";
-                const rulesPdf = rulesFiles[String(t.id)] || "";
-                const registrationButton = registrationOpen
-                    ? `<a class="button button-primary" href="login.html?redirect=${encodeURIComponent('tournament-register.html?tournament_id=' + encodeURIComponent(t.id))}">REGISTER NOW</a>`
+                const registerButton = t.registrationOpen
+                    ? `<a class="button button-primary" href="tournament-register.html?tournament_id=${encodeURIComponent(t.id)}">REGISTER NOW</a>`
                     : `<button class="button button-primary button-disabled" type="button" disabled aria-disabled="true">REGISTRATION CLOSED</button>`;
-                const rulesButtons = rulesPdf
-                    ? `<a class="button button-secondary" href="${safe(rulesPdf)}" target="_blank" rel="noopener noreferrer">VIEW RULES PDF</a>
-                       <a class="button button-secondary" href="${safe(rulesPdf)}" download>DOWNLOAD PDF</a>`
+                const rulesButton = t.rulesPdf
+                    ? `<a class="button button-secondary" href="${safe(t.rulesPdf)}" target="_blank" rel="noopener noreferrer">VIEW RULES PDF</a>
+                       <a class="button button-secondary" href="${safe(t.rulesPdf)}" download>DOWNLOAD PDF</a>`
                     : "";
-
                 return `<article class="live-tournament-card">
                     ${banner}
                     <div class="live-tournament-body">
                         <div class="live-tournament-top">
-                            <span class="live-tournament-status ${status}">${statusLabel}</span>
+                            <span class="live-tournament-status ${statusClass}">${t.status}</span>
                             <span style="color:#aaa;font-size:11px">${safe(t.team_size || "Team format not set")}</span>
                         </div>
-                        <h3>${safe(t.name || "Untitled Tournament")}</h3>
+                        <h3>${safe(t.publicName)}</h3>
                         <p class="live-tournament-game">${safe(t.game || "MOBA Legends 5v5")}</p>
-                        <span class="live-tournament-registration ${registrationOpen ? "open" : "closed"}">${registrationOpen ? "REGISTRATION OPEN" : "REGISTRATION CLOSED"}</span>
                         <div class="live-tournament-details">
                             <div class="live-tournament-detail"><small>🏆 PRIZE</small><strong>${money(t.prize)}</strong></div>
                             <div class="live-tournament-detail"><small>🎟️ ENTRY FEE</small><strong>${money(t.entry_fee)}</strong></div>
                         </div>
                         <p class="live-tournament-date">📅 Starts: ${dateText(t.start_date)}<br>📝 Registration deadline: ${dateText(t.registration_deadline)}</p>
                         ${t.description ? `<p class="live-tournament-description">${safe(t.description)}</p>` : ""}
-                        <div class="tournament-card-actions">
-                            ${registrationButton}
-                            ${rulesButtons}
-                        </div>
+                        <div class="tournament-card-actions">${registerButton}${rulesButton}</div>
                     </div>
                 </article>`;
             }).join("");
         } catch (error) {
             console.error("Could not load tournaments:", error);
-            grid.innerHTML = '<div class="live-tournament-empty">Unable to load tournaments. Please check the Supabase tournament table, column names, and Row Level Security (RLS) permissions.</div>';
+            grid.innerHTML = '<div class="live-tournament-empty">Unable to load tournaments. Please check Supabase table permissions and confirm the public.tournament table is accessible.</div>';
         }
     }
 
