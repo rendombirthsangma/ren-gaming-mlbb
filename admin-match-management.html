@@ -82,8 +82,8 @@ textarea{min-height:80px}
 
       <div class="grid">
         <div class="field">
-          <label for="tournament_id">Tournament ID *</label>
-          <input id="tournament_id" required placeholder="Paste tournament ID">
+          <label for="tournament_id">Select Tournament *</label>
+          <select id="tournament_id" required><option value="">Loading tournaments...</option></select>
         </div>
 
         <div class="field">
@@ -161,8 +161,7 @@ textarea{min-height:80px}
       </div>
 
       <p class="note">
-        Use the exact IDs stored in your database. This page does not create teams or tournaments.
-        A match can only be saved if the fields and relationships match your Supabase schema.
+        Select an existing tournament and approved teams from the lists. You do not need to copy or enter any IDs manually.
       </p>
     </form>
   </section>
@@ -184,6 +183,7 @@ const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);
 let matchColumns=[];
 let currentMatches=[];
 let approvedTeams=[];
+let tournaments=[];
 let busy=false;
 
 const $=id=>document.getElementById(id);
@@ -207,6 +207,37 @@ function esc(value){
 
 function teamName(team){
   return team.team_name || team.name || team.teamName || team.ign || ("Team " + String(team.id).slice(0,8));
+}
+
+function tournamentName(tournament){
+  return tournament.name || tournament.title || ("Tournament " + String(tournament.id).slice(0,8));
+}
+
+function refreshTournamentDropdown(selectedId="") {
+  const select=$("tournament_id");
+  select.innerHTML='<option value="">Select an existing tournament</option>'+tournaments.map(t=>
+    `<option value="${esc(t.id)}" ${String(t.id)===String(selectedId)?"selected":""}>${esc(tournamentName(t))}</option>`
+  ).join("");
+}
+
+async function loadTournaments(selectedId="") {
+  const select=$("tournament_id");
+  select.innerHTML='<option value="">Loading tournaments...</option>';
+  const {data,error}=await db.from("tournament").select("id,name").order("created_at",{ascending:false});
+  if(error){
+    console.error("Tournament loading error:",error);
+    select.innerHTML='<option value="">Could not load tournaments</option>';
+    message("Could not load tournaments: "+error.message);
+    return false;
+  }
+  tournaments=data||[];
+  refreshTournamentDropdown(selectedId);
+  if(!tournaments.length){
+    select.innerHTML='<option value="">No tournaments found — create one first</option>';
+    message("No existing tournaments were found. Create a tournament first.");
+    return false;
+  }
+  return true;
 }
 
 function teamOptions(selected=""){
@@ -288,6 +319,7 @@ function resetForm(){
 
 function fillForm(m){
   $("editingId").value=m.id??"";
+  refreshTournamentDropdown(m.tournament_id??"");
   $("tournament_id").value=m.tournament_id??"";
   $("group_name").value=m.group_name??m.group_name??"";
   $("round_name").value=m.round_name??m.round??"";
@@ -413,7 +445,7 @@ async function loadMatches(){
         <div>
           <div class="match-name">Match ${esc(m.match_number??m.id??"")}</div>
           <div class="meta">
-            Tournament: ${esc(m.tournament_id??"Not set")}<br>
+            Tournament: ${esc(tournamentName(tournaments.find(t=>String(t.id)===String(m.tournament_id))||{id:m.tournament_id||""}))}<br>
             Group: ${esc(m.group_name??m.group??"Not set")}<br>
             Team 1: ${esc(teamARecord?teamName(teamARecord):teamA)}<br>
             Team 2: ${esc(teamBRecord?teamName(teamBRecord):teamB)}<br>
@@ -460,7 +492,7 @@ $("matchForm").addEventListener("submit",async e=>{
 
   const editingId=$("editingId").value;
   if(!$("tournament_id").value.trim()||!$("team1_id").value.trim()||!$("team2_id").value.trim()){
-    message("Tournament ID, Team 1 ID, and Team 2 ID are required.");
+    message("Please select a tournament, Team 1, and Team 2.");
     return;
   }
   if($("team1_id").value.trim()===$("team2_id").value.trim()){
@@ -484,4 +516,79 @@ $("matchForm").addEventListener("submit",async e=>{
 
   const payload=buildPayload();
   if(!payload.tournament_id||!payload.team1_id||!payload.team2_id){
-    message("Your matches table is missing one or more required columns: tournament_id, team1_id, or team2_id. The page needs to 
+    message("Your matches table is missing one or more required columns: tournament_id, team1_id, or team2_id. The page needs to be adjusted to your database schema.");
+    return;
+  }
+
+  busy=true;
+  $("saveBtn").disabled=true;
+  $("saveBtn").textContent=editingId?"SAVING...":"CREATING...";
+
+  const result=editingId
+    ?await db.from("matches").update(payload).eq("id",editingId)
+    :await db.from("matches").insert(payload);
+
+  busy=false;
+  $("saveBtn").disabled=false;
+  $("saveBtn").textContent=editingId?"SAVE CHANGES":"CREATE MATCH";
+
+  if(result.error){
+    console.error("Save match error:",result.error);
+    message("Could not save match: "+result.error.message);
+    return;
+  }
+
+  message(editingId?"Match updated successfully.":"Match created successfully.","success");
+  resetForm();
+  await loadMatches();
+});
+
+async function toggleHomepageVisibility(id){
+  const match=currentMatches.find(m=>String(m.id)===String(id));
+  if(!match)return;
+  const nextValue=match.show_on_home===false;
+  const {error}=await db.from("matches").update({show_on_home:nextValue}).eq("id",id);
+  if(error){
+    console.error("Homepage visibility update error:",error);
+    message("Could not update homepage visibility. Make sure the matches table has a show_on_home boolean column: "+error.message);
+    return;
+  }
+  message(nextValue?"Match is now visible on the homepage.":"Match is now hidden from the homepage.","success");
+  await loadMatches();
+}
+
+async function deleteMatch(id){
+  const m=currentMatches.find(x=>String(x.id)===String(id));
+  if(!confirm("Delete this match?"+(m?"\nMatch ID: "+m.id:"")+"\nThis cannot be undone."))return;
+
+  const {error}=await db.from("matches").delete().eq("id",id);
+  if(error){
+    console.error(error);
+    message("Could not delete match: "+error.message);
+    return;
+  }
+
+  message("Match deleted successfully.","success");
+  resetForm();
+  await loadMatches();
+}
+
+$("team1_id").addEventListener("change",()=>refreshTeamDropdowns($("team1_id").value,$("team2_id").value,$("winner_id").value));
+$("team2_id").addEventListener("change",()=>refreshTeamDropdowns($("team1_id").value,$("team2_id").value,$("winner_id").value));
+$("cancelBtn").addEventListener("click",resetForm);
+$("refreshBtn").addEventListener("click",async()=>{await loadTournaments($("tournament_id").value);await loadApprovedTeams();await loadMatches();});
+$("logoutBtn").addEventListener("click",async()=>{
+  await db.auth.signOut();
+  window.location.href="login.html";
+});
+
+(async()=>{
+  if(await checkAdmin()){
+    await loadTournaments();
+    await loadApprovedTeams();
+    await loadMatches();
+  }
+})();
+</script>
+</body>
+</html>
