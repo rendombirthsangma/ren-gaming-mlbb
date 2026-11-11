@@ -532,45 +532,20 @@
         <div class="section-heading">
           <div class="section-number">01</div>
           <div>
-            <h2>Player Details</h2>
-            <p class="section-description">
-              Register as an individual player. No team or substitute details are needed.
-            </p>
+            <h2>Team Details</h2>
+            <p class="section-description">Enter your team name. Your registration will appear under this name in the tournament team list.</p>
           </div>
         </div>
 
         <div class="field">
-          <label for="teamName">
-            Player / In-Game Name <span class="required">*</span>
-          </label>
-          <input
-            type="text"
-            id="teamName"
-            name="teamName"
-            placeholder="Enter your in-game name"
-            maxlength="80"
-            required
-          >
+          <label for="teamName">Team Name <span class="required">*</span></label>
+          <input type="text" id="teamName" name="teamName" placeholder="Enter your team name" maxlength="80" required>
         </div>
 
         <div class="field">
-          <label for="leaderPhone">
-            WhatsApp Number <span class="required">*</span>
-          </label>
-          <input
-            type="tel"
-            id="leaderPhone"
-            name="leaderPhone"
-            placeholder="Enter 10-digit mobile number"
-            inputmode="numeric"
-            autocomplete="tel-national"
-            maxlength="10"
-            pattern="[6-9][0-9]{9}"
-            required
-          >
-          <p class="help">
-            Enter your 10-digit Indian mobile number linked to WhatsApp.
-          </p>
+          <label for="leaderPhone">WhatsApp Number <span class="required">*</span></label>
+          <input type="tel" id="leaderPhone" name="leaderPhone" placeholder="Enter 10-digit mobile number" inputmode="numeric" autocomplete="tel-national" maxlength="10" pattern="[6-9][0-9]{9}" required>
+          <p class="help">Enter your 10-digit Indian mobile number linked to WhatsApp.</p>
         </div>
       </section>
 
@@ -578,29 +553,20 @@
         <div class="section-heading">
           <div class="section-number">02</div>
           <div>
-            <h2>Game Account Details</h2>
-            <p class="section-description">
-              Enter your exact in-game username, Game User ID, Server ID and Zone ID.
-            </p>
+            <h2>Player Details</h2>
+            <p class="section-description">Enter the registered player's exact in-game name and Mobile Legends User ID with Zone ID.</p>
           </div>
         </div>
 
-        <div id="mainPlayers" class="players-grid">
-          <div class="player-card">
-            <h3><span>Your Game Account</span><span class="player-tag">1v1 Player</span></h3>
-            <div class="field">
-              <label for="gameUserId">Game User ID <span class="required">*</span></label>
-              <input type="text" id="gameUserId" name="main_1_game_user_id" placeholder="Enter your Game User ID" maxlength="40" autocomplete="off" required>
-            </div>
-            <div class="field">
-              <label for="serverId">Server ID <span class="required">*</span></label>
-              <input type="text" id="serverId" name="main_1_server_id" placeholder="Enter your Server ID" maxlength="20" autocomplete="off" required>
-            </div>
-            <div class="field">
-              <label for="zoneId">Zone ID <span class="required">*</span></label>
-              <input type="text" id="zoneId" name="main_1_zone_id" placeholder="Enter your Zone ID" maxlength="20" autocomplete="off" required>
-            </div>
-            <p class="help">Enter the account details carefully. These will be used to verify your player identity.</p>
+        <div class="player-card">
+          <div class="field">
+            <label for="playerIgn">Player In-Game Name <span class="required">*</span></label>
+            <input type="text" id="playerIgn" name="playerIgn" placeholder="Enter player in-game name" maxlength="80" autocomplete="off" required>
+          </div>
+          <div class="field">
+            <label for="gameUserZone">Game User ID (Zone ID) <span class="required">*</span></label>
+            <input type="text" id="gameUserZone" name="gameUserZone" placeholder="123456789(1234)" maxlength="30" autocomplete="off" pattern="[0-9]{5,15}\s*\([0-9]{1,8}\)" title="Enter in this format: 123456789(1234)" required>
+            <p class="help">Example: 123456789(1234) — enter your Game User ID followed by your Zone ID in brackets.</p>
           </div>
         </div>
       </section>
@@ -700,7 +666,7 @@
         <label class="check-row" style="margin-bottom:20px;">
           <input type="checkbox" id="detailsConfirmation" required>
           <span>
-            I confirm that my player name, Game User ID, Server ID and Zone ID are correct.
+            I confirm that my team name, player in-game name, Game User ID and Zone ID are correct.
             Incorrect information may result in rejection.
           </span>
         </label>
@@ -811,59 +777,32 @@
       }).format(Number(value) || 0);
     }
 
-    /* CREATE THE SINGLE PLAYER FORM */
+    /* SINGLE PLAYER DETAILS FOR THE 1v1 TOURNAMENT */
 
     function buildPlayerForms() {
-      const mainContainer = $("mainPlayers");
-      if (!mainContainer) {
-        throw new Error("Player form container was not found in the HTML.");
-      }
-      // The player fields are written directly in the HTML so they remain visible
-      // even if a later authentication or network request is delayed.
-      if (!mainContainer.querySelector('[name="main_1_game_user_id"]')) {
-        mainContainer.appendChild(createPlayerCard("main", 1, "Your Game Account"));
-      }
-    }
-
-    function createPlayerCard(playerType, number, label) {
-      const card = document.createElement("div");
-      card.className = "player-card";
-      card.innerHTML = `
-        <h3><span>${label}</span><span class="player-tag">1v1 Player</span></h3>
-        <div class="field">
-          <label>Game User ID <span class="required">*</span></label>
-          <input type="text" name="main_1_game_user_id" placeholder="Enter Game User ID" maxlength="40" autocomplete="off" required>
-        </div>
-        <div class="field">
-          <label>Server ID <span class="required">*</span></label>
-          <input type="text" name="main_1_server_id" placeholder="Enter Server ID" maxlength="20" autocomplete="off" required>
-        </div>
-        <div class="field">
-          <label>Zone ID <span class="required">*</span></label>
-          <input type="text" name="main_1_zone_id" placeholder="Enter Zone ID" maxlength="20" autocomplete="off" required>
-        </div>`;
-      return card;
+      // Player fields are present directly in the HTML.
     }
 
     function collectPlayers() {
-      const username = cleanText($("teamName")?.value);
-      const gameUserId = cleanText(document.querySelector('[name="main_1_game_user_id"]')?.value);
-      const serverId = cleanText(document.querySelector('[name="main_1_server_id"]')?.value);
-      const zoneId = cleanText(document.querySelector('[name="main_1_zone_id"]')?.value);
-      if (!username || !gameUserId || !serverId || !zoneId) {
-        throw new Error("Please complete your player name, Game User ID, Server ID and Zone ID.");
+      const username = cleanText($("playerIgn")?.value);
+      const combinedId = cleanText($("gameUserZone")?.value);
+      const match = combinedId.match(/^([0-9]{5,15})\s*\(([0-9]{1,8})\)$/);
+
+      if (!username || !match) {
+        throw new Error("Enter the player's in-game name and Game User ID in the format 123456789(1234).");
       }
+
+      const gameUserId = match[1];
+      const zoneId = match[2];
       return [{
         player_type: "main",
         player_number: 1,
         username,
         game_user_id: gameUserId,
-        server_id: serverId,
+        server_id: zoneId,
         zone_id: zoneId
       }];
     }
-
-    /* LOAD TOURNAMENT */
 
     async function loadTournament() {
       const params = new URLSearchParams(window.location.search);
@@ -1298,4 +1237,74 @@
 
         if ($("registrationForm").style.display !== "none") {
           $("submitButton").disabled = false;
-          $("submitButton").textContent = "SUBMIT 1v1 REGI
+          $("submitButton").textContent = "SUBMIT 1v1 REGISTRATION";
+        }
+      }
+    }
+
+    /* START PAGE */
+
+    document.addEventListener("DOMContentLoaded", async () => {
+      try {
+        const loggedIn = await requireLogin();
+        if (!loggedIn) {
+          $("registrationForm").style.display = "none";
+          return;
+        }
+      } catch (error) {
+        console.error("Login check failed:", error);
+        showStatus("Could not verify your login. Please refresh or sign in again.", "error");
+        $("registrationForm").style.display = "none";
+        return;
+      }
+
+      /*
+       * Only logged-in users can continue to the registration form.
+       */
+      try {
+        buildPlayerForms();
+      } catch (error) {
+        console.error("Player form creation error:", error);
+
+        showStatus(
+          "Could not create player forms: " + error.message,
+          "error"
+        );
+
+        return;
+      }
+
+      $("registrationForm").addEventListener(
+        "submit",
+        registerTeam
+      );
+
+      try {
+        await loadTournament();
+
+        const user = await getCurrentUser();
+        if (!user) {
+          throw new Error("Please log in before registering.");
+        }
+
+        const allowed = await enforceRegistrationAccess(
+          user,
+          currentTournament.id
+        );
+
+        if (!allowed) return;
+      } catch (error) {
+        console.error("Tournament loading error:", error);
+
+        showStatus(
+          "Player forms are ready, but tournament details could not load: " +
+          error.message,
+          "error"
+        );
+
+        $("submitButton").disabled = true;
+      }
+    });
+  </script>
+</body>
+</html>
