@@ -64,24 +64,10 @@
 
     .brand {
       color: white;
-      display: flex;
-      align-items: center;
-      gap: 10px;
       font-size: 23px;
       font-weight: 900;
       letter-spacing: 1px;
       text-decoration: none;
-    }
-
-    .brand-logo {
-      width: 44px;
-      height: 44px;
-      flex: 0 0 44px;
-      object-fit: contain;
-      border-radius: 50%;
-      border: 1px solid var(--red);
-      background: #050505;
-      box-shadow: 0 0 12px rgba(255, 48, 59, .25);
     }
 
     .brand span {
@@ -320,28 +306,6 @@
       margin-bottom: 20px;
     }
 
-    .secure-payment-note {
-      margin: 0 0 20px;
-      padding: 12px 14px;
-      border: 1px solid #245b3b;
-      border-radius: 9px;
-      background: #0c1d13;
-      color: #b9f3cc;
-      font-size: 12px;
-      text-align: left;
-    }
-
-    .footer-contact {
-      margin-top: 12px;
-      line-height: 1.9;
-    }
-
-    .footer-contact a {
-      color: #25d366;
-      text-decoration: none;
-      font-weight: 700;
-    }
-
     .upload-box {
       border: 1px dashed #555;
       border-radius: 10px;
@@ -504,10 +468,7 @@
 
 <body>
   <header class="navbar">
-    <a class="brand" href="index.html" aria-label="REN GAMING Home">
-      <img class="brand-logo" src="ren-gaming-rg.png" alt="Ren Gaming RG logo">
-      <span>REN <span>GAMING</span></span>
-    </a>
+    <a class="brand" href="index.html" style="display:flex;align-items:center;gap:10px;"><img src="ren-gaming-rg.png" alt="Ren Gaming RG logo" style="width:38px;height:38px;object-fit:contain;border-radius:8px;">REN <span>GAMING</span></a>
     <a class="nav-link" href="index.html">BACK TO HOME</a>
   </header>
 
@@ -521,8 +482,11 @@
         Register your team and get ready to compete with Ren Gaming.
       </p>
 
-      <div class="notice" id="playerRequirementNotice">
-        Tournament player requirements will load here.
+      <div class="notice">
+        <strong>Important:</strong> Each team must register exactly
+        7 players — 5 main players and 2 substitutes. All player details
+        are required. Please check your Game User IDs and Server IDs
+        before submitting.
       </div>
     </div>
 
@@ -579,9 +543,9 @@
         <div class="section-heading">
           <div class="section-number">02</div>
           <div>
-            <h2 id="mainPlayersHeading">Main Players</h2>
-            <p class="section-description" id="mainPlayersDescription">
-              Complete the details for all required main players.
+            <h2>Main Players (5 Required)</h2>
+            <p class="section-description">
+              Complete the details for all five main players.
             </p>
           </div>
         </div>
@@ -593,9 +557,9 @@
         <div class="section-heading">
           <div class="section-number">03</div>
           <div>
-            <h2 id="substitutePlayersHeading">Substitute Players</h2>
-            <p class="section-description" id="substitutePlayersDescription">
-              Substitute players are optional.
+            <h2>Substitute Players (2 Required)</h2>
+            <p class="section-description">
+              Both substitutes must be registered.
             </p>
           </div>
         </div>
@@ -632,15 +596,6 @@
             Scan the QR code above to make your payment. After paying,
             enter the transaction reference and upload a screenshot.
           </p>
-
-          <div class="secure-payment-note">
-            <strong>🔒 Secure Payment Reminder</strong><br>
-            Pay only through the QR code shown on this page and check the
-            payment details in your UPI app before confirming. Never share
-            your UPI PIN or OTP with anyone. Ren Gaming will never ask you
-            to share them. Your registration will be confirmed after payment
-            verification.
-          </div>
 
           <div class="field">
             <label for="transactionId">
@@ -699,7 +654,7 @@
           <div>
             <h2>Confirm Registration</h2>
             <p class="section-description">
-              Review your player details before submitting.
+              Review all seven players before submitting.
             </p>
           </div>
         </div>
@@ -707,7 +662,7 @@
         <label class="check-row" style="margin-bottom:20px;">
           <input type="checkbox" id="detailsConfirmation" required>
           <span>
-            I confirm that all submitted players' usernames, Game User IDs
+            I confirm that all seven players' usernames, Game User IDs
             and Server IDs are correct. Incorrect information may result
             in rejection.
           </span>
@@ -748,10 +703,6 @@
   <footer>
     <strong>REN GAMING</strong><br>
     Official Tournament Registration Portal
-    <div class="footer-contact">
-      <strong>Contact Us</strong><br>
-      WhatsApp: <a href="https://wa.me/918638129770" target="_blank" rel="noopener noreferrer">+91 86381 29770</a>
-    </div>
   </footer>
 
   <script>
@@ -771,10 +722,9 @@
     const RECEIPT_BUCKET = "tournament-payment-proofs";
     const REN_GAMING_WHATSAPP = "918638129770";
 
-    // Player counts are loaded from the selected tournament in Supabase.
-    let MAIN_PLAYER_COUNT = 5;
-    let SUBSTITUTE_COUNT = 2;
-    let TOTAL_PLAYER_COUNT = 7;
+    const MAIN_PLAYER_COUNT = 5;
+    const SUBSTITUTE_COUNT = 2;
+    const TOTAL_PLAYER_COUNT = 7;
     const MAX_RECEIPT_SIZE = 5 * 1024 * 1024;
 
     const supabaseClient = window.supabase.createClient(
@@ -826,7 +776,7 @@
       }).format(Number(value) || 0);
     }
 
-    /* CREATE PLAYER FORMS USING TOURNAMENT SETTINGS */
+    /* CREATE THE SEVEN PLAYER FORMS */
 
     function createPlayerCard(playerType, number, label) {
       const card = document.createElement("div");
@@ -911,23 +861,7 @@
         );
       }
 
-      const mainLabel = MAIN_PLAYER_COUNT === 1 ? "1 Main Player" : `${MAIN_PLAYER_COUNT} Main Players`;
-      const subLabel = SUBSTITUTE_COUNT === 0
-        ? "No substitutes required"
-        : `Up to ${SUBSTITUTE_COUNT} optional substitutes`;
-
-      $("mainPlayersHeading").textContent = `Main Players (${MAIN_PLAYER_COUNT} Required)`;
-      $("mainPlayersDescription").textContent = `Complete the details for ${MAIN_PLAYER_COUNT === 1 ? "the main player" : `all ${MAIN_PLAYER_COUNT} main players`}.`;
-      $("substitutePlayersHeading").textContent = SUBSTITUTE_COUNT > 0
-        ? `Substitute Players (Optional — Up to ${SUBSTITUTE_COUNT})`
-        : "Substitute Players (Not Required)";
-      $("substitutePlayersDescription").textContent = SUBSTITUTE_COUNT > 0
-        ? "You can leave these fields empty. Add substitutes only if available."
-        : "This tournament does not require substitute players.";
-      $("playerRequirementNotice").innerHTML = `<strong>Important:</strong> This tournament requires ${mainLabel}. ${subLabel}. Please check all submitted Game User IDs and Server IDs before submitting.`;
-
-      const total = MAIN_PLAYER_COUNT + SUBSTITUTE_COUNT;
-      console.info("Created player forms:", total);
+      console.info("Created player forms:", TOTAL_PLAYER_COUNT);
     }
 
     function readPlayer(playerType, number) {
@@ -974,20 +908,11 @@
       }
 
       for (let i = 1; i <= SUBSTITUTE_COUNT; i++) {
-        const prefix = `substitute_${i}`;
-        const username = cleanText(document.querySelector(`[name="${prefix}_username"]`)?.value);
-        const gameUserId = cleanText(document.querySelector(`[name="${prefix}_game_user_id"]`)?.value);
-        const serverId = cleanText(document.querySelector(`[name="${prefix}_server_id"]`)?.value);
-        const hasAnyDetails = Boolean(username || gameUserId || serverId);
-
-        // Substitute players are optional, but if one is started, all fields are required.
-        if (hasAnyDetails) {
-          players.push(readPlayer("substitute", i));
-        }
+        players.push(readPlayer("substitute", i));
       }
 
-      if (players.length < MAIN_PLAYER_COUNT) {
-        throw new Error(`Exactly ${MAIN_PLAYER_COUNT} main player${MAIN_PLAYER_COUNT === 1 ? "" : "s"} ${MAIN_PLAYER_COUNT === 1 ? "is" : "are"} required.`);
+      if (players.length !== TOTAL_PLAYER_COUNT) {
+        throw new Error("Exactly seven players are required.");
       }
 
       return players;
@@ -1022,15 +947,6 @@
       }
 
       currentTournament = data;
-
-      // Match the form to the tournament's configured team size.
-      MAIN_PLAYER_COUNT = Math.max(1, Math.min(20, parseInt(data.team_size, 10) || 5));
-      // 1v1 tournaments do not need substitutes. Team tournaments may add up to 2 optional substitutes.
-      SUBSTITUTE_COUNT = MAIN_PLAYER_COUNT === 1
-        ? 0
-        : Math.max(0, Math.min(2, parseInt(data.substitute_players, 10) || 2));
-      TOTAL_PLAYER_COUNT = MAIN_PLAYER_COUNT + SUBSTITUTE_COUNT;
-      buildPlayerForms();
 
       const fee = Number(data.entry_fee || 0);
       isFreeTournament = !Number.isFinite(fee) || fee <= 0;
@@ -1093,24 +1009,57 @@
       return data.user || null;
     }
 
-    /* CHECK FOR DUPLICATE TEAM */
 
-    async function checkExistingTeam(teamName, tournamentId) {
+    /* REQUIRE LOGIN BEFORE SHOWING THE REGISTRATION FORM */
+    async function requireLogin() {
+      const { data, error } = await supabaseClient.auth.getSession();
+      if (error) throw error;
+      if (data.session?.user) return true;
+
+      const currentPage = window.location.pathname.split("/").pop() + window.location.search;
+      const loginUrl = new URL("login.html", window.location.href);
+      loginUrl.searchParams.set("redirect", currentPage);
+      window.location.replace(loginUrl.href);
+      return false;
+    }
+
+    /* CHECK ACTIVE REGISTRATION FOR THIS USER */
+
+    async function checkExistingRegistration(userId, tournamentId) {
       const { data, error } = await supabaseClient
         .from("teams")
-        .select("id, team_name")
+        .select("id, team_name, status, rejection_reason, created_at")
+        .eq("user_id", userId)
         .eq("tournament_id", tournamentId)
-        .ilike("team_name", teamName)
-        .limit(1);
+        .order("created_at", { ascending: false });
 
       if (error) {
         throw new Error(
-          "Could not check for duplicate team names: " +
-          error.message
+          "Could not check your previous registration: " + error.message
         );
       }
 
-      return Array.isArray(data) && data.length > 0;
+      const records = data || [];
+      const active = records.find(team =>
+        ["pending", "approved"].includes(String(team.status || "").toLowerCase())
+      );
+
+      return { active, latest: records[0] || null };
+    }
+
+    async function enforceRegistrationAccess(user, tournamentId) {
+      const result = await checkExistingRegistration(user.id, tournamentId);
+      if (result.active) {
+        $("registrationForm").style.display = "none";
+        $("statusMessage").className = "status info";
+        $("statusMessage").textContent =
+          result.active.status === "approved"
+            ? `Your team "${result.active.team_name}" is already approved. Registration details are locked. You cannot register again for this tournament.`
+            : `Your team "${result.active.team_name}" is awaiting admin review. Registration details are locked. You cannot submit another registration while it is pending.`;
+        return false;
+      }
+      // A rejected registration stays unchanged. A new registration is allowed.
+      return true;
     }
 
     /* UPLOAD PAYMENT RECEIPT */
@@ -1201,8 +1150,8 @@
         return;
       }
 
-      if (players.length < MAIN_PLAYER_COUNT) {
-        showStatus(`Exactly ${MAIN_PLAYER_COUNT} main player${MAIN_PLAYER_COUNT === 1 ? "" : "s"} required.`, "error");
+      if (players.length !== TOTAL_PLAYER_COUNT) {
+        showStatus("Exactly seven players are required.", "error");
         return;
       }
 
@@ -1227,14 +1176,14 @@
           );
         }
 
-        const duplicate = await checkExistingTeam(
-          teamName,
+        const access = await checkExistingRegistration(
+          user.id,
           tournamentId
         );
 
-        if (duplicate) {
+        if (access.active) {
           throw new Error(
-            "A team with this name is already registered. Do not submit again. Contact Ren Gaming to check the existing registration."
+            "You already have a pending or approved registration for this tournament. Submitted details cannot be changed."
           );
         }
 
@@ -1278,7 +1227,7 @@
         }
 
         /*
-         * Save the required main players and any optional substitutes.
+         * Save the seven players.
          */
 
         const playerRows = players.map((player) => ({
@@ -1359,7 +1308,7 @@
           `Team ID: ${createdTeamId}`,
           `Team Leader WhatsApp: +91 ${leaderPhone}`,
           "",
-          `REGISTERED PLAYERS (${players.length})`,
+          "REGISTERED PLAYERS (7)",
           "",
           ...playerLines,
           "",
@@ -1375,7 +1324,7 @@
         $("successPanel").style.display = "block";
 
         $("successText").textContent =
-          `Team "${teamName}" has been submitted with ${players.length} player${players.length === 1 ? "" : "s"}. Your registration is pending verification.`;
+          `Team "${teamName}" has been submitted with all seven players. Your registration is pending verification.`;
 
         $("whatsappLink").href =
           `https://wa.me/${REN_GAMING_WHATSAPP}?text=${encodeURIComponent(message)}`;
@@ -1412,28 +1361,32 @@
     /* START PAGE */
 
     document.addEventListener("DOMContentLoaded", async () => {
-      // Check the login session before showing the registration form.
       try {
-        const { data, error } = await supabaseClient.auth.getSession();
-        if (error) throw error;
-
-        if (!data.session?.user) {
-          const returnUrl =
-            window.location.pathname +
-            window.location.search +
-            window.location.hash;
-
-          window.location.replace(
-            "login.html?redirect=" + encodeURIComponent(returnUrl)
-          );
+        const loggedIn = await requireLogin();
+        if (!loggedIn) {
+          $("registrationForm").style.display = "none";
           return;
         }
       } catch (error) {
-        console.error("Login session check failed:", error);
+        console.error("Login check failed:", error);
+        showStatus("Could not verify your login. Please refresh or sign in again.", "error");
+        $("registrationForm").style.display = "none";
+        return;
+      }
+
+      /*
+       * Only logged-in users can continue to the registration form.
+       */
+      try {
+        buildPlayerForms();
+      } catch (error) {
+        console.error("Player form creation error:", error);
+
         showStatus(
-          "Unable to verify your login. Please refresh the page or sign in again.",
+          "Could not create player forms: " + error.message,
           "error"
         );
+
         return;
       }
 
@@ -1443,13 +1396,24 @@
       );
 
       try {
-        // Load tournament first so the correct number of player fields is created.
         await loadTournament();
+
+        const user = await getCurrentUser();
+        if (!user) {
+          throw new Error("Please log in before registering.");
+        }
+
+        const allowed = await enforceRegistrationAccess(
+          user,
+          currentTournament.id
+        );
+
+        if (!allowed) return;
       } catch (error) {
         console.error("Tournament loading error:", error);
 
         showStatus(
-          "Tournament details could not load: " +
+          "Player forms are ready, but tournament details could not load: " +
           error.message,
           "error"
         );
