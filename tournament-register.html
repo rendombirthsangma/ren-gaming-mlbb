@@ -228,16 +228,17 @@
 
     .players-grid {
       display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-columns: minmax(0, 1fr);
       gap: 15px;
     }
 
     .player-card {
-      background: var(--card2);
-      border: 1px solid #303030;
+      background: #151515;
+      border: 1px solid #383838;
       border-radius: 11px;
-      padding: 17px;
+      padding: 20px;
       min-width: 0;
+      width: 100%;
     }
 
     .player-card h3 {
@@ -502,8 +503,8 @@
         <div class="detail"><span>Competition</span><strong>1v1</strong></div>
         <div class="detail"><span>Entry Fee</span><strong>₹50</strong></div>
         <div class="detail"><span>First Prize</span><strong>₹1,000</strong></div>
-        <div class="detail"><span>Registration Deadline</span><strong>27 November 2026</strong></div>
-        <div class="detail"><span>Tournament Starts</span><strong>28 November 2026</strong></div>
+        <div class="detail"><span>Registration Deadline</span><strong>19 November 2026</strong></div>
+        <div class="detail"><span>Tournament Starts</span><strong>20 November 2026</strong></div>
         <div class="detail"><span>Playing Hours</span><strong>5:00 PM – 10:00 PM</strong></div>
         <div class="detail"><span>Schedule</span><strong>Shared in official WhatsApp group</strong></div>
       </div>
@@ -584,7 +585,24 @@
           </div>
         </div>
 
-        <div id="mainPlayers" class="players-grid"></div>
+        <div id="mainPlayers" class="players-grid">
+          <div class="player-card">
+            <h3><span>Your Game Account</span><span class="player-tag">1v1 Player</span></h3>
+            <div class="field">
+              <label for="gameUserId">Game User ID <span class="required">*</span></label>
+              <input type="text" id="gameUserId" name="main_1_game_user_id" placeholder="Enter your Game User ID" maxlength="40" autocomplete="off" required>
+            </div>
+            <div class="field">
+              <label for="serverId">Server ID <span class="required">*</span></label>
+              <input type="text" id="serverId" name="main_1_server_id" placeholder="Enter your Server ID" maxlength="20" autocomplete="off" required>
+            </div>
+            <div class="field">
+              <label for="zoneId">Zone ID <span class="required">*</span></label>
+              <input type="text" id="zoneId" name="main_1_zone_id" placeholder="Enter your Zone ID" maxlength="20" autocomplete="off" required>
+            </div>
+            <p class="help">Enter the account details carefully. These will be used to verify your player identity.</p>
+          </div>
+        </div>
       </section>
 
       <section class="card" id="paymentSection">
@@ -682,7 +700,7 @@
         <label class="check-row" style="margin-bottom:20px;">
           <input type="checkbox" id="detailsConfirmation" required>
           <span>
-            I confirm that my username, Game User ID and Server ID are correct.
+            I confirm that my player name, Game User ID, Server ID and Zone ID are correct.
             Incorrect information may result in rejection.
           </span>
         </label>
@@ -800,8 +818,11 @@
       if (!mainContainer) {
         throw new Error("Player form container was not found in the HTML.");
       }
-      mainContainer.replaceChildren();
-      mainContainer.appendChild(createPlayerCard("main", 1, "Your Player Details"));
+      // The player fields are written directly in the HTML so they remain visible
+      // even if a later authentication or network request is delayed.
+      if (!mainContainer.querySelector('[name="main_1_game_user_id"]')) {
+        mainContainer.appendChild(createPlayerCard("main", 1, "Your Game Account"));
+      }
     }
 
     function createPlayerCard(playerType, number, label) {
@@ -809,10 +830,6 @@
       card.className = "player-card";
       card.innerHTML = `
         <h3><span>${label}</span><span class="player-tag">1v1 Player</span></h3>
-        <div class="field">
-          <label>Username <span class="required">*</span></label>
-          <input type="text" name="main_1_username" placeholder="Enter game username" maxlength="80" autocomplete="off" required>
-        </div>
         <div class="field">
           <label>Game User ID <span class="required">*</span></label>
           <input type="text" name="main_1_game_user_id" placeholder="Enter Game User ID" maxlength="40" autocomplete="off" required>
@@ -829,12 +846,12 @@
     }
 
     function collectPlayers() {
-      const username = cleanText(document.querySelector('[name="main_1_username"]')?.value);
+      const username = cleanText($("teamName")?.value);
       const gameUserId = cleanText(document.querySelector('[name="main_1_game_user_id"]')?.value);
       const serverId = cleanText(document.querySelector('[name="main_1_server_id"]')?.value);
       const zoneId = cleanText(document.querySelector('[name="main_1_zone_id"]')?.value);
       if (!username || !gameUserId || !serverId || !zoneId) {
-        throw new Error("Please complete your username, Game User ID, Server ID and Zone ID.");
+        throw new Error("Please complete your player name, Game User ID, Server ID and Zone ID.");
       }
       return [{
         player_type: "main",
@@ -1267,4 +1284,18 @@
           block: "start"
         });
 
-      } c
+      } catch (error) {
+        console.error("Registration error:", error);
+
+        showStatus(
+          error.message ||
+          "Something went wrong while submitting your registration.",
+          "error"
+        );
+
+      } finally {
+        registrationInProgress = false;
+
+        if ($("registrationForm").style.display !== "none") {
+          $("submitButton").disabled = false;
+          $("submitButton").textContent = "SUBMIT 1v1 REGI
