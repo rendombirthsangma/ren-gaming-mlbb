@@ -180,7 +180,6 @@ const SUPABASE_URL="https://bixpvxkpnaqdifmvkhvp.supabase.co";
 const SUPABASE_PUBLISHABLE_KEY="sb_publishable_XtzkrIFbBPTGUmoLHqHu5Q_XeznKoVI";
 const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);
 
-let matchColumns=[];
 let currentMatches=[];
 let approvedTeams=[];
 let tournaments=[];
@@ -315,13 +314,16 @@ function resetForm(){
   $("formTitle").textContent="Create New Match";
   $("saveBtn").textContent="CREATE MATCH";
   $("cancelBtn").classList.add("hidden");
+  $("status").value="scheduled";
+  $("show_on_home").value="true";
+  refreshTeamDropdowns("","","");
 }
 
 function fillForm(m){
   $("editingId").value=m.id??"";
   refreshTournamentDropdown(m.tournament_id??"");
   $("tournament_id").value=m.tournament_id??"";
-  $("group_name").value=m.group_name??m.group_name??"";
+  $("group_name").value=m.group_name??m.group??"";
   $("round_name").value=m.round_name??m.round??"";
   $("match_number").value=m.match_number??"";
   refreshTeamDropdowns(m.team1_id??m.team_a_id??m.team1??"",m.team2_id??m.team_b_id??m.team2??"",m.winner_id??"");
@@ -341,56 +343,25 @@ function fillForm(m){
   window.scrollTo({top:0,behavior:"smooth"});
 }
 
-function availableColumn(possible){
-  return possible.find(c=>matchColumns.includes(c))||null;
-}
-
+// This page uses the canonical matches-table column names.
+// It does not depend on existing rows to discover the schema, so the
+// first match can be created even when the matches table is empty.
 function buildPayload(){
-  const payload={};
-
-  const values={
-    tournament_id:$("tournament_id").value.trim(),
-    group_name:$("group_name").value.trim()||null,
-    round_name:$("round_name").value.trim()||null,
-    round:$("round_name").value.trim()||null,
-    match_number:$("match_number").value?Number($("match_number").value):null,
-    team1_id:$("team1_id").value.trim(),
-    team2_id:$("team2_id").value.trim(),
-    match_date:isoDate("match_date"),
-    scheduled_at:isoDate("match_date"),
-    start_time:isoDate("match_date"),
-    status:$("status").value,
-    show_on_home:$("show_on_home").value==="true",
-    team1_score:$("team1_score").value===""?null:Number($("team1_score").value),
-    score1:$("team1_score").value===""?null:Number($("team1_score").value),
-    team2_score:$("team2_score").value===""?null:Number($("team2_score").value),
-    score2:$("team2_score").value===""?null:Number($("team2_score").value),
-    winner_id:$("winner_id").value.trim()||null,
-    notes:$("notes").value.trim()||null
+  return {
+    tournament_id: $("tournament_id").value.trim(),
+    group_name: $("group_name").value.trim() || null,
+    round_name: $("round_name").value.trim() || null,
+    match_number: $("match_number").value ? Number($("match_number").value) : null,
+    team1_id: $("team1_id").value.trim(),
+    team2_id: $("team2_id").value.trim(),
+    match_date: isoDate("match_date"),
+    status: $("status").value,
+    show_on_home: $("show_on_home").value === "true",
+    team1_score: $("team1_score").value === "" ? null : Number($("team1_score").value),
+    team2_score: $("team2_score").value === "" ? null : Number($("team2_score").value),
+    winner_id: $("winner_id").value.trim() || null,
+    notes: $("notes").value.trim() || null
   };
-
-  const aliases={
-    tournament_id:["tournament_id"],
-    group_name:["group_name","group"],
-    round_name:["round_name","round"],
-    match_number:["match_number"],
-    team1_id:["team1_id","team_a_id","team1"],
-    team2_id:["team2_id","team_b_id","team2"],
-    match_date:["match_date","scheduled_at","start_time"],
-    status:["status"],
-    show_on_home:["show_on_home"],
-    team1_score:["team1_score","score1"],
-    team2_score:["team2_score","score2"],
-    winner_id:["winner_id"],
-    notes:["notes"]
-  };
-
-  for(const [key,candidates] of Object.entries(aliases)){
-    const col=availableColumn(candidates);
-    if(col)payload[col]=values[col]!==undefined?values[col]:values[key];
-  }
-
-  return payload;
 }
 
 async function loadMatches(){
@@ -407,10 +378,9 @@ async function loadMatches(){
   }
 
   currentMatches=data||[];
-  matchColumns=currentMatches.length?Object.keys(currentMatches[0]):matchColumns;
 
   if(!currentMatches.length){
-    box.innerHTML='<div class="empty">No matches found yet. Create your first match above. If the table is empty, the page may not yet be able to detect all available columns.</div>';
+    box.innerHTML='<div class="empty">No matches found yet. Create your first match above.</div>';
     return;
   }
 
@@ -500,33 +470,15 @@ $("matchForm").addEventListener("submit",async e=>{
     return;
   }
 
-  if(!matchColumns.length){
-    const {data,error}=await db.from("matches").select("*").limit(1);
-    if(error){
-      message("Cannot inspect the matches table: "+error.message);
-      return;
-    }
-    if(data?.length)matchColumns=Object.keys(data[0]);
-  }
-
-  if(!matchColumns.length){
-    message("The matches table has no rows, so this page cannot safely infer its column names yet. Please share the columns of your Supabase matches table.");
-    return;
-  }
-
   const payload=buildPayload();
-  if(!payload.tournament_id||!payload.team1_id||!payload.team2_id){
-    message("Your matches table is missing one or more required columns: tournament_id, team1_id, or team2_id. The page needs to be adjusted to your database schema.");
-    return;
-  }
 
   busy=true;
   $("saveBtn").disabled=true;
   $("saveBtn").textContent=editingId?"SAVING...":"CREATING...";
 
   const result=editingId
-    ?await db.from("matches").update(payload).eq("id",editingId)
-    :await db.from("matches").insert(payload);
+    ?await db.from("matches").update(payload).eq("id",editingId).select()
+    :await db.from("matches").insert(payload).select();
 
   busy=false;
   $("saveBtn").disabled=false;
