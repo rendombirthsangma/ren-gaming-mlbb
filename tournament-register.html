@@ -479,13 +479,12 @@
       <h1>TOURNAMENT <span>REGISTRATION</span></h1>
 
       <p class="subtitle">
-        Register your team and get ready to compete with Ren Gaming.
+        Register yourself and get ready to compete with Ren Gaming.
       </p>
 
       <div class="notice">
-        <strong>Important:</strong> Each team must register exactly
-        7 players — 5 main players and 2 substitutes. All player details
-        are required. Please check your Game User IDs and Server IDs
+        <strong>Important:</strong> This is a 1v1 tournament. Register
+        only one player. Please check your Game User ID and Server ID
         before submitting.
       </div>
     </div>
@@ -497,22 +496,22 @@
         <div class="section-heading">
           <div class="section-number">01</div>
           <div>
-            <h2>Team Leader Details</h2>
+            <h2>Player Details</h2>
             <p class="section-description">
-              Enter your team information and WhatsApp number.
+              Enter your in-game name and WhatsApp number.
             </p>
           </div>
         </div>
 
         <div class="field">
           <label for="teamName">
-            Team Name <span class="required">*</span>
+            Player / In-Game Name <span class="required">*</span>
           </label>
           <input
             type="text"
             id="teamName"
             name="teamName"
-            placeholder="Enter your official team name"
+            placeholder="Enter your in-game name"
             maxlength="80"
             required
           >
@@ -520,7 +519,7 @@
 
         <div class="field">
           <label for="leaderPhone">
-            Team Leader WhatsApp Number <span class="required">*</span>
+            WhatsApp Number <span class="required">*</span>
           </label>
           <input
             type="tel"
@@ -543,28 +542,14 @@
         <div class="section-heading">
           <div class="section-number">02</div>
           <div>
-            <h2>Main Players (5 Required)</h2>
+            <h2>Player Game ID</h2>
             <p class="section-description">
-              Complete the details for all five main players.
+              Enter your game username, Game User ID and Server ID.
             </p>
           </div>
         </div>
 
         <div id="mainPlayers" class="players-grid"></div>
-      </section>
-
-      <section class="card">
-        <div class="section-heading">
-          <div class="section-number">03</div>
-          <div>
-            <h2>Substitute Players (2 Required)</h2>
-            <p class="section-description">
-              Both substitutes must be registered.
-            </p>
-          </div>
-        </div>
-
-        <div id="substitutePlayers" class="players-grid"></div>
       </section>
 
       <section class="card" id="paymentSection">
@@ -654,7 +639,7 @@
           <div>
             <h2>Confirm Registration</h2>
             <p class="section-description">
-              Review all seven players before submitting.
+              Check your player details before submitting.
             </p>
           </div>
         </div>
@@ -662,9 +647,8 @@
         <label class="check-row" style="margin-bottom:20px;">
           <input type="checkbox" id="detailsConfirmation" required>
           <span>
-            I confirm that all seven players' usernames, Game User IDs
-            and Server IDs are correct. Incorrect information may result
-            in rejection.
+            I confirm that my username, Game User ID and Server ID are correct.
+            Incorrect information may result in rejection.
           </span>
         </label>
 
@@ -722,9 +706,7 @@
     const RECEIPT_BUCKET = "tournament-payment-proofs";
     const REN_GAMING_WHATSAPP = "918638129770";
 
-    const MAIN_PLAYER_COUNT = 5;
-    const SUBSTITUTE_COUNT = 2;
-    const TOTAL_PLAYER_COUNT = 7;
+    const TOTAL_PLAYER_COUNT = 1;
     const MAX_RECEIPT_SIZE = 5 * 1024 * 1024;
 
     const supabaseClient = window.supabase.createClient(
@@ -776,146 +758,51 @@
       }).format(Number(value) || 0);
     }
 
-    /* CREATE THE SEVEN PLAYER FORMS */
+    /* CREATE THE SINGLE PLAYER FORM */
+
+    function buildPlayerForms() {
+      const mainContainer = $("mainPlayers");
+      if (!mainContainer) {
+        throw new Error("Player form container was not found in the HTML.");
+      }
+      mainContainer.replaceChildren();
+      mainContainer.appendChild(createPlayerCard("main", 1, "Your Player Details"));
+    }
 
     function createPlayerCard(playerType, number, label) {
       const card = document.createElement("div");
       card.className = "player-card";
-
       card.innerHTML = `
-        <h3>
-          <span>${label}</span>
-          <span class="player-tag">
-            ${playerType === "main" ? "Main" : "Substitute"}
-          </span>
-        </h3>
-
+        <h3><span>${label}</span><span class="player-tag">1v1 Player</span></h3>
         <div class="field">
-          <label>
-            Username <span class="required">*</span>
-          </label>
-          <input
-            type="text"
-            name="${playerType}_${number}_username"
-            placeholder="Enter game username"
-            maxlength="80"
-            autocomplete="off"
-            required
-          >
+          <label>Username <span class="required">*</span></label>
+          <input type="text" name="main_1_username" placeholder="Enter game username" maxlength="80" autocomplete="off" required>
         </div>
-
         <div class="field">
-          <label>
-            Game User ID <span class="required">*</span>
-          </label>
-          <input
-            type="text"
-            name="${playerType}_${number}_game_user_id"
-            placeholder="Enter Game User ID"
-            maxlength="40"
-            autocomplete="off"
-            required
-          >
+          <label>Game User ID <span class="required">*</span></label>
+          <input type="text" name="main_1_game_user_id" placeholder="Enter Game User ID" maxlength="40" autocomplete="off" required>
         </div>
-
         <div class="field">
-          <label>
-            Server ID <span class="required">*</span>
-          </label>
-          <input
-            type="text"
-            name="${playerType}_${number}_server_id"
-            placeholder="Enter Server ID"
-            maxlength="20"
-            autocomplete="off"
-            required
-          >
-        </div>
-      `;
-
+          <label>Server ID <span class="required">*</span></label>
+          <input type="text" name="main_1_server_id" placeholder="Enter Server ID" maxlength="20" autocomplete="off" required>
+        </div>`;
       return card;
     }
 
-    function buildPlayerForms() {
-      const mainContainer = $("mainPlayers");
-      const substituteContainer = $("substitutePlayers");
-
-      if (!mainContainer || !substituteContainer) {
-        throw new Error(
-          "Player form containers were not found in the HTML."
-        );
-      }
-
-      mainContainer.replaceChildren();
-      substituteContainer.replaceChildren();
-
-      for (let i = 1; i <= MAIN_PLAYER_COUNT; i++) {
-        mainContainer.appendChild(
-          createPlayerCard("main", i, `Main Player ${i}`)
-        );
-      }
-
-      for (let i = 1; i <= SUBSTITUTE_COUNT; i++) {
-        substituteContainer.appendChild(
-          createPlayerCard("substitute", i, `Substitute ${i}`)
-        );
-      }
-
-      console.info("Created player forms:", TOTAL_PLAYER_COUNT);
-    }
-
-    function readPlayer(playerType, number) {
-      const prefix = `${playerType}_${number}`;
-
-      const username = cleanText(
-        document.querySelector(
-          `[name="${prefix}_username"]`
-        )?.value
-      );
-
-      const gameUserId = cleanText(
-        document.querySelector(
-          `[name="${prefix}_game_user_id"]`
-        )?.value
-      );
-
-      const serverId = cleanText(
-        document.querySelector(
-          `[name="${prefix}_server_id"]`
-        )?.value
-      );
-
+    function collectPlayers() {
+      const username = cleanText(document.querySelector('[name="main_1_username"]')?.value);
+      const gameUserId = cleanText(document.querySelector('[name="main_1_game_user_id"]')?.value);
+      const serverId = cleanText(document.querySelector('[name="main_1_server_id"]')?.value);
       if (!username || !gameUserId || !serverId) {
-        throw new Error(
-          `${playerType === "main" ? "Main player" : "Substitute"} ${number}: complete all three fields.`
-        );
+        throw new Error("Please complete your username, Game User ID and Server ID.");
       }
-
-      return {
-        player_type: playerType,
-        player_number: number,
+      return [{
+        player_type: "main",
+        player_number: 1,
         username,
         game_user_id: gameUserId,
         server_id: serverId
-      };
-    }
-
-    function collectPlayers() {
-      const players = [];
-
-      for (let i = 1; i <= MAIN_PLAYER_COUNT; i++) {
-        players.push(readPlayer("main", i));
-      }
-
-      for (let i = 1; i <= SUBSTITUTE_COUNT; i++) {
-        players.push(readPlayer("substitute", i));
-      }
-
-      if (players.length !== TOTAL_PLAYER_COUNT) {
-        throw new Error("Exactly seven players are required.");
-      }
-
-      return players;
+      }];
     }
 
     /* LOAD TOURNAMENT */
@@ -1151,7 +1038,7 @@
       }
 
       if (players.length !== TOTAL_PLAYER_COUNT) {
-        showStatus("Exactly seven players are required.", "error");
+        showStatus("Only one player is required for this 1v1 tournament.", "error");
         return;
       }
 
@@ -1227,7 +1114,7 @@
         }
 
         /*
-         * Save the seven players.
+         * Save the single registered player.
          */
 
         const playerRows = players.map((player) => ({
@@ -1248,179 +1135,4 @@
 
         if (playersError) {
           throw new Error(
-            "The team was created, but player details could not be saved: " +
-            playersError.message
-          );
-        }
-
-        /*
-         * Save payment information for paid tournaments.
-         */
-
-        if (!isFreeTournament) {
-          const { error: paymentError } = await supabaseClient
-            .from("tournament_payments")
-            .insert({
-              team_id: createdTeamId,
-              tournament_id: tournamentId,
-              user_id: user.id,
-              amount: Number(currentTournament.entry_fee),
-              transaction_id: cleanText($("transactionId").value),
-              payment_screenshot_url: receiptPath,
-              payment_method: "UPI",
-              status: "pending"
-            });
-
-          if (paymentError) {
-            throw new Error(
-              "Your team and players were saved, but payment details could not be saved. Contact Ren Gaming and provide team ID " +
-              createdTeamId +
-              ". Error: " +
-              paymentError.message
-            );
-          }
-        }
-
-        /*
-         * Prepare the WhatsApp confirmation.
-         */
-
-        const playerLines = players.map((player, index) => {
-          const label = player.player_type === "main"
-            ? `Main Player ${player.player_number}`
-            : `Substitute ${player.player_number}`;
-
-          return [
-            `${index + 1}. ${label}`,
-            `Username: ${player.username}`,
-            `Game User ID: ${player.game_user_id}`,
-            `Server ID: ${player.server_id}`
-          ].join("\n");
-        });
-
-        const message = [
-          "Hello Ren Gaming!",
-          "",
-          "I have submitted my tournament registration.",
-          "",
-          `Tournament: ${currentTournament.name || "Ren Gaming Tournament"}`,
-          `Team Name: ${teamName}`,
-          `Team ID: ${createdTeamId}`,
-          `Team Leader WhatsApp: +91 ${leaderPhone}`,
-          "",
-          "REGISTERED PLAYERS (7)",
-          "",
-          ...playerLines,
-          "",
-          isFreeTournament
-            ? "Registration Fee: Free"
-            : `Transaction Reference: ${cleanText($("transactionId").value)}`,
-          "",
-          "Please verify my team and registration.",
-          "I understand the registration is pending until Ren Gaming verifies it."
-        ].join("\n");
-
-        $("registrationForm").style.display = "none";
-        $("successPanel").style.display = "block";
-
-        $("successText").textContent =
-          `Team "${teamName}" has been submitted with all seven players. Your registration is pending verification.`;
-
-        $("whatsappLink").href =
-          `https://wa.me/${REN_GAMING_WHATSAPP}?text=${encodeURIComponent(message)}`;
-
-        showStatus(
-          "Registration submitted successfully. Please confirm through WhatsApp.",
-          "success"
-        );
-
-        $("successPanel").scrollIntoView({
-          behavior: "smooth",
-          block: "start"
-        });
-
-      } catch (error) {
-        console.error("Registration error:", error);
-
-        showStatus(
-          error.message ||
-          "Something went wrong while submitting your registration.",
-          "error"
-        );
-
-      } finally {
-        registrationInProgress = false;
-
-        if ($("registrationForm").style.display !== "none") {
-          $("submitButton").disabled = false;
-          $("submitButton").textContent = "SUBMIT TEAM REGISTRATION";
-        }
-      }
-    }
-
-    /* START PAGE */
-
-    document.addEventListener("DOMContentLoaded", async () => {
-      try {
-        const loggedIn = await requireLogin();
-        if (!loggedIn) {
-          $("registrationForm").style.display = "none";
-          return;
-        }
-      } catch (error) {
-        console.error("Login check failed:", error);
-        showStatus("Could not verify your login. Please refresh or sign in again.", "error");
-        $("registrationForm").style.display = "none";
-        return;
-      }
-
-      /*
-       * Only logged-in users can continue to the registration form.
-       */
-      try {
-        buildPlayerForms();
-      } catch (error) {
-        console.error("Player form creation error:", error);
-
-        showStatus(
-          "Could not create player forms: " + error.message,
-          "error"
-        );
-
-        return;
-      }
-
-      $("registrationForm").addEventListener(
-        "submit",
-        registerTeam
-      );
-
-      try {
-        await loadTournament();
-
-        const user = await getCurrentUser();
-        if (!user) {
-          throw new Error("Please log in before registering.");
-        }
-
-        const allowed = await enforceRegistrationAccess(
-          user,
-          currentTournament.id
-        );
-
-        if (!allowed) return;
-      } catch (error) {
-        console.error("Tournament loading error:", error);
-
-        showStatus(
-          "Player forms are ready, but tournament details could not load: " +
-          error.message,
-          "error"
-        );
-
-        $("submitButton").disabled = true;
-      }
-    });
-  </script>
-</body>
-</html>
+            "The team was created, but player details cou
