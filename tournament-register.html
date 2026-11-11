@@ -447,7 +447,7 @@
         padding: 17px;
       }
 
-      .players-grid {
+      .players-grid, .details-grid {
         grid-template-columns: 1fr;
       }
 
@@ -483,11 +483,46 @@
       </p>
 
       <div class="notice">
-        <strong>Important:</strong> This is a 1v1 tournament. Register
-        only one player. Please check your Game User ID and Server ID
-        before submitting.
+        <strong>Important:</strong> This is a 1v1 tournament. Register only yourself.
+        Your Game User ID, Server ID and Zone ID must be correct. Incorrect details
+        may result in disqualification.
       </div>
     </div>
+
+    <section class="card tournament-info" aria-label="Tournament details">
+      <div class="section-heading">
+        <div class="section-number">RG</div>
+        <div>
+          <h2>Ren Gaming Season 2 — Tournament Details</h2>
+          <p class="section-description">Please read the rules before registering.</p>
+        </div>
+      </div>
+      <div class="details-grid">
+        <div class="detail"><span>Game</span><strong>MOBA Legends 5v5</strong></div>
+        <div class="detail"><span>Competition</span><strong>1v1</strong></div>
+        <div class="detail"><span>Entry Fee</span><strong>₹50</strong></div>
+        <div class="detail"><span>First Prize</span><strong>₹1,000</strong></div>
+        <div class="detail"><span>Registration Deadline</span><strong>27 November 2026</strong></div>
+        <div class="detail"><span>Tournament Starts</span><strong>28 November 2026</strong></div>
+        <div class="detail"><span>Playing Hours</span><strong>5:00 PM – 10:00 PM</strong></div>
+        <div class="detail"><span>Schedule</span><strong>Shared in official WhatsApp group</strong></div>
+      </div>
+      <div class="rules-list">
+        <h3>Match Rules</h3>
+        <ul>
+          <li>Regular matches: BO1.</li>
+          <li>Quarter-finals and semi-finals: BO3.</li>
+          <li>Grand final: BO5.</li>
+          <li>The player with the higher kill count advances.</li>
+          <li>Players who do not join within 15 minutes of the scheduled time may be eliminated.</li>
+          <li>Rejoin fee: ₹20 after Round 1 elimination; ₹30 after Round 2 elimination. Contact the organiser and wait for confirmation before rejoining.</li>
+          <li>Hacks, scripts, cheats or other unfair methods are not allowed.</li>
+          <li>Recording matches is encouraged. A result screenshot is mandatory.</li>
+          <li>Use a WhatsApp-active mobile number. Match updates and schedules will be shared through the official WhatsApp group.</li>
+        </ul>
+      </div>
+      <p class="contact-line">Need help? Call 9864228608 · WhatsApp 8638129770 · Email rendombirthsangma@gmail.com</p>
+    </section>
 
     <div id="statusMessage" class="status" role="alert"></div>
 
@@ -498,7 +533,7 @@
           <div>
             <h2>Player Details</h2>
             <p class="section-description">
-              Enter your in-game name and WhatsApp number.
+              Register as an individual player. No team or substitute details are needed.
             </p>
           </div>
         </div>
@@ -542,9 +577,9 @@
         <div class="section-heading">
           <div class="section-number">02</div>
           <div>
-            <h2>Player Game ID</h2>
+            <h2>Game Account Details</h2>
             <p class="section-description">
-              Enter your game username, Game User ID and Server ID.
+              Enter your exact in-game username, Game User ID, Server ID and Zone ID.
             </p>
           </div>
         </div>
@@ -554,7 +589,7 @@
 
       <section class="card" id="paymentSection">
         <div class="section-heading">
-          <div class="section-number">04</div>
+          <div class="section-number">03</div>
           <div>
             <h2>Registration Payment</h2>
             <p class="section-description">
@@ -635,7 +670,7 @@
 
       <section class="card">
         <div class="section-heading">
-          <div class="section-number">05</div>
+          <div class="section-number">04</div>
           <div>
             <h2>Confirm Registration</h2>
             <p class="section-description">
@@ -653,7 +688,7 @@
         </label>
 
         <button type="submit" id="submitButton" class="btn">
-          SUBMIT TEAM REGISTRATION
+          SUBMIT 1v1 REGISTRATION
         </button>
 
         <p class="help" style="text-align:center;margin-top:12px;">
@@ -785,6 +820,10 @@
         <div class="field">
           <label>Server ID <span class="required">*</span></label>
           <input type="text" name="main_1_server_id" placeholder="Enter Server ID" maxlength="20" autocomplete="off" required>
+        </div>
+        <div class="field">
+          <label>Zone ID <span class="required">*</span></label>
+          <input type="text" name="main_1_zone_id" placeholder="Enter Zone ID" maxlength="20" autocomplete="off" required>
         </div>`;
       return card;
     }
@@ -793,15 +832,17 @@
       const username = cleanText(document.querySelector('[name="main_1_username"]')?.value);
       const gameUserId = cleanText(document.querySelector('[name="main_1_game_user_id"]')?.value);
       const serverId = cleanText(document.querySelector('[name="main_1_server_id"]')?.value);
-      if (!username || !gameUserId || !serverId) {
-        throw new Error("Please complete your username, Game User ID and Server ID.");
+      const zoneId = cleanText(document.querySelector('[name="main_1_zone_id"]')?.value);
+      if (!username || !gameUserId || !serverId || !zoneId) {
+        throw new Error("Please complete your username, Game User ID, Server ID and Zone ID.");
       }
       return [{
         player_type: "main",
         player_number: 1,
         username,
         game_user_id: gameUserId,
-        server_id: serverId
+        server_id: serverId,
+        zone_id: zoneId
       }];
     }
 
@@ -1124,6 +1165,7 @@
           username: player.username,
           game_user_id: player.game_user_id,
           server_id: player.server_id,
+          zone_id: player.zone_id,
           verification_status: "pending",
           verified_at: null,
           verification_message: null
@@ -1135,4 +1177,94 @@
 
         if (playersError) {
           throw new Error(
-            "The team was created, but player details cou
+            "The team was created, but player details could not be saved: " +
+            playersError.message
+          );
+        }
+
+        /*
+         * Save payment information for paid tournaments.
+         */
+
+        if (!isFreeTournament) {
+          const { error: paymentError } = await supabaseClient
+            .from("tournament_payments")
+            .insert({
+              team_id: createdTeamId,
+              tournament_id: tournamentId,
+              user_id: user.id,
+              amount: Number(currentTournament.entry_fee),
+              transaction_id: cleanText($("transactionId").value),
+              payment_screenshot_url: receiptPath,
+              payment_method: "UPI",
+              status: "pending"
+            });
+
+          if (paymentError) {
+            throw new Error(
+              "Your team and players were saved, but payment details could not be saved. Contact Ren Gaming and provide team ID " +
+              createdTeamId +
+              ". Error: " +
+              paymentError.message
+            );
+          }
+        }
+
+        /*
+         * Prepare the WhatsApp confirmation.
+         */
+
+        const playerLines = players.map((player, index) => {
+          const label = "1v1 Player";
+
+          return [
+            `${index + 1}. ${label}`,
+            `Username: ${player.username}`,
+            `Game User ID: ${player.game_user_id}`,
+            `Server ID: ${player.server_id}`,
+            `Zone ID: ${player.zone_id}`
+          ].join("\n");
+        });
+
+        const message = [
+          "Hello Ren Gaming!",
+          "",
+          "I have submitted my tournament registration.",
+          "",
+          `Tournament: ${currentTournament.name || "Ren Gaming Tournament"}`,
+          `Player Name: ${teamName}`,
+          `Registration ID: ${createdTeamId}`,
+          `Player WhatsApp: +91 ${leaderPhone}`,
+          "",
+          "REGISTERED PLAYER (1v1)",
+          "",
+          ...playerLines,
+          "",
+          isFreeTournament
+            ? "Registration Fee: Free"
+            : `Transaction Reference: ${cleanText($("transactionId").value)}`,
+          "",
+          "Please verify my 1v1 player registration.",
+          "I understand the registration is pending until Ren Gaming verifies it."
+        ].join("\n");
+
+        $("registrationForm").style.display = "none";
+        $("successPanel").style.display = "block";
+
+        $("successText").textContent =
+          `Player "${teamName}" has been registered for Ren Gaming Season 2 (1v1). Your registration is pending verification.`;
+
+        $("whatsappLink").href =
+          `https://wa.me/${REN_GAMING_WHATSAPP}?text=${encodeURIComponent(message)}`;
+
+        showStatus(
+          "Registration submitted successfully. Please confirm through WhatsApp.",
+          "success"
+        );
+
+        $("successPanel").scrollIntoView({
+          behavior: "smooth",
+          block: "start"
+        });
+
+      } c
