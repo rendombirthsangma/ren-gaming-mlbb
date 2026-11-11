@@ -1,68 +1,248 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ren Gaming — Match Management</title>
+<meta name="theme-color" content="#080808">
+<title>Ren Gaming | Match Management</title>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:Arial,sans-serif;background:#080808;color:#fff;min-height:100vh}
-header{background:#0d0d0d;border-bottom:1px solid #292929;padding:20px 6%;display:flex;justify-content:space-between;align-items:center;gap:15px}
-.logo{color:#ff1e1e;font-size:22px;font-weight:900}
-.header-actions{display:flex;gap:10px;flex-wrap:wrap}
+
+body{
+  font-family:Arial,sans-serif;
+  background:#080808;
+  color:#fff;
+  min-height:100vh;
+}
+
+header{
+  background:#0d0d0d;
+  border-bottom:1px solid #292929;
+  padding:20px 6%;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:15px;
+}
+
+.logo{
+  color:#ff1e1e;
+  font-size:22px;
+  font-weight:900;
+}
+
+.header-actions{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+}
+
 button,a{font-family:inherit;cursor:pointer}
-.back,.logout{background:#171717;color:#fff;border:1px solid #333;padding:10px 15px;border-radius:6px;text-decoration:none}
+
+.back,.logout{
+  background:#171717;
+  color:#fff;
+  border:1px solid #333;
+  padding:10px 15px;
+  border-radius:6px;
+  text-decoration:none;
+}
+
 .back:hover,.logout:hover{border-color:#ff1e1e}
-.container{max-width:1200px;margin:35px auto;padding:0 20px}
+
+.container{
+  max-width:1200px;
+  margin:35px auto;
+  padding:0 20px;
+}
+
 h1{margin-bottom:25px}
 h2{margin-bottom:20px}
-.card{background:#111;border:1px solid #292929;border-radius:10px;padding:24px;margin-bottom:25px}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-.field{display:flex;flex-direction:column;gap:7px}
+
+.card{
+  background:#111;
+  border:1px solid #292929;
+  border-radius:10px;
+  padding:24px;
+  margin-bottom:25px;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:16px;
+}
+
+.field{
+  display:flex;
+  flex-direction:column;
+  gap:7px;
+}
+
 .full{grid-column:1/-1}
-label{font-size:13px;color:#aaa}
-input,select,textarea{width:100%;background:#080808;color:#fff;border:1px solid #333;border-radius:6px;padding:12px}
-input:focus,select:focus,textarea:focus{outline:none;border-color:#ff1e1e}
+
+label{
+  font-size:13px;
+  color:#aaa;
+}
+
+input,select,textarea{
+  width:100%;
+  background:#080808;
+  color:#fff;
+  border:1px solid #333;
+  border-radius:6px;
+  padding:12px;
+}
+
+input:focus,select:focus,textarea:focus{
+  outline:none;
+  border-color:#ff1e1e;
+}
+
 textarea{min-height:80px}
-.primary,.secondary,.danger{color:#fff;border:0;padding:11px 16px;border-radius:6px;font-weight:bold}
+
+.primary,.secondary,.danger{
+  color:#fff;
+  border:0;
+  padding:11px 16px;
+  border-radius:6px;
+  font-weight:bold;
+}
+
 .primary{background:#e31313}
 .primary:hover{background:#ff2424}
 .secondary{background:#242424;border:1px solid #444}
 .danger{background:#5b1616;border:1px solid #8b2525}
-.form-actions,.item-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
-.message{display:none;padding:12px;border-radius:6px;margin-bottom:18px;overflow-wrap:anywhere}
-.success{display:block;background:#102814;border:1px solid #238636;color:#7ee787}
-.error{display:block;background:#2b1010;border:1px solid #ff1e1e;color:#ff7777}
-.note{color:#888;font-size:13px;line-height:1.5;margin-top:12px}
+
+button:disabled{opacity:.5;cursor:not-allowed}
+
+.form-actions,.item-actions{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-top:18px;
+}
+
+.message{
+  display:none;
+  padding:12px;
+  border-radius:6px;
+  margin-bottom:18px;
+  overflow-wrap:anywhere;
+}
+
+.success{
+  display:block;
+  background:#102814;
+  border:1px solid #238636;
+  color:#7ee787;
+}
+
+.error{
+  display:block;
+  background:#2b1010;
+  border:1px solid #ff1e1e;
+  color:#ff7777;
+}
+
+.note{
+  color:#888;
+  font-size:13px;
+  line-height:1.5;
+  margin-top:12px;
+}
+
 .match-list{display:grid;gap:24px}
 .round-group{display:grid;gap:13px}
-.round-group-heading{font-size:24px;font-weight:900;letter-spacing:1px;color:#fff;text-transform:uppercase;padding:14px 17px;border-left:5px solid #e31313;background:linear-gradient(90deg,rgba(227,19,19,.18),rgba(17,17,17,.9));border-radius:7px;margin:0}
-.match-item{background:#0b0b0b;border:1px solid #292929;border-radius:8px;padding:18px}
-.match-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
-.match-name{font-size:18px;font-weight:bold}
-.meta{font-size:13px;color:#aaa;line-height:1.8;margin-top:8px;overflow-wrap:anywhere}
-.badge{padding:5px 9px;border-radius:5px;font-size:11px;font-weight:bold;text-transform:uppercase;background:#292929;white-space:nowrap}
+
+.round-group-heading{
+  font-size:22px;
+  font-weight:900;
+  letter-spacing:1px;
+  color:#fff;
+  text-transform:uppercase;
+  padding:14px 17px;
+  border-left:5px solid #e31313;
+  background:linear-gradient(90deg,rgba(227,19,19,.18),rgba(17,17,17,.9));
+  border-radius:7px;
+}
+
+.match-item{
+  background:#0b0b0b;
+  border:1px solid #292929;
+  border-radius:8px;
+  padding:18px;
+}
+
+.match-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:12px;
+}
+
+.match-name{
+  font-size:18px;
+  font-weight:bold;
+}
+
+.meta{
+  font-size:13px;
+  color:#aaa;
+  line-height:1.9;
+  margin-top:8px;
+  overflow-wrap:anywhere;
+}
+
+.badge{
+  padding:5px 9px;
+  border-radius:5px;
+  font-size:11px;
+  font-weight:bold;
+  text-transform:uppercase;
+  background:#292929;
+  white-space:nowrap;
+}
+
 .status-scheduled{background:#3a2b00;color:#ffd666}
 .status-ongoing{background:#0d3518;color:#6ee7a0}
 .status-completed{background:#242424;color:#aaa}
 .status-cancelled{background:#451515;color:#ff9999}
-.empty{background:#0b0b0b;border:1px solid #292929;border-radius:8px;padding:18px;color:#aaa}
+
+.empty{
+  background:#0b0b0b;
+  border:1px solid #292929;
+  border-radius:8px;
+  padding:18px;
+  color:#aaa;
+}
+
 .hidden{display:none!important}
+
 @media(max-width:700px){
- header{padding:16px;align-items:flex-start;flex-direction:column}
- .container{margin:24px auto}
- .grid{grid-template-columns:1fr}
- .full{grid-column:auto}
- .match-head{flex-direction:column}
+  header{
+    padding:16px;
+    align-items:flex-start;
+    flex-direction:column;
+  }
+  .container{margin:24px auto}
+  .grid{grid-template-columns:1fr}
+  .full{grid-column:auto}
+  .match-head{flex-direction:column}
 }
 </style>
 </head>
 
 <body>
+
 <header>
   <div class="logo">REN GAMING — ADMIN</div>
+
   <div class="header-actions">
     <a class="back" href="admin.html">← ADMIN PANEL</a>
     <a class="back" href="admin-tournament-management.html">TOURNAMENTS</a>
@@ -71,16 +251,23 @@ textarea{min-height:80px}
 </header>
 
 <main class="container">
+
   <h1>⚔️ Match Management</h1>
+
   <div id="message" class="message" role="status"></div>
 
+  <!-- CREATE / EDIT MATCH -->
+
   <section class="card">
+
     <h2 id="formTitle">Create New Match</h2>
 
     <form id="matchForm">
+
       <input type="hidden" id="editingId">
 
       <div class="grid">
+
         <div class="field">
           <label for="tournament_id">Select Tournament *</label>
           <select id="tournament_id" required>
@@ -89,42 +276,44 @@ textarea{min-height:80px}
         </div>
 
         <div class="field">
-          <label for="room_id">Room ID</label>
-          <input id="room_id" placeholder="Optional room ID">
+          <label for="group_name">Group</label>
+          <input id="group_name" placeholder="e.g. Group A">
         </div>
 
         <div class="field">
-          <label for="round_name">Round *</label>
-          <input id="round_name" placeholder="e.g. Round-1" required>
+          <label for="round_name">Round Name *</label>
+          <input id="round_name" required
+            placeholder="e.g. Round-1, Quarter Final, Final">
         </div>
 
         <div class="field">
           <label for="match_number">Match Number *</label>
-          <input id="match_number" type="number" min="1" placeholder="e.g. 1" required>
+          <input id="match_number" type="number" min="1" required
+            placeholder="e.g. 1">
         </div>
 
         <div class="field">
-          <label for="team1_id">Team 1 — Approved Team *</label>
-          <select id="team1_id" required>
+          <label for="team_a_id">Team A *</label>
+          <select id="team_a_id" required>
             <option value="">Loading approved teams...</option>
           </select>
         </div>
 
         <div class="field">
-          <label for="team2_id">Team 2 — Approved Team *</label>
-          <select id="team2_id" required>
+          <label for="team_b_id">Team B *</label>
+          <select id="team_b_id" required>
             <option value="">Loading approved teams...</option>
           </select>
         </div>
 
         <div class="field">
-          <label for="match_date">Match Date & Time</label>
-          <input id="match_date" type="datetime-local">
+          <label for="scheduled_at">Match Date & Time</label>
+          <input id="scheduled_at" type="datetime-local">
         </div>
 
         <div class="field">
-          <label for="status">Match Status</label>
-          <select id="status">
+          <label for="status">Match Status *</label>
+          <select id="status" required>
             <option value="scheduled">Scheduled</option>
             <option value="ongoing">Ongoing</option>
             <option value="completed">Completed</option>
@@ -133,521 +322,968 @@ textarea{min-height:80px}
         </div>
 
         <div class="field">
-          <label for="room_password">Room Password</label>
-          <input id="room_password" placeholder="Optional room password">
+          <label for="team1_score">Team A Score</label>
+          <input id="team1_score" type="number" min="0"
+            placeholder="Optional">
+        </div>
+
+        <div class="field">
+          <label for="team2_score">Team B Score</label>
+          <input id="team2_score" type="number" min="0"
+            placeholder="Optional">
         </div>
 
         <div class="field full">
-          <label for="winner_id">Winner</label>
-          <select id="winner_id">
+          <label for="winner_team_id">Winner</label>
+          <select id="winner_team_id">
             <option value="">No winner yet</option>
           </select>
         </div>
 
-        <div class="field full">
-          <label for="notes">Result Note</label>
-          <textarea id="notes" placeholder="Optional result details"></textarea>
+        <div class="field">
+          <label for="room_id">Room ID</label>
+          <input id="room_id" placeholder="Enter room ID">
         </div>
+
+        <div class="field">
+          <label for="room_password">Room Password</label>
+          <input id="room_password" placeholder="Enter room password">
+        </div>
+
+        <div class="field full">
+          <label for="show_on_home">Homepage Visibility</label>
+          <select id="show_on_home">
+            <option value="true">Show on homepage</option>
+            <option value="false">Hide from homepage</option>
+          </select>
+        </div>
+
+        <div class="field full">
+          <label for="result_note">Match Notes / Result Details</label>
+          <textarea id="result_note"
+            placeholder="Enter match details or result information"></textarea>
+        </div>
+
       </div>
 
       <div class="form-actions">
-        <button class="primary" id="saveBtn" type="submit">CREATE MATCH</button>
-        <button class="secondary hidden" id="cancelBtn" type="button">CANCEL EDIT</button>
+        <button class="primary" id="saveBtn" type="submit">
+          CREATE MATCH
+        </button>
+
+        <button class="secondary hidden" id="cancelBtn" type="button">
+          CANCEL EDIT
+        </button>
       </div>
 
       <p class="note">
-        Select a tournament and approved teams. Enter the round and match number, and add optional room details. Choose a winner when the result is decided.
+        Select an existing tournament and approved teams.
+        You do not need to enter team or tournament IDs manually.
       </p>
+
     </form>
+
   </section>
 
+  <!-- EXISTING MATCHES -->
+
   <section class="card">
+
     <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:20px">
+
       <h2 style="margin:0">📋 Existing Matches</h2>
-      <button class="secondary" id="refreshBtn" type="button">REFRESH</button>
+
+      <button class="secondary" id="refreshBtn" type="button">
+        REFRESH
+      </button>
+
     </div>
-    <div id="matchList" class="match-list">Loading matches...</div>
+
+    <div id="matchList" class="match-list">
+      Loading matches...
+    </div>
+
   </section>
+
 </main>
 
 <script>
-const SUPABASE_URL="https://bixpvxkpnaqdifmvkhvp.supabase.co";
-const SUPABASE_PUBLISHABLE_KEY="sb_publishable_XtzkrIFbBPTGUmoLHqHu5Q_XeznKoVI";
-const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);
 
-let currentMatches=[];
-let approvedTeams=[];
-let tournaments=[];
-let busy=false;
+// ======================================
+// SUPABASE CONNECTION
+// ======================================
 
-const $=id=>document.getElementById(id);
+const SUPABASE_URL =
+"https://bixpvxkpnaqdifmvkhvp.supabase.co";
 
-function message(text,type="error"){
-  $("message").textContent=text;
-  $("message").className="message "+type;
+const SUPABASE_PUBLISHABLE_KEY =
+"sb_publishable_XtzkrIFbBPTGUmoLHqHu5Q_XeznKoVI";
+
+const db = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_PUBLISHABLE_KEY
+);
+
+let currentMatches = [];
+let approvedTeams = [];
+let tournaments = [];
+let busy = false;
+
+const $ = id => document.getElementById(id);
+
+
+// ======================================
+// MESSAGE
+// ======================================
+
+function message(text, type = "error") {
+  $("message").textContent = text;
+  $("message").className = "message " + type;
   window.scrollTo({top:0,behavior:"smooth"});
 }
 
-function clearMessage(){
-  $("message").textContent="";
-  $("message").className="message";
+function clearMessage() {
+  $("message").textContent = "";
+  $("message").className = "message";
 }
 
-function esc(value){
-  return String(value??"").replace(/[&<>"']/g,c=>({
-    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+
+// ======================================
+// SAFE HTML
+// ======================================
+
+function esc(value) {
+  return String(value ?? "").replace(/[&<>"']/g, c => ({
+    "&":"&amp;",
+    "<":"&lt;",
+    ">":"&gt;",
+    '"':"&quot;",
+    "'":"&#39;"
   })[c]);
 }
 
-function teamName(team){
-  return team.team_name || team.name || team.teamName || team.ign || ("Team " + String(team.id).slice(0,8));
+
+// ======================================
+// TEAM / TOURNAMENT NAMES
+// ======================================
+
+function teamName(team) {
+  return team.team_name ||
+         team.name ||
+         team.teamName ||
+         team.ign ||
+         ("Team " + String(team.id).slice(0,8));
 }
 
-function tournamentName(tournament){
-  return tournament.name || tournament.title || ("Tournament " + String(tournament.id).slice(0,8));
+function tournamentName(tournament) {
+  return tournament.name ||
+         tournament.title ||
+         ("Tournament " + String(tournament.id).slice(0,8));
 }
 
-function refreshTournamentDropdown(selectedId="") {
-  const select=$("tournament_id");
 
-  select.innerHTML='<option value="">Select an existing tournament</option>'+tournaments.map(t=>
-    `<option value="${esc(t.id)}" ${String(t.id)===String(selectedId)?"selected":""}>${esc(tournamentName(t))}</option>`
-  ).join("");
-}
+// ======================================
+// ADMIN CHECK
+// ======================================
 
-async function loadTournaments(selectedId="") {
-  const select=$("tournament_id");
-  select.innerHTML='<option value="">Loading tournaments...</option>';
+async function checkAdmin() {
 
-  const {data,error}=await db.from("tournament")
-    .select("id,name")
-    .order("created_at",{ascending:false});
+  const {data,error} = await db.auth.getUser();
 
-  if(error){
-    console.error("Tournament loading error:",error);
-    select.innerHTML='<option value="">Could not load tournaments</option>';
-    message("Could not load tournaments: "+error.message);
+  const user = data?.user;
+
+  if(error || !user) {
+    window.location.href = "login.html";
     return false;
   }
 
-  tournaments=data||[];
-  refreshTournamentDropdown(selectedId);
-
-  if(!tournaments.length){
-    select.innerHTML='<option value="">No tournaments found — create one first</option>';
-    message("No existing tournaments were found. Create a tournament first.");
-    return false;
-  }
-
-  return true;
-}
-
-function teamOptions(selected=""){
-  const options=['<option value="">Select an approved team</option>'];
-
-  approvedTeams.forEach(team=>{
-    options.push(`<option value="${esc(team.id)}" ${String(team.id)===String(selected)?"selected":""}>${esc(teamName(team))}</option>`);
-  });
-
-  return options.join("");
-}
-
-function refreshTeamDropdowns(
-  selectedA=$("team1_id").value,
-  selectedB=$("team2_id").value,
-  selectedWinner=$("winner_id").value
-){
-  $("team1_id").innerHTML=teamOptions(selectedA);
-  $("team2_id").innerHTML=teamOptions(selectedB);
-
-  const winnerOptions=['<option value="">No winner yet</option>'];
-
-  approvedTeams
-    .filter(t=>String(t.id)===String(selectedA)||String(t.id)===String(selectedB))
-    .forEach(team=>{
-      winnerOptions.push(`<option value="${esc(team.id)}" ${String(team.id)===String(selectedWinner)?"selected":""}>${esc(teamName(team))}</option>`);
-    });
-
-  $("winner_id").innerHTML=winnerOptions.join("");
-}
-
-async function loadApprovedTeams(){
-  const {data,error}=await db.from("teams")
-    .select("*")
-    .eq("status","approved")
-    .order("created_at",{ascending:true});
-
-  if(error){
-    console.error("Approved teams loading error:",error);
-
-    ["team1_id","team2_id"].forEach(id=>{
-      $(id).innerHTML='<option value="">Could not load teams</option>';
-    });
-
-    message("Could not load approved teams: "+error.message);
-    return false;
-  }
-
-  approvedTeams=data||[];
-  refreshTeamDropdowns("","","");
-
-  if(!approvedTeams.length){
-    ["team1_id","team2_id"].forEach(id=>{
-      $(id).innerHTML='<option value="">No approved teams found</option>';
-    });
-
-    message("No approved teams were found. Approve team registrations first.");
-  }
-
-  return true;
-}
-
-async function checkAdmin(){
-  const {data,error}=await db.auth.getUser();
-  const user=data?.user;
-
-  if(error||!user){
-    window.location.href="login.html";
-    return false;
-  }
-
-  const {data:profile,error:profileError}=await db
+  const {data:profile,error:profileError} = await db
     .from("profiles")
     .select("role")
     .eq("id",user.id)
     .maybeSingle();
 
-  if(profileError||!profile||String(profile.role).toLowerCase()!=="admin"){
+  if(profileError || !profile ||
+     String(profile.role).toLowerCase() !== "admin") {
+
     alert("Admin access required.");
-    window.location.href="dashboard.html";
+    window.location.href = "dashboard.html";
     return false;
   }
 
   return true;
 }
 
-function localDate(value){
-  if(!value)return "";
 
-  const d=new Date(value);
-  if(Number.isNaN(d.getTime()))return "";
+// ======================================
+// LOAD TOURNAMENTS
+// ======================================
 
-  return new Date(d.getTime()-d.getTimezoneOffset()*60000)
-    .toISOString().slice(0,16);
+async function loadTournaments(selectedId = "") {
+
+  const select = $("tournament_id");
+
+  select.innerHTML =
+    '<option value="">Loading tournaments...</option>';
+
+  const {data,error} = await db
+    .from("tournament")
+    .select("id,name");
+
+  if(error) {
+    console.error(error);
+    select.innerHTML =
+      '<option value="">Could not load tournaments</option>';
+
+    message("Tournament loading error: " + error.message);
+    return false;
+  }
+
+  tournaments = data || [];
+
+  select.innerHTML =
+    '<option value="">Select tournament</option>' +
+    tournaments.map(t => `
+      <option value="${esc(t.id)}"
+        ${String(t.id) === String(selectedId) ? "selected" : ""}>
+        ${esc(tournamentName(t))}
+      </option>
+    `).join("");
+
+  if(!tournaments.length) {
+    select.innerHTML =
+      '<option value="">No tournaments found</option>';
+
+    return false;
+  }
+
+  return true;
 }
 
-function isoDate(id){
-  const v=$(id).value;
-  return v?new Date(v).toISOString():null;
+
+// ======================================
+// LOAD APPROVED TEAMS
+// ======================================
+
+async function loadApprovedTeams() {
+
+  const {data,error} = await db
+    .from("teams")
+    .select("*")
+    .eq("status","approved");
+
+  if(error) {
+    console.error(error);
+
+    $("team_a_id").innerHTML =
+      '<option value="">Could not load teams</option>';
+
+    $("team_b_id").innerHTML =
+      '<option value="">Could not load teams</option>';
+
+    message("Team loading error: " + error.message);
+    return false;
+  }
+
+  approvedTeams = data || [];
+
+  refreshTeamDropdowns("", "", "");
+
+  if(!approvedTeams.length) {
+    $("team_a_id").innerHTML =
+      '<option value="">No approved teams found</option>';
+
+    $("team_b_id").innerHTML =
+      '<option value="">No approved teams found</option>';
+
+    message("No approved teams found.");
+  }
+
+  return true;
 }
 
-function resetForm(){
-  $("matchForm").reset();
-  $("editingId").value="";
-  $("formTitle").textContent="Create New Match";
-  $("saveBtn").textContent="CREATE MATCH";
-  $("cancelBtn").classList.add("hidden");
-  $("status").value="scheduled";
 
-  refreshTeamDropdowns("","","");
+// ======================================
+// TEAM DROPDOWNS
+// ======================================
+
+function teamOptions(selected = "") {
+
+  return '<option value="">Select team</option>' +
+    approvedTeams.map(team => `
+      <option value="${esc(team.id)}"
+        ${String(team.id) === String(selected) ? "selected" : ""}>
+        ${esc(teamName(team))}
+      </option>
+    `).join("");
 }
 
-function fillForm(m){
-  $("editingId").value=m.id??"";
 
-  refreshTournamentDropdown(m.tournament_id??"");
-  $("tournament_id").value=m.tournament_id??"";
+function refreshTeamDropdowns(
+  selectedA = $("team_a_id").value,
+  selectedB = $("team_b_id").value,
+  selectedWinner = $("winner_team_id").value
+) {
 
-  $("round_name").value=m.round_name??"";
-  $("match_number").value=m.match_number??"";
+  $("team_a_id").innerHTML = teamOptions(selectedA);
+  $("team_b_id").innerHTML = teamOptions(selectedB);
 
-  $("team1_id").value=m.team_a_id??"";
-  $("team2_id").value=m.team_b_id??"";
-
-  $("match_date").value=localDate(m.scheduled_at);
-  $("status").value=m.status??"scheduled";
-
-  $("room_id").value=m.room_id??"";
-  $("room_password").value=m.room_password??"";
-
-  refreshTeamDropdowns(
-    $("team1_id").value,
-    $("team2_id").value,
-    m.winner_team_id??""
+  const selectedTeams = approvedTeams.filter(team =>
+    String(team.id) === String(selectedA) ||
+    String(team.id) === String(selectedB)
   );
 
-  $("winner_id").value=m.winner_team_id??"";
-  $("notes").value=m.result_note??"";
+  $("winner_team_id").innerHTML =
+    '<option value="">No winner yet</option>' +
+    selectedTeams.map(team => `
+      <option value="${esc(team.id)}"
+        ${String(team.id) === String(selectedWinner) ? "selected" : ""}>
+        ${esc(teamName(team))}
+      </option>
+    `).join("");
+}
 
-  $("formTitle").textContent="Edit Match";
-  $("saveBtn").textContent="SAVE CHANGES";
+
+// ======================================
+// DATE HELPERS
+// ======================================
+
+function localDate(value) {
+
+  if(!value) return "";
+
+  const d = new Date(value);
+
+  if(Number.isNaN(d.getTime())) return "";
+
+  return new Date(
+    d.getTime() - d.getTimezoneOffset() * 60000
+  ).toISOString().slice(0,16);
+}
+
+function isoDate(id) {
+
+  const value = $(id).value;
+
+  return value ? new Date(value).toISOString() : null;
+}
+
+
+// ======================================
+// RESET FORM
+// ======================================
+
+function resetForm() {
+
+  $("matchForm").reset();
+
+  $("editingId").value = "";
+
+  $("formTitle").textContent = "Create New Match";
+
+  $("saveBtn").textContent = "CREATE MATCH";
+
+  $("cancelBtn").classList.add("hidden");
+
+  $("status").value = "scheduled";
+
+  $("show_on_home").value = "true";
+
+  refreshTeamDropdowns("", "", "");
+}
+
+
+// ======================================
+// EDIT MATCH
+// ======================================
+
+function fillForm(match) {
+
+  $("editingId").value = match.id;
+
+  $("tournament_id").value = match.tournament_id || "";
+
+  $("group_name").value = match.group_name || "";
+
+  $("round_name").value = match.round_name || "";
+
+  $("match_number").value = match.match_number ?? "";
+
+  $("team_a_id").value = match.team_a_id || "";
+
+  $("team_b_id").value = match.team_b_id || "";
+
+  $("scheduled_at").value = localDate(match.scheduled_at);
+
+  $("status").value = match.status || "scheduled";
+
+  $("team1_score").value = match.team1_score ?? "";
+
+  $("team2_score").value = match.team2_score ?? "";
+
+  $("room_id").value = match.room_id || "";
+
+  $("room_password").value = match.room_password || "";
+
+  $("show_on_home").value =
+    match.show_on_home === false ? "false" : "true";
+
+  $("result_note").value = match.result_note || "";
+
+  refreshTeamDropdowns(
+    match.team_a_id || "",
+    match.team_b_id || "",
+    match.winner_team_id || ""
+  );
+
+  $("winner_team_id").value = match.winner_team_id || "";
+
+  $("formTitle").textContent = "Edit Match";
+
+  $("saveBtn").textContent = "SAVE CHANGES";
+
   $("cancelBtn").classList.remove("hidden");
 
   window.scrollTo({top:0,behavior:"smooth"});
 }
 
-// Exact column names from the public.matches table in Supabase.
-function buildPayload(){
+
+// ======================================
+// BUILD DATABASE PAYLOAD
+// USES YOUR ACTUAL TABLE COLUMNS
+// ======================================
+
+function buildPayload() {
+
   return {
-    tournament_id:$("tournament_id").value.trim(),
-    round_name:$("round_name").value.trim(),
-    match_number:Number($("match_number").value),
-    team_a_id:$("team1_id").value.trim()||null,
-    team_b_id:$("team2_id").value.trim()||null,
-    scheduled_at:isoDate("match_date"),
-    room_id:$("room_id").value.trim()||null,
-    room_password:$("room_password").value.trim()||null,
-    status:$("status").value,
-    winner_team_id:$("winner_id").value.trim()||null,
-    result_note:$("notes").value.trim()||null
+
+    tournament_id: $("tournament_id").value,
+
+    group_name:
+      $("group_name").value.trim() || null,
+
+    round_name:
+      $("round_name").value.trim(),
+
+    match_number:
+      Number($("match_number").value),
+
+    team_a_id:
+      $("team_a_id").value,
+
+    team_b_id:
+      $("team_b_id").value,
+
+    scheduled_at:
+      isoDate("scheduled_at"),
+
+    room_id:
+      $("room_id").value.trim() || null,
+
+    room_password:
+      $("room_password").value.trim() || null,
+
+    status:
+      $("status").value,
+
+    winner_team_id:
+      $("winner_team_id").value || null,
+
+    result_note:
+      $("result_note").value.trim() || null,
+
+    show_on_home:
+      $("show_on_home").value === "true",
+
+    team1_score:
+      $("team1_score").value === ""
+        ? null
+        : Number($("team1_score").value),
+
+    team2_score:
+      $("team2_score").value === ""
+        ? null
+        : Number($("team2_score").value)
+
   };
 }
 
-async function loadMatches(){
-  const box=$("matchList");
-  box.textContent="Loading matches...";
 
-  const {data,error}=await db.from("matches")
+// ======================================
+// LOAD MATCHES
+// ======================================
+
+async function loadMatches() {
+
+  const box = $("matchList");
+
+  box.textContent = "Loading matches...";
+
+  const {data,error} = await db
+    .from("matches")
     .select("*")
     .limit(200);
 
-  if(error){
-    console.error("Match loading error:",error);
+  if(error) {
 
-    box.innerHTML='<div class="empty">Could not load matches. Check the matches table, its columns, and Supabase SELECT permissions.</div>';
+    console.error(error);
 
-    message("Unable to load matches: "+error.message);
+    box.innerHTML =
+      '<div class="empty">Could not load matches: ' +
+      esc(error.message) +
+      '</div>';
+
+    message("Match loading error: " + error.message);
+
     return;
   }
 
-  currentMatches=data||[];
+  currentMatches = data || [];
 
-  if(!currentMatches.length){
-    box.innerHTML='<div class="empty">No matches found yet. Create your first match above.</div>';
+  if(!currentMatches.length) {
+
+    box.innerHTML =
+      '<div class="empty">No matches found. Create your first match above.</div>';
+
     return;
   }
 
-  const sortedMatches=[...currentMatches].sort((a,b)=>{
-    const da=a.scheduled_at;
-    const db=b.scheduled_at;
+  const sorted = [...currentMatches].sort((a,b) => {
 
-    const ta=da?new Date(da).getTime():Number.MAX_SAFE_INTEGER;
-    const tb=db?new Date(db).getTime():Number.MAX_SAFE_INTEGER;
+    const ta = a.scheduled_at
+      ? new Date(a.scheduled_at).getTime()
+      : Number.MAX_SAFE_INTEGER;
 
-    return ta-tb;
+    const tb = b.scheduled_at
+      ? new Date(b.scheduled_at).getTime()
+      : Number.MAX_SAFE_INTEGER;
+
+    return ta - tb;
   });
 
-  const roundGroups=new Map();
+  const roundGroups = new Map();
 
-  sortedMatches.forEach(m=>{
-    const round=String(m.round_name||"Round not set").trim()||"Round not set";
+  sorted.forEach(match => {
 
-    if(!roundGroups.has(round)){
-      roundGroups.set(round,[]);
+    const round =
+      String(match.round_name || "Round not set").trim();
+
+    if(!roundGroups.has(round)) {
+      roundGroups.set(round, []);
     }
 
-    roundGroups.get(round).push(m);
+    roundGroups.get(round).push(match);
+
   });
 
-  const renderMatch=m=>{
-    const teamA=m.team_a_id??"Not assigned";
-    const teamB=m.team_b_id??"Not assigned";
-    const date=m.scheduled_at;
 
-    const status=String(m.status??"scheduled").toLowerCase();
+  function renderMatch(match) {
 
-    const statusClass=[
+    const teamA = approvedTeams.find(t =>
+      String(t.id) === String(match.team_a_id)
+    );
+
+    const teamB = approvedTeams.find(t =>
+      String(t.id) === String(match.team_b_id)
+    );
+
+    const winner = approvedTeams.find(t =>
+      String(t.id) === String(match.winner_team_id)
+    );
+
+    const tournament = tournaments.find(t =>
+      String(t.id) === String(match.tournament_id)
+    );
+
+    const status = String(match.status || "scheduled").toLowerCase();
+
+    const safeStatus = [
       "scheduled","ongoing","completed","cancelled"
-    ].includes(status)?status:"scheduled";
+    ].includes(status) ? status : "scheduled";
 
-    const teamARecord=approvedTeams.find(
-      t=>String(t.id)===String(teamA)
-    );
+    const date = match.scheduled_at
+      ? new Date(match.scheduled_at).toLocaleString("en-IN")
+      : "Not scheduled";
 
-    const teamBRecord=approvedTeams.find(
-      t=>String(t.id)===String(teamB)
-    );
+    return `
 
-    const winnerRecord=m.winner_team_id
-      ?approvedTeams.find(t=>String(t.id)===String(m.winner_team_id))
-      :null;
+      <article class="match-item">
 
-    return `<article class="match-item">
-      <div class="match-head">
-        <div>
-          <div class="match-name">Match ${esc(m.match_number??m.id??"")}</div>
+        <div class="match-head">
 
-          <div class="meta">
-            Tournament: ${esc(tournamentName(
-              tournaments.find(t=>String(t.id)===String(m.tournament_id))
-              ||{id:m.tournament_id||""}
-            ))}<br>
+          <div>
 
-            Team A: ${esc(teamARecord?teamName(teamARecord):teamA)}<br>
-            Team B: ${esc(teamBRecord?teamName(teamBRecord):teamB)}<br>
-            Room ID: ${esc(m.room_id||"Not set")}<br>
+            <div class="match-name">
+              ${esc(teamA ? teamName(teamA) : "Team A")}
+              VS
+              ${esc(teamB ? teamName(teamB) : "Team B")}
+            </div>
 
-            Winner: ${esc(
-              m.winner_team_id
-                ?(winnerRecord?teamName(winnerRecord):m.winner_team_id)
-                :"Pending"
-            )}<br>
+            <div class="meta">
 
-            Date & Time: ${esc(
-              date?new Date(date).toLocaleString("en-IN"):"Not set"
-            )}<br>
+              Match Number: ${esc(match.match_number)}<br>
 
-            Result Note: ${esc(m.result_note||"—")}
+              Tournament:
+              ${esc(tournament ? tournamentName(tournament) : "Unknown")}<br>
+
+              Group:
+              ${esc(match.group_name || "Not set")}<br>
+
+              Round:
+              ${esc(match.round_name)}<br>
+
+              Date & Time:
+              ${esc(date)}<br>
+
+              Score:
+              ${esc(match.team1_score ?? "—")}
+              -
+              ${esc(match.team2_score ?? "—")}<br>
+
+              Winner:
+              ${esc(winner ? teamName(winner) : "Not decided")}<br>
+
+              Room ID:
+              ${esc(match.room_id || "Not set")}<br>
+
+              Homepage:
+              ${match.show_on_home === false ? "Hidden" : "Visible"}
+
+              ${match.result_note ? `<br>Notes: ${esc(match.result_note)}` : ""}
+
+            </div>
+
           </div>
+
+          <span class="badge status-${safeStatus}">
+            ${esc(status)}
+          </span>
+
         </div>
 
-        <span class="badge status-${statusClass}">${esc(status)}</span>
-      </div>
+        <div class="item-actions">
 
-      <div class="item-actions">
-        <button class="secondary" type="button" data-edit="${esc(m.id)}">EDIT</button>
-        <button class="danger" type="button" data-delete="${esc(m.id)}">DELETE</button>
-      </div>
-    </article>`;
-  };
+          <button class="secondary"
+            type="button"
+            data-edit="${esc(match.id)}">
+            EDIT
+          </button>
 
-  box.innerHTML=[...roundGroups.entries()].map(([round,items])=>
-    `<section class="round-group">
-      <h2 class="round-group-heading">${esc(round)}</h2>
+          <button class="secondary"
+            type="button"
+            data-visibility="${esc(match.id)}">
+            ${match.show_on_home === false
+              ? "SHOW ON HOMEPAGE"
+              : "HIDE FROM HOMEPAGE"}
+          </button>
+
+          <button class="danger"
+            type="button"
+            data-delete="${esc(match.id)}">
+            DELETE
+          </button>
+
+        </div>
+
+      </article>
+
+    `;
+  }
+
+
+  box.innerHTML = [...roundGroups.entries()].map(([round,items]) => `
+
+    <section class="round-group">
+
+      <h2 class="round-group-heading">
+        ${esc(round)}
+      </h2>
+
       ${items.map(renderMatch).join("")}
-    </section>`
-  ).join("");
 
-  box.querySelectorAll("[data-edit]").forEach(btn=>{
-    btn.addEventListener("click",()=>{
-      const match=currentMatches.find(
-        m=>String(m.id)===btn.dataset.edit
+    </section>
+
+  `).join("");
+
+
+  box.querySelectorAll("[data-edit]").forEach(button => {
+
+    button.addEventListener("click", () => {
+
+      const match = currentMatches.find(m =>
+        String(m.id) === button.dataset.edit
       );
 
-      if(match)fillForm(match);
+      if(match) fillForm(match);
+
     });
+
   });
 
-  box.querySelectorAll("[data-delete]").forEach(btn=>{
-    btn.addEventListener("click",()=>{
-      deleteMatch(btn.dataset.delete);
+
+  box.querySelectorAll("[data-visibility]").forEach(button => {
+
+    button.addEventListener("click", () => {
+
+      toggleHomepageVisibility(button.dataset.visibility);
+
     });
+
   });
+
+
+  box.querySelectorAll("[data-delete]").forEach(button => {
+
+    button.addEventListener("click", () => {
+
+      deleteMatch(button.dataset.delete);
+
+    });
+
+  });
+
 }
 
-$("matchForm").addEventListener("submit",async e=>{
-  e.preventDefault();
 
-  if(busy)return;
+// ======================================
+// CREATE / UPDATE MATCH
+// ======================================
+
+$("matchForm").addEventListener("submit", async event => {
+
+  event.preventDefault();
+
+  if(busy) return;
 
   clearMessage();
 
-  const editingId=$("editingId").value;
+  const editingId = $("editingId").value;
 
-  if(
-    !$("tournament_id").value.trim()||
-    !$("round_name").value.trim()||
-    !$("match_number").value||
-    !$("team1_id").value.trim()||
-    !$("team2_id").value.trim()
-  ){
-    message("Please select a tournament and both teams, and enter the round and match number.");
+  const teamA = $("team_a_id").value;
+  const teamB = $("team_b_id").value;
+  const winner = $("winner_team_id").value;
+
+  if(!teamA || !teamB || !$("tournament_id").value) {
+
+    message("Please select a tournament and both teams.");
+
     return;
   }
 
-  if($("team1_id").value.trim()===$("team2_id").value.trim()){
-    message("Team 1 and Team 2 must be different.");
+  if(!$("round_name").value.trim() ||
+     !$("match_number").value) {
+
+    message("Please enter the round name and match number.");
+
     return;
   }
 
-  const payload=buildPayload();
+  if(teamA === teamB) {
 
-  busy=true;
-  $("saveBtn").disabled=true;
-  $("saveBtn").textContent=editingId?"SAVING...":"CREATING...";
+    message("Team A and Team B must be different.");
 
-  const result=editingId
-    ?await db.from("matches").update(payload).eq("id",editingId).select()
-    :await db.from("matches").insert(payload).select();
+    return;
+  }
 
-  busy=false;
-  $("saveBtn").disabled=false;
-  $("saveBtn").textContent=editingId?"SAVE CHANGES":"CREATE MATCH";
+  if(winner && winner !== teamA && winner !== teamB) {
 
-  if(result.error){
-    console.error("Save match error:",result.error);
-    message("Could not save match: "+result.error.message);
+    message("Winner must be either Team A or Team B.");
+
+    return;
+  }
+
+  const payload = buildPayload();
+
+  busy = true;
+
+  $("saveBtn").disabled = true;
+
+  $("saveBtn").textContent =
+    editingId ? "SAVING..." : "CREATING...";
+
+
+  const result = editingId
+
+    ? await db
+        .from("matches")
+        .update(payload)
+        .eq("id",editingId)
+        .select()
+
+    : await db
+        .from("matches")
+        .insert(payload)
+        .select();
+
+
+  busy = false;
+
+  $("saveBtn").disabled = false;
+
+  $("saveBtn").textContent =
+    editingId ? "SAVE CHANGES" : "CREATE MATCH";
+
+
+  if(result.error) {
+
+    console.error("Save error:",result.error);
+
+    message("Could not save match: " + result.error.message);
+
     return;
   }
 
   message(
-    editingId?"Match updated successfully.":"Match created successfully.",
+    editingId
+      ? "Match updated successfully."
+      : "Match created successfully.",
     "success"
   );
 
   resetForm();
+
   await loadMatches();
+
 });
 
-async function deleteMatch(id){
-  const m=currentMatches.find(x=>String(x.id)===String(id));
+
+// ======================================
+// HOMEPAGE VISIBILITY
+// ======================================
+
+async function toggleHomepageVisibility(id) {
+
+  const match = currentMatches.find(m =>
+    String(m.id) === String(id)
+  );
+
+  if(!match) return;
+
+  const nextValue = match.show_on_home === false;
+
+  const {error} = await db
+    .from("matches")
+    .update({show_on_home:nextValue})
+    .eq("id",id);
+
+  if(error) {
+
+    message("Could not update homepage visibility: " + error.message);
+
+    return;
+  }
+
+  message(
+    nextValue
+      ? "Match is now visible on the homepage."
+      : "Match is now hidden from the homepage.",
+    "success"
+  );
+
+  await loadMatches();
+
+}
+
+
+// ======================================
+// DELETE MATCH
+// ======================================
+
+async function deleteMatch(id) {
 
   if(!confirm(
-    "Delete this match?"+
-    (m?"\nMatch ID: "+m.id:"")+
-    "\nThis cannot be undone."
-  ))return;
+    "Are you sure you want to delete this match?\nThis cannot be undone."
+  )) return;
 
-  const {error}=await db.from("matches").delete().eq("id",id);
+  const {error} = await db
+    .from("matches")
+    .delete()
+    .eq("id",id);
 
-  if(error){
-    console.error(error);
-    message("Could not delete match: "+error.message);
+  if(error) {
+
+    message("Could not delete match: " + error.message);
+
     return;
   }
 
   message("Match deleted successfully.","success");
 
   resetForm();
+
   await loadMatches();
+
 }
 
-$("team1_id").addEventListener("change",()=>{
+
+// ======================================
+// EVENTS
+// ======================================
+
+$("team_a_id").addEventListener("change", () => {
+
   refreshTeamDropdowns(
-    $("team1_id").value,
-    $("team2_id").value,
-    $("winner_id").value
+    $("team_a_id").value,
+    $("team_b_id").value,
+    $("winner_team_id").value
   );
+
 });
 
-$("team2_id").addEventListener("change",()=>{
+$("team_b_id").addEventListener("change", () => {
+
   refreshTeamDropdowns(
-    $("team1_id").value,
-    $("team2_id").value,
-    $("winner_id").value
+    $("team_a_id").value,
+    $("team_b_id").value,
+    $("winner_team_id").value
   );
+
 });
 
-$("cancelBtn").addEventListener("click",resetForm);
+$("cancelBtn").addEventListener("click", resetForm);
 
-$("refreshBtn").addEventListener("click",async()=>{
+
+$("refreshBtn").addEventListener("click", async () => {
+
+  clearMessage();
+
   await loadTournaments($("tournament_id").value);
+
   await loadApprovedTeams();
+
   await loadMatches();
+
 });
 
-$("logoutBtn").addEventListener("click",async()=>{
+
+$("logoutBtn").addEventListener("click", async () => {
+
   await db.auth.signOut();
-  window.location.href="login.html";
+
+  window.location.href = "login.html";
+
 });
 
-(async()=>{
-  if(await checkAdmin()){
+
+// ======================================
+// INITIALIZE
+// ======================================
+
+(async () => {
+
+  if(await checkAdmin()) {
+
     await loadTournaments();
+
     await loadApprovedTeams();
+
     await loadMatches();
+
   }
+
 })();
+
 </script>
+
 </body>
 </html>
